@@ -74,7 +74,13 @@ export default function SqlConsole({
   const schemaTables = {
     measurements: [
       { col: "id", type: "VARCHAR(50)", attr: "PRIMARY KEY" },
-      { col: "name", type: "VARCHAR(100)", attr: "NOT NULL" },
+      { col: "name", type: "VARCHAR(100)", attr: "NOT NULL UNIQUE" },
+      { col: "status", type: "ENUM('Enabled', 'Disabled')", attr: "DEFAULT 'Enabled'" },
+      { col: "created_at", type: "TIMESTAMP", attr: "DEFAULT CURRENT_TIMESTAMP" },
+    ],
+    product_names: [
+      { col: "id", type: "VARCHAR(50)", attr: "PRIMARY KEY" },
+      { col: "name", type: "VARCHAR(255)", attr: "NOT NULL UNIQUE" },
       { col: "status", type: "ENUM('Enabled', 'Disabled')", attr: "DEFAULT 'Enabled'" },
       { col: "created_at", type: "TIMESTAMP", attr: "DEFAULT CURRENT_TIMESTAMP" },
     ],
