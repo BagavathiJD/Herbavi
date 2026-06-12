@@ -1,0 +1,6 @@
+{
+  "name": "E-Commerce Admin Panel",
+  "description": "A comprehensive responsive Admin Dashboard for managing products, visits, orders, settings, and customer accounts with full mock relational database and SQL logging.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

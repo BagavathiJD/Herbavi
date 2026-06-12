@@ -1,0 +1,1316 @@
+{
+  "measurements": [
+    {
+      "id": "m1",
+      "name": "Kilogram (Kg)",
+      "status": "Enabled",
+      "createdAt": "2026-06-01T12:00:00Z"
+    },
+    {
+      "id": "m2",
+      "name": "Gram (g)",
+      "status": "Enabled",
+      "createdAt": "2026-06-01T12:05:00Z"
+    },
+    {
+      "id": "m3",
+      "name": "Liter (L)",
+      "status": "Enabled",
+      "createdAt": "2026-06-01T12:10:00Z"
+    },
+    {
+      "id": "m4",
+      "name": "Milliliter (ml)",
+      "status": "Enabled",
+      "createdAt": "2026-06-01T12:15:00Z"
+    },
+    {
+      "id": "m5",
+      "name": "Piece (pcs)",
+      "status": "Enabled",
+      "createdAt": "2026-06-01T12:20:00Z"
+    },
+    {
+      "id": "m6",
+      "name": "Box",
+      "status": "Enabled",
+      "createdAt": "2026-06-01T12:25:00Z"
+    }
+  ],
+  "productNames": [
+    {
+      "id": "pn1",
+      "name": "Premium Organic Honey",
+      "status": "Enabled",
+      "createdAt": "2026-06-01T12:30:00Z"
+    },
+    {
+      "id": "pn2",
+      "name": "Arabica Coffee Beans",
+      "status": "Enabled",
+      "createdAt": "2026-06-01T12:35:00Z"
+    },
+    {
+      "id": "pn3",
+      "name": "Cold-Pressed Avocado Oil",
+      "status": "Enabled",
+      "createdAt": "2026-06-01T12:40:00Z"
+    },
+    {
+      "id": "pn4",
+      "name": "Himalayan Pink Salt",
+      "status": "Enabled",
+      "createdAt": "2026-06-01T12:45:00Z"
+    },
+    {
+      "id": "pn5",
+      "name": "Fresh Organic Blueberries",
+      "status": "Enabled",
+      "createdAt": "2026-06-01T12:50:00Z"
+    },
+    {
+      "id": "pn6",
+      "name": "Eco-Friendly Bamboo Toothbrush",
+      "status": "Enabled",
+      "createdAt": "2026-06-01T12:55:00Z"
+    }
+  ],
+  "products": [
+    {
+      "id": "p1",
+      "name": "Premium Organic Honey",
+      "description": "Pure, cold-pressed raw honey harvested from wild forest blooms.",
+      "imageUrl": "https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&q=80&w=200",
+      "measurementId": "m1",
+      "price": 18.5,
+      "status": "Active",
+      "createdAt": "2026-06-02T14:30:22Z"
+    },
+    {
+      "id": "p2",
+      "name": "Arabica Coffee Beans",
+      "description": "Medium roast coffee beans with undertones of toasted hazelnut and citrus.",
+      "imageUrl": "https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&q=80&w=200",
+      "measurementId": "m2",
+      "price": 12.99,
+      "status": "Active",
+      "createdAt": "2026-06-03T10:15:05Z"
+    },
+    {
+      "id": "p3",
+      "name": "Cold-Pressed Avocado Oil",
+      "description": "Extra virgin oil suitable for high-heat cooking, roasting, and salad dressings.",
+      "imageUrl": "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&q=80&w=200",
+      "measurementId": "m3",
+      "price": 24,
+      "status": "Active",
+      "createdAt": "2026-06-04T08:22:41Z"
+    },
+    {
+      "id": "p4",
+      "name": "Himalayan Pink Salt",
+      "description": "Fine grain pure mineral salt sourced from ancient mountain deposits.",
+      "imageUrl": "https://images.unsplash.com/photo-1626128665085-47372729fac7?auto=format&fit=crop&q=80&w=200",
+      "measurementId": "m2",
+      "price": 6.45,
+      "status": "Active",
+      "createdAt": "2026-06-05T16:11:45Z"
+    },
+    {
+      "id": "p5",
+      "name": "Eco-Friendly Bamboo Mug",
+      "description": "Double-walled reusable drinking mug with anti-spill silicone lid.",
+      "imageUrl": "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&q=80&w=200",
+      "measurementId": "m5",
+      "price": 14.95,
+      "status": "Active",
+      "createdAt": "2026-06-06T11:40:02Z"
+    },
+    {
+      "id": "p6",
+      "name": "Fresh Organic Blueberries",
+      "description": "Plump and sweet berries packed with antioxidants, fresh from local organic farms.",
+      "imageUrl": "https://images.unsplash.com/photo-1601004890684-d8cbf643f5f2?auto=format&fit=crop&q=80&w=200",
+      "measurementId": "m6",
+      "price": 8,
+      "status": "Inactive",
+      "createdAt": "2026-06-07T09:05:12Z"
+    }
+  ],
+  "orders": [
+    {
+      "id": "o1",
+      "userId": "c1",
+      "userName": "Jane Doe",
+      "productId": "p1",
+      "productName": "Premium Organic Honey",
+      "productImageUrl": "https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&q=80&w=200",
+      "quantity": 2,
+      "measurementName": "Kilogram (Kg)",
+      "price": 18.5,
+      "totalAmount": 37,
+      "orderStatus": "Delivered",
+      "orderDate": "2026-06-08T15:20:00Z"
+    },
+    {
+      "id": "o2",
+      "userId": "c2",
+      "userName": "Michael Chen",
+      "productId": "p2",
+      "productName": "Arabica Coffee Beans",
+      "productImageUrl": "https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&q=80&w=200",
+      "quantity": 3,
+      "measurementName": "Gram (g)",
+      "price": 12.99,
+      "totalAmount": 38.97,
+      "orderStatus": "Processing",
+      "orderDate": "2026-06-09T18:44:11Z"
+    },
+    {
+      "id": "o3",
+      "userId": "c3",
+      "userName": "Amara Okafor",
+      "productId": "p3",
+      "productName": "Cold-Pressed Avocado Oil",
+      "productImageUrl": "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&q=80&w=200",
+      "quantity": 1,
+      "measurementName": "Liter (L)",
+      "price": 24,
+      "totalAmount": 24,
+      "orderStatus": "Pending",
+      "orderDate": "2026-06-10T11:05:30Z"
+    },
+    {
+      "id": "o4",
+      "userId": "c1",
+      "userName": "Jane Doe",
+      "productId": "p4",
+      "productName": "Himalayan Pink Salt",
+      "productImageUrl": "https://images.unsplash.com/photo-1626128665085-47372729fac7?auto=format&fit=crop&q=80&w=200",
+      "quantity": 5,
+      "measurementName": "Gram (g)",
+      "price": 6.45,
+      "totalAmount": 32.25,
+      "orderStatus": "Shipped",
+      "orderDate": "2026-06-10T22:15:00Z"
+    },
+    {
+      "id": "o5",
+      "userId": "c4",
+      "userName": "Sven Lindstrom",
+      "productId": "p5",
+      "productName": "Eco-Friendly Bamboo Mug",
+      "productImageUrl": "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&q=80&w=200",
+      "quantity": 2,
+      "measurementName": "Piece (pcs)",
+      "price": 14.95,
+      "totalAmount": 29.9,
+      "orderStatus": "Pending",
+      "orderDate": "2026-06-11T05:30:10Z"
+    }
+  ],
+  "customers": [
+    {
+      "id": "c1",
+      "name": "Jane Doe",
+      "email": "jane.doe@example.com",
+      "phone": "+1-555-0199",
+      "totalOrders": 2,
+      "totalSpend": 69.25,
+      "status": "Active",
+      "joinDate": "2026-05-15T09:12:00Z"
+    },
+    {
+      "id": "c2",
+      "name": "Michael Chen",
+      "email": "m.chen@example.com",
+      "phone": "+1-555-0144",
+      "totalOrders": 1,
+      "totalSpend": 38.97,
+      "status": "Active",
+      "joinDate": "2026-05-20T14:35:00Z"
+    },
+    {
+      "id": "c3",
+      "name": "Amara Okafor",
+      "email": "amara.o@example.com",
+      "phone": "+234-803-555-1234",
+      "totalOrders": 1,
+      "totalSpend": 24,
+      "status": "Active",
+      "joinDate": "2026-05-22T11:00:00Z"
+    },
+    {
+      "id": "c4",
+      "name": "Sven Lindstrom",
+      "email": "sven.l@example.com",
+      "phone": "+46-8-123-4567",
+      "totalOrders": 1,
+      "totalSpend": 29.9,
+      "status": "Active",
+      "joinDate": "2026-05-25T16:40:00Z"
+    },
+    {
+      "id": "c5",
+      "name": "Yuki Tanaka",
+      "email": "yuki.t@example.com",
+      "phone": "+81-3-5555-0177",
+      "totalOrders": 0,
+      "totalSpend": 0,
+      "status": "Blocked",
+      "joinDate": "2026-06-01T10:30:00Z"
+    }
+  ],
+  "sqlLogs": [
+    {
+      "id": "log-1781177730500-965",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "executedAt": "2026-06-11T11:35:30.500Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781177730491-39",
+      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
+      "executedAt": "2026-06-11T11:35:30.491Z",
+      "durationMs": 2.44,
+      "success": true
+    },
+    {
+      "id": "log-1781177730479-751",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "executedAt": "2026-06-11T11:35:30.479Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781177730472-28",
+      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
+      "executedAt": "2026-06-11T11:35:30.472Z",
+      "durationMs": 0.81,
+      "success": true
+    },
+    {
+      "id": "log-1781177730466-940",
+      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
+      "executedAt": "2026-06-11T11:35:30.466Z",
+      "durationMs": 2.15,
+      "success": true
+    },
+    {
+      "id": "log-1781177730461-867",
+      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
+      "executedAt": "2026-06-11T11:35:30.461Z",
+      "durationMs": 0.87,
+      "success": true
+    },
+    {
+      "id": "log-1781177730454-736",
+      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
+      "executedAt": "2026-06-11T11:35:30.454Z",
+      "durationMs": 2.31,
+      "success": true
+    },
+    {
+      "id": "log-1781177730448-387",
+      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
+      "executedAt": "2026-06-11T11:35:30.448Z",
+      "durationMs": 0.54,
+      "success": true
+    },
+    {
+      "id": "log-1781177730443-195",
+      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
+      "executedAt": "2026-06-11T11:35:30.443Z",
+      "durationMs": 2.26,
+      "success": true
+    },
+    {
+      "id": "log-1781177730438-329",
+      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
+      "executedAt": "2026-06-11T11:35:30.438Z",
+      "durationMs": 0.53,
+      "success": true
+    },
+    {
+      "id": "log-1781177664120-7",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "executedAt": "2026-06-11T11:34:24.120Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781177664109-35",
+      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
+      "executedAt": "2026-06-11T11:34:24.109Z",
+      "durationMs": 2.08,
+      "success": true
+    },
+    {
+      "id": "log-1781177664096-524",
+      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
+      "executedAt": "2026-06-11T11:34:24.096Z",
+      "durationMs": 2.33,
+      "success": true
+    },
+    {
+      "id": "log-1781177664090-905",
+      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
+      "executedAt": "2026-06-11T11:34:24.090Z",
+      "durationMs": 0.49,
+      "success": true
+    },
+    {
+      "id": "log-1781177664086-651",
+      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
+      "executedAt": "2026-06-11T11:34:24.086Z",
+      "durationMs": 1.07,
+      "success": true
+    },
+    {
+      "id": "log-1781177664082-970",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "executedAt": "2026-06-11T11:34:24.082Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781177664071-367",
+      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
+      "executedAt": "2026-06-11T11:34:24.071Z",
+      "durationMs": 0.56,
+      "success": true
+    },
+    {
+      "id": "log-1781177664067-980",
+      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
+      "executedAt": "2026-06-11T11:34:24.067Z",
+      "durationMs": 1.66,
+      "success": true
+    },
+    {
+      "id": "log-1781177664062-207",
+      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
+      "executedAt": "2026-06-11T11:34:24.062Z",
+      "durationMs": 1.39,
+      "success": true
+    },
+    {
+      "id": "log-1781177664055-87",
+      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
+      "executedAt": "2026-06-11T11:34:24.055Z",
+      "durationMs": 1.41,
+      "success": true
+    },
+    {
+      "id": "log-1781177596898-421",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "executedAt": "2026-06-11T11:33:16.899Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781177596890-825",
+      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
+      "executedAt": "2026-06-11T11:33:16.890Z",
+      "durationMs": 2.35,
+      "success": true
+    },
+    {
+      "id": "log-1781177596886-491",
+      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
+      "executedAt": "2026-06-11T11:33:16.886Z",
+      "durationMs": 2.08,
+      "success": true
+    },
+    {
+      "id": "log-1781177596873-198",
+      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
+      "executedAt": "2026-06-11T11:33:16.873Z",
+      "durationMs": 0.72,
+      "success": true
+    },
+    {
+      "id": "log-1781177596868-899",
+      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
+      "executedAt": "2026-06-11T11:33:16.868Z",
+      "durationMs": 2.57,
+      "success": true
+    },
+    {
+      "id": "log-1781177596863-744",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "executedAt": "2026-06-11T11:33:16.863Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781177596856-968",
+      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
+      "executedAt": "2026-06-11T11:33:16.856Z",
+      "durationMs": 2.72,
+      "success": true
+    },
+    {
+      "id": "log-1781177596848-691",
+      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
+      "executedAt": "2026-06-11T11:33:16.848Z",
+      "durationMs": 0.57,
+      "success": true
+    },
+    {
+      "id": "log-1781177596843-24",
+      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
+      "executedAt": "2026-06-11T11:33:16.843Z",
+      "durationMs": 0.91,
+      "success": true
+    },
+    {
+      "id": "log-1781177596839-375",
+      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
+      "executedAt": "2026-06-11T11:33:16.839Z",
+      "durationMs": 2.17,
+      "success": true
+    },
+    {
+      "id": "log-1781177582662-349",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "executedAt": "2026-06-11T11:33:02.662Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781177582655-761",
+      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
+      "executedAt": "2026-06-11T11:33:02.655Z",
+      "durationMs": 0.77,
+      "success": true
+    },
+    {
+      "id": "log-1781177582649-601",
+      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
+      "executedAt": "2026-06-11T11:33:02.649Z",
+      "durationMs": 1.01,
+      "success": true
+    },
+    {
+      "id": "log-1781177582645-904",
+      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
+      "executedAt": "2026-06-11T11:33:02.645Z",
+      "durationMs": 1.74,
+      "success": true
+    },
+    {
+      "id": "log-1781177582637-39",
+      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
+      "executedAt": "2026-06-11T11:33:02.637Z",
+      "durationMs": 0.41,
+      "success": true
+    },
+    {
+      "id": "log-1781177533196-361",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "executedAt": "2026-06-11T11:32:13.196Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781177533187-961",
+      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
+      "executedAt": "2026-06-11T11:32:13.187Z",
+      "durationMs": 2.15,
+      "success": true
+    },
+    {
+      "id": "log-1781177533182-635",
+      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
+      "executedAt": "2026-06-11T11:32:13.182Z",
+      "durationMs": 1.47,
+      "success": true
+    },
+    {
+      "id": "log-1781177533177-401",
+      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
+      "executedAt": "2026-06-11T11:32:13.177Z",
+      "durationMs": 0.98,
+      "success": true
+    },
+    {
+      "id": "log-1781177533169-46",
+      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
+      "executedAt": "2026-06-11T11:32:13.169Z",
+      "durationMs": 0.46,
+      "success": true
+    },
+    {
+      "id": "log-1781177533165-844",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "executedAt": "2026-06-11T11:32:13.165Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781177533156-3",
+      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
+      "executedAt": "2026-06-11T11:32:13.156Z",
+      "durationMs": 1.47,
+      "success": true
+    },
+    {
+      "id": "log-1781177533152-2",
+      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
+      "executedAt": "2026-06-11T11:32:13.152Z",
+      "durationMs": 0.69,
+      "success": true
+    },
+    {
+      "id": "log-1781177533148-552",
+      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
+      "executedAt": "2026-06-11T11:32:13.148Z",
+      "durationMs": 2,
+      "success": true
+    },
+    {
+      "id": "log-1781177533143-408",
+      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
+      "executedAt": "2026-06-11T11:32:13.143Z",
+      "durationMs": 1.56,
+      "success": true
+    },
+    {
+      "id": "log-1781177523931-148",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "executedAt": "2026-06-11T11:32:03.931Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781177523923-870",
+      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
+      "executedAt": "2026-06-11T11:32:03.923Z",
+      "durationMs": 1.98,
+      "success": true
+    },
+    {
+      "id": "log-1781177523917-296",
+      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
+      "executedAt": "2026-06-11T11:32:03.917Z",
+      "durationMs": 1.6,
+      "success": true
+    },
+    {
+      "id": "log-1781177523910-882",
+      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
+      "executedAt": "2026-06-11T11:32:03.910Z",
+      "durationMs": 0.71,
+      "success": true
+    },
+    {
+      "id": "log-1781177523905-942",
+      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
+      "executedAt": "2026-06-11T11:32:03.905Z",
+      "durationMs": 2.75,
+      "success": true
+    },
+    {
+      "id": "log-1781177523900-0",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "executedAt": "2026-06-11T11:32:03.900Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781177523893-733",
+      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
+      "executedAt": "2026-06-11T11:32:03.893Z",
+      "durationMs": 1.04,
+      "success": true
+    },
+    {
+      "id": "log-1781177523887-233",
+      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
+      "executedAt": "2026-06-11T11:32:03.887Z",
+      "durationMs": 0.44,
+      "success": true
+    },
+    {
+      "id": "log-1781177523882-507",
+      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
+      "executedAt": "2026-06-11T11:32:03.882Z",
+      "durationMs": 0.49,
+      "success": true
+    },
+    {
+      "id": "log-1781177523876-125",
+      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
+      "executedAt": "2026-06-11T11:32:03.877Z",
+      "durationMs": 2.41,
+      "success": true
+    },
+    {
+      "id": "log-1781177520898-972",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "executedAt": "2026-06-11T11:32:00.898Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781177520890-582",
+      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
+      "executedAt": "2026-06-11T11:32:00.890Z",
+      "durationMs": 0.78,
+      "success": true
+    },
+    {
+      "id": "log-1781177520886-567",
+      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
+      "executedAt": "2026-06-11T11:32:00.886Z",
+      "durationMs": 0.87,
+      "success": true
+    },
+    {
+      "id": "log-1781177520881-269",
+      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
+      "executedAt": "2026-06-11T11:32:00.881Z",
+      "durationMs": 2.62,
+      "success": true
+    },
+    {
+      "id": "log-1781177520876-47",
+      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
+      "executedAt": "2026-06-11T11:32:00.876Z",
+      "durationMs": 1.66,
+      "success": true
+    },
+    {
+      "id": "log-1781177520871-261",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "executedAt": "2026-06-11T11:32:00.871Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781177520863-400",
+      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
+      "executedAt": "2026-06-11T11:32:00.863Z",
+      "durationMs": 2.57,
+      "success": true
+    },
+    {
+      "id": "log-1781177520859-874",
+      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
+      "executedAt": "2026-06-11T11:32:00.859Z",
+      "durationMs": 0.58,
+      "success": true
+    },
+    {
+      "id": "log-1781177520853-365",
+      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
+      "executedAt": "2026-06-11T11:32:00.853Z",
+      "durationMs": 0.78,
+      "success": true
+    },
+    {
+      "id": "log-1781177520849-475",
+      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
+      "executedAt": "2026-06-11T11:32:00.849Z",
+      "durationMs": 0.58,
+      "success": true
+    },
+    {
+      "id": "log-1781177520056-306",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "executedAt": "2026-06-11T11:32:00.056Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781177520048-626",
+      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
+      "executedAt": "2026-06-11T11:32:00.048Z",
+      "durationMs": 1.8,
+      "success": true
+    },
+    {
+      "id": "log-1781177520043-331",
+      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
+      "executedAt": "2026-06-11T11:32:00.043Z",
+      "durationMs": 2.81,
+      "success": true
+    },
+    {
+      "id": "log-1781177520037-954",
+      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
+      "executedAt": "2026-06-11T11:32:00.037Z",
+      "durationMs": 2.78,
+      "success": true
+    },
+    {
+      "id": "log-1781177520032-127",
+      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
+      "executedAt": "2026-06-11T11:32:00.032Z",
+      "durationMs": 1.67,
+      "success": true
+    },
+    {
+      "id": "log-1781177520028-135",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "executedAt": "2026-06-11T11:32:00.028Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781177520019-6",
+      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
+      "executedAt": "2026-06-11T11:32:00.019Z",
+      "durationMs": 1.08,
+      "success": true
+    },
+    {
+      "id": "log-1781177520014-897",
+      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
+      "executedAt": "2026-06-11T11:32:00.014Z",
+      "durationMs": 0.63,
+      "success": true
+    },
+    {
+      "id": "log-1781177520008-439",
+      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
+      "executedAt": "2026-06-11T11:32:00.008Z",
+      "durationMs": 2.19,
+      "success": true
+    },
+    {
+      "id": "log-1781177520003-10",
+      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
+      "executedAt": "2026-06-11T11:32:00.003Z",
+      "durationMs": 0.94,
+      "success": true
+    },
+    {
+      "id": "log-1781177368961-565",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "executedAt": "2026-06-11T11:29:28.961Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781177368954-771",
+      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
+      "executedAt": "2026-06-11T11:29:28.954Z",
+      "durationMs": 1.54,
+      "success": true
+    },
+    {
+      "id": "log-1781177368949-124",
+      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
+      "executedAt": "2026-06-11T11:29:28.949Z",
+      "durationMs": 1.51,
+      "success": true
+    },
+    {
+      "id": "log-1781177368944-743",
+      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
+      "executedAt": "2026-06-11T11:29:28.944Z",
+      "durationMs": 1.68,
+      "success": true
+    },
+    {
+      "id": "log-1781177368939-410",
+      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
+      "executedAt": "2026-06-11T11:29:28.939Z",
+      "durationMs": 0.91,
+      "success": true
+    },
+    {
+      "id": "log-1781177368934-758",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "executedAt": "2026-06-11T11:29:28.934Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781177368927-440",
+      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
+      "executedAt": "2026-06-11T11:29:28.927Z",
+      "durationMs": 0.51,
+      "success": true
+    },
+    {
+      "id": "log-1781177368922-99",
+      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
+      "executedAt": "2026-06-11T11:29:28.922Z",
+      "durationMs": 0.96,
+      "success": true
+    },
+    {
+      "id": "log-1781177368917-295",
+      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
+      "executedAt": "2026-06-11T11:29:28.917Z",
+      "durationMs": 1.88,
+      "success": true
+    },
+    {
+      "id": "log-1781177368911-596",
+      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
+      "executedAt": "2026-06-11T11:29:28.911Z",
+      "durationMs": 1.04,
+      "success": true
+    },
+    {
+      "id": "log-1781177241033-398",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "executedAt": "2026-06-11T11:27:21.033Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781177241025-636",
+      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
+      "executedAt": "2026-06-11T11:27:21.025Z",
+      "durationMs": 2.22,
+      "success": true
+    },
+    {
+      "id": "log-1781177241020-252",
+      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
+      "executedAt": "2026-06-11T11:27:21.020Z",
+      "durationMs": 1.04,
+      "success": true
+    },
+    {
+      "id": "log-1781177241015-998",
+      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
+      "executedAt": "2026-06-11T11:27:21.015Z",
+      "durationMs": 2.88,
+      "success": true
+    },
+    {
+      "id": "log-1781177241010-142",
+      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
+      "executedAt": "2026-06-11T11:27:21.010Z",
+      "durationMs": 0.58,
+      "success": true
+    },
+    {
+      "id": "log-1781177241005-271",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "executedAt": "2026-06-11T11:27:21.005Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781177240997-579",
+      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
+      "executedAt": "2026-06-11T11:27:20.997Z",
+      "durationMs": 2.01,
+      "success": true
+    },
+    {
+      "id": "log-1781177240992-450",
+      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
+      "executedAt": "2026-06-11T11:27:20.992Z",
+      "durationMs": 2.85,
+      "success": true
+    },
+    {
+      "id": "log-1781177240984-483",
+      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
+      "executedAt": "2026-06-11T11:27:20.984Z",
+      "durationMs": 1.64,
+      "success": true
+    },
+    {
+      "id": "log-1781177240978-957",
+      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
+      "executedAt": "2026-06-11T11:27:20.978Z",
+      "durationMs": 0.47,
+      "success": true
+    },
+    {
+      "id": "log-1781177224666-782",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "executedAt": "2026-06-11T11:27:04.666Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781177224659-149",
+      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
+      "executedAt": "2026-06-11T11:27:04.659Z",
+      "durationMs": 2.84,
+      "success": true
+    },
+    {
+      "id": "log-1781177224654-931",
+      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
+      "executedAt": "2026-06-11T11:27:04.654Z",
+      "durationMs": 0.46,
+      "success": true
+    },
+    {
+      "id": "log-1781177224650-768",
+      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
+      "executedAt": "2026-06-11T11:27:04.650Z",
+      "durationMs": 0.93,
+      "success": true
+    },
+    {
+      "id": "log-1781177224646-686",
+      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
+      "executedAt": "2026-06-11T11:27:04.646Z",
+      "durationMs": 0.73,
+      "success": true
+    },
+    {
+      "id": "log-1781177224642-803",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "executedAt": "2026-06-11T11:27:04.642Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781177224635-918",
+      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
+      "executedAt": "2026-06-11T11:27:04.635Z",
+      "durationMs": 0.86,
+      "success": true
+    },
+    {
+      "id": "log-1781177224631-707",
+      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
+      "executedAt": "2026-06-11T11:27:04.631Z",
+      "durationMs": 0.75,
+      "success": true
+    },
+    {
+      "id": "log-1781177224627-998",
+      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
+      "executedAt": "2026-06-11T11:27:04.627Z",
+      "durationMs": 1.08,
+      "success": true
+    },
+    {
+      "id": "log-1781177224623-195",
+      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
+      "executedAt": "2026-06-11T11:27:04.623Z",
+      "durationMs": 1.6,
+      "success": true
+    },
+    {
+      "id": "log-1781177215670-274",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "executedAt": "2026-06-11T11:26:55.670Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781177215663-992",
+      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
+      "executedAt": "2026-06-11T11:26:55.663Z",
+      "durationMs": 2.87,
+      "success": true
+    },
+    {
+      "id": "log-1781177215657-429",
+      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
+      "executedAt": "2026-06-11T11:26:55.657Z",
+      "durationMs": 1.41,
+      "success": true
+    },
+    {
+      "id": "log-1781177215651-128",
+      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
+      "executedAt": "2026-06-11T11:26:55.651Z",
+      "durationMs": 2.6,
+      "success": true
+    },
+    {
+      "id": "log-1781177215646-798",
+      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
+      "executedAt": "2026-06-11T11:26:55.646Z",
+      "durationMs": 1.32,
+      "success": true
+    },
+    {
+      "id": "log-1781177215642-347",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "executedAt": "2026-06-11T11:26:55.642Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781177215635-919",
+      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
+      "executedAt": "2026-06-11T11:26:55.635Z",
+      "durationMs": 2,
+      "success": true
+    },
+    {
+      "id": "log-1781177215631-188",
+      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
+      "executedAt": "2026-06-11T11:26:55.631Z",
+      "durationMs": 0.61,
+      "success": true
+    },
+    {
+      "id": "log-1781177215626-190",
+      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
+      "executedAt": "2026-06-11T11:26:55.626Z",
+      "durationMs": 1.66,
+      "success": true
+    },
+    {
+      "id": "log-1781177215621-533",
+      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
+      "executedAt": "2026-06-11T11:26:55.621Z",
+      "durationMs": 1.84,
+      "success": true
+    },
+    {
+      "id": "log-1781176833020-253",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "executedAt": "2026-06-11T11:20:33.020Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781176833013-642",
+      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
+      "executedAt": "2026-06-11T11:20:33.013Z",
+      "durationMs": 2.31,
+      "success": true
+    },
+    {
+      "id": "log-1781176833007-653",
+      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
+      "executedAt": "2026-06-11T11:20:33.007Z",
+      "durationMs": 1.95,
+      "success": true
+    },
+    {
+      "id": "log-1781176833003-241",
+      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
+      "executedAt": "2026-06-11T11:20:33.003Z",
+      "durationMs": 2.52,
+      "success": true
+    },
+    {
+      "id": "log-1781176832998-865",
+      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
+      "executedAt": "2026-06-11T11:20:32.998Z",
+      "durationMs": 2.17,
+      "success": true
+    },
+    {
+      "id": "log-1781176832993-211",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "executedAt": "2026-06-11T11:20:32.993Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781176832985-816",
+      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
+      "executedAt": "2026-06-11T11:20:32.985Z",
+      "durationMs": 1.67,
+      "success": true
+    },
+    {
+      "id": "log-1781176832980-664",
+      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
+      "executedAt": "2026-06-11T11:20:32.980Z",
+      "durationMs": 0.77,
+      "success": true
+    },
+    {
+      "id": "log-1781176832974-264",
+      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
+      "executedAt": "2026-06-11T11:20:32.974Z",
+      "durationMs": 1.43,
+      "success": true
+    },
+    {
+      "id": "log-1781176832968-346",
+      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
+      "executedAt": "2026-06-11T11:20:32.968Z",
+      "durationMs": 0.85,
+      "success": true
+    },
+    {
+      "id": "log-1781176735710-984",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "executedAt": "2026-06-11T11:18:55.710Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781176735704-573",
+      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
+      "executedAt": "2026-06-11T11:18:55.704Z",
+      "durationMs": 2.18,
+      "success": true
+    },
+    {
+      "id": "log-1781176735699-477",
+      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
+      "executedAt": "2026-06-11T11:18:55.699Z",
+      "durationMs": 2.23,
+      "success": true
+    },
+    {
+      "id": "log-1781176735694-396",
+      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
+      "executedAt": "2026-06-11T11:18:55.694Z",
+      "durationMs": 1.23,
+      "success": true
+    },
+    {
+      "id": "log-1781176735689-443",
+      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
+      "executedAt": "2026-06-11T11:18:55.689Z",
+      "durationMs": 1,
+      "success": true
+    },
+    {
+      "id": "log-1781176735684-314",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "executedAt": "2026-06-11T11:18:55.684Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781176735675-864",
+      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
+      "executedAt": "2026-06-11T11:18:55.675Z",
+      "durationMs": 0.55,
+      "success": true
+    },
+    {
+      "id": "log-1781176735669-516",
+      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
+      "executedAt": "2026-06-11T11:18:55.669Z",
+      "durationMs": 2.17,
+      "success": true
+    },
+    {
+      "id": "log-1781176735664-403",
+      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
+      "executedAt": "2026-06-11T11:18:55.664Z",
+      "durationMs": 1.86,
+      "success": true
+    },
+    {
+      "id": "log-1781176735655-758",
+      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
+      "executedAt": "2026-06-11T11:18:55.655Z",
+      "durationMs": 2.67,
+      "success": true
+    },
+    {
+      "id": "log-1781176718227-640",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "executedAt": "2026-06-11T11:18:38.227Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781176718219-621",
+      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
+      "executedAt": "2026-06-11T11:18:38.219Z",
+      "durationMs": 1.44,
+      "success": true
+    },
+    {
+      "id": "log-1781176718214-642",
+      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
+      "executedAt": "2026-06-11T11:18:38.214Z",
+      "durationMs": 0.95,
+      "success": true
+    },
+    {
+      "id": "log-1781176718209-593",
+      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
+      "executedAt": "2026-06-11T11:18:38.209Z",
+      "durationMs": 0.68,
+      "success": true
+    },
+    {
+      "id": "log-1781176718204-995",
+      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
+      "executedAt": "2026-06-11T11:18:38.204Z",
+      "durationMs": 0.97,
+      "success": true
+    },
+    {
+      "id": "log-1781176718199-658",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "executedAt": "2026-06-11T11:18:38.199Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781176718192-54",
+      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
+      "executedAt": "2026-06-11T11:18:38.192Z",
+      "durationMs": 1.63,
+      "success": true
+    },
+    {
+      "id": "log-1781176718187-372",
+      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
+      "executedAt": "2026-06-11T11:18:38.187Z",
+      "durationMs": 1.14,
+      "success": true
+    },
+    {
+      "id": "log-1781176718182-298",
+      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
+      "executedAt": "2026-06-11T11:18:38.182Z",
+      "durationMs": 0.61,
+      "success": true
+    },
+    {
+      "id": "log-1781176718176-380",
+      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
+      "executedAt": "2026-06-11T11:18:38.176Z",
+      "durationMs": 2.22,
+      "success": true
+    },
+    {
+      "id": "log-1781176713131-202",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "executedAt": "2026-06-11T11:18:33.131Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781176713124-919",
+      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
+      "executedAt": "2026-06-11T11:18:33.124Z",
+      "durationMs": 0.43,
+      "success": true
+    },
+    {
+      "id": "log-1781176713119-483",
+      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
+      "executedAt": "2026-06-11T11:18:33.119Z",
+      "durationMs": 1.94,
+      "success": true
+    },
+    {
+      "id": "log-1781176713115-46",
+      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
+      "executedAt": "2026-06-11T11:18:33.115Z",
+      "durationMs": 1.35,
+      "success": true
+    },
+    {
+      "id": "log-1781176713111-497",
+      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
+      "executedAt": "2026-06-11T11:18:33.111Z",
+      "durationMs": 2.89,
+      "success": true
+    }
+  ]
+}
