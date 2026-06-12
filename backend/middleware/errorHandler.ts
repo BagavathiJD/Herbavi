@@ -20,6 +20,12 @@ export function errorHandler(
     });
     return;
   }
-  console.error("API error:", err);
+  if (err.code === "ER_DATA_TOO_LONG") {
+    res.status(400).json({
+      error: "Image data is too large. Try a smaller image or restart the server to apply database migrations.",
+    });
+    return;
+  }
+  console.error("API error:", err.message || err);
   res.status(500).json({ error: "Internal server error" });
 }

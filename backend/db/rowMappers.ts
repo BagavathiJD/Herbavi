@@ -56,6 +56,19 @@ export function mapOrder(row: RowDataPacket) {
   };
 }
 
+export function mapAppUser(row: RowDataPacket) {
+  return {
+    id: String(row.id),
+    userName: row.user_name,
+    email: row.email,
+    phoneNumber: row.phone_number ?? "",
+    createdAt:
+      row.created_at instanceof Date
+        ? row.created_at.toISOString()
+        : String(row.created_at),
+  };
+}
+
 export function mapCustomer(row: RowDataPacket) {
   return {
     id: row.id,

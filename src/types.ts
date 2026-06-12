@@ -64,3 +64,20 @@ export interface DbMetrics {
   storageSizeKb: number;
   activeTransactions: number;
 }
+
+export interface AppUser {
+  id: string;
+  userName: string;
+  email: string;
+  phoneNumber: string;
+  createdAt: string;
+}
+
+export interface AdminUser {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  role: 'Admin' | 'Staff';
+  createdAt: string;
+}

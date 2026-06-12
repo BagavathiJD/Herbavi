@@ -22,10 +22,15 @@ import OrdersManagementModule from "./components/OrdersManagementModule";
 import ProductSettingsModule from "./components/ProductSettingsModule";
 import ProductNamesModule from "./components/ProductNamesModule";
 import UsersModule from "./components/UsersModule";
+import AuthGate from "./registration/AuthGate";
+import { authHeaders, clearToken, getToken } from "./registration/auth";
 // Types
-import { Product, Order, Measurement, ProductName, Customer, SqlQueryLog, DbMetrics } from "./types";
+import { Product, Order, Measurement, ProductName, Customer, AppUser, SqlQueryLog, DbMetrics, AdminUser } from "./types";
 
 export default function App() {
+  const [authUser, setAuthUser] = useState<AdminUser | null>(null);
+  const [authChecking, setAuthChecking] = useState(true);
+
   // Navigation Routing tab state
   const [currentTab, setTab] = useState<string>("dashboard");
 
@@ -33,9 +38,9 @@ export default function App() {
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
+  const [users, setUsers] = useState<AppUser[]>([]);
   const [measurements, setMeasurements] = useState<Measurement[]>([]);
   const [productNames, setProductNames] = useState<ProductName[]>([]);
-
   // Database activity & query parameters metrics
   const [sqlLogs, setSqlLogs] = useState<SqlQueryLog[]>([]);
   const [dbMetrics, setDbMetrics] = useState<DbMetrics>({
@@ -59,25 +64,32 @@ export default function App() {
   // Dynamic Floating SQL Log alerts ("Toast" system)
   const [activeToast, setActiveToast] = useState<{ query: string; duration: number } | null>(null);
 
+  const headers = () => ({
+    ...authHeaders(),
+    "Content-Type": "application/json",
+  });
+
   // Primary Fetcher
   const syncDatabaseState = async (silently = false) => {
     if (!silently) setIsLoading(true);
     try {
-      // Parallel REST calls for perfect timing sync
-      const [resProducts, resOrders, resCustomers, resMeasurements, resProductNames, resLogs, resMetrics] = await Promise.all([
-        fetch("/api/products"),
-        fetch("/api/orders"),
-        fetch("/api/customers"),
-        fetch("/api/measurements"),
-        fetch("/api/product-names"),
-        fetch("/api/sql-logs"),
-        fetch("/api/db-metrics")
+      const fetchOpts = { headers: authHeaders() };
+      const [resProducts, resOrders, resCustomers, resUsers, resMeasurements, resProductNames, resLogs, resMetrics] = await Promise.all([
+        fetch("/api/products", fetchOpts),
+        fetch("/api/orders", fetchOpts),
+        fetch("/api/customers", fetchOpts),
+        fetch("/api/users", fetchOpts),
+        fetch("/api/measurements", fetchOpts),
+        fetch("/api/product-names", fetchOpts),
+        fetch("/api/sql-logs", fetchOpts),
+        fetch("/api/db-metrics", fetchOpts)
       ]);
 
-      const [prods, ords, custs, measures, names, logs, metrics] = await Promise.all([
+      const [prods, ords, custs, appUsers, measures, names, logs, metrics] = await Promise.all([
         resProducts.json(),
         resOrders.json(),
         resCustomers.json(),
+        resUsers.ok ? resUsers.json() : [],
         resMeasurements.json(),
         resProductNames.json(),
         resLogs.json(),
@@ -87,6 +99,7 @@ export default function App() {
       setProducts(prods);
       setOrders(ords);
       setCustomers(custs);
+      setUsers(Array.isArray(appUsers) ? appUsers : []);
       setMeasurements(measures);
       setProductNames(names);
       setSqlLogs(logs);
@@ -104,10 +117,41 @@ export default function App() {
     }
   };
 
-  // Run initial synchronizer on load
   useEffect(() => {
-    syncDatabaseState();
+    const restoreSession = async () => {
+      const token = getToken();
+      if (!token) {
+        setAuthChecking(false);
+        return;
+      }
+      try {
+        const res = await fetch("/api/auth/me", { headers: authHeaders() });
+        if (res.ok) {
+          const user = await res.json();
+          setAuthUser(user);
+        } else {
+          clearToken();
+        }
+      } catch {
+        clearToken();
+      } finally {
+        setAuthChecking(false);
+      }
+    };
+    restoreSession();
   }, []);
+
+  useEffect(() => {
+    if (authUser) {
+      syncDatabaseState();
+    }
+  }, [authUser]);
+
+  const handleLogout = () => {
+    clearToken();
+    setAuthUser(null);
+    setTab("dashboard");
+  };
 
   // Float an alert card whenever query execution wraps
   const triggerSqlToast = (query: string, durationMs: number) => {
@@ -139,7 +183,7 @@ export default function App() {
 
       const res = await fetch(url, {
         method,
-        headers: { "Content-Type": "application/json" },
+        headers: headers(),
         body: JSON.stringify(formData)
       });
 
@@ -165,7 +209,8 @@ export default function App() {
   const handleDeleteProduct = async (id: string) => {
     try {
       const res = await fetch(`/api/products/${id}`, {
-        method: "DELETE"
+        method: "DELETE",
+        headers: authHeaders(),
       });
 
       if (!res.ok) {
@@ -197,7 +242,7 @@ export default function App() {
   const handleSimulatePurchaseOrder = async () => {
     setIsSimulatingOrder(true);
     try {
-      const res = await fetch("/api/orders/simulate", { method: "POST" });
+      const res = await fetch("/api/orders/simulate", { method: "POST", headers: authHeaders() });
       if (!res.ok) {
         const err = await res.json();
         throw new Error(err.error || "Simulated purchase failed.");
@@ -216,7 +261,7 @@ export default function App() {
     try {
       const res = await fetch(`/api/orders/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: headers(),
         body: JSON.stringify({ orderStatus: newStatus })
       });
 
@@ -238,7 +283,7 @@ export default function App() {
     try {
       const res = await fetch("/api/measurements", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: headers(),
         body: JSON.stringify({ name, status })
       });
 
@@ -260,7 +305,7 @@ export default function App() {
     try {
       const res = await fetch(`/api/measurements/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: headers(),
         body: JSON.stringify({ name, status })
       });
 
@@ -280,7 +325,8 @@ export default function App() {
   const handleDeleteMeasurement = async (id: string) => {
     try {
       const res = await fetch(`/api/measurements/${id}`, {
-        method: "DELETE"
+        method: "DELETE",
+        headers: authHeaders(),
       });
 
       if (!res.ok) {
@@ -299,7 +345,7 @@ export default function App() {
     try {
       const res = await fetch("/api/product-names", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: headers(),
         body: JSON.stringify({ name, status })
       });
 
@@ -321,7 +367,7 @@ export default function App() {
     try {
       const res = await fetch(`/api/product-names/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: headers(),
         body: JSON.stringify({ name, status })
       });
 
@@ -341,7 +387,8 @@ export default function App() {
   const handleDeleteProductName = async (id: string) => {
     try {
       const res = await fetch(`/api/product-names/${id}`, {
-        method: "DELETE"
+        method: "DELETE",
+        headers: authHeaders(),
       });
 
       if (!res.ok) {
@@ -375,6 +422,7 @@ export default function App() {
           <ProductForm
             initialProduct={null}
             measurements={measurements}
+            productNames={productNames}
             onSubmit={handleProductFormSubmit}
             onCancel={() => setTab("product-list")}
             isSubmitting={isProcessingForm}
@@ -386,6 +434,7 @@ export default function App() {
           <ProductForm
             initialProduct={selectedProductForEdit}
             measurements={measurements}
+            productNames={productNames}
             onSubmit={handleProductFormSubmit}
             onCancel={handleCancelForm}
             isSubmitting={isProcessingForm}
@@ -437,7 +486,7 @@ export default function App() {
         );
 
       case "customer-list":
-        return <UsersModule customers={customers} />;
+        return <UsersModule users={users} />;
 
       default:
         return (
@@ -449,13 +498,27 @@ export default function App() {
     }
   };
 
+  if (authChecking) {
+    return (
+      <div className="min-h-screen bg-[#020617] flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!authUser) {
+    return <AuthGate onAuthenticated={setAuthUser} />;
+  }
+
   return (
     <div className="flex h-screen bg-[#020617] overflow-hidden font-sans text-xs antialiased text-slate-200">
       
       {/* Dynamic Left Sidebar Drawer */}
       <Sidebar 
         currentTab={currentTab} 
-        setTab={setTab} 
+        setTab={setTab}
+        user={authUser}
+        onLogout={handleLogout}
       />
 
       {/* Main Panel Content Container */}

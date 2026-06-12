@@ -46,7 +46,7 @@ export default function Header({
       case "product-names-master":
         return ["Product Settings", "Product Name"];
       case "customer-list":
-        return ["Users", "Customer List"];
+        return ["Users", "User List"];
       default:
         return ["herbavi", "Overview"];
     }

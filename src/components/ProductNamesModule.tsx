@@ -4,7 +4,6 @@ import {
   Trash2,
   Edit2,
   X,
-  ShieldCheck,
   Check,
   AlertCircle
 } from "lucide-react";
@@ -78,27 +77,6 @@ export default function ProductNamesModule({
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
       <div className="space-y-6">
-        <div className="bg-[#0f172a] text-slate-200 p-5 rounded-2xl border border-[#1e293b] shadow-md flex flex-col justify-between text-left">
-          <div className="space-y-2">
-            <h4 className="text-xs font-black font-mono tracking-widest text-indigo-400 uppercase">Schema Mapping Desk</h4>
-            <p className="text-xs text-slate-300">
-              The products table can reference the product_names master table for standardized catalog naming:
-            </p>
-            <div className="p-3 bg-[#0a0f1d] rounded-lg border border-slate-800 text-[10px] font-mono text-emerald-400 space-y-1">
-              <p className="text-slate-500">// Relational Schema Constraint</p>
-              <p>CREATE TABLE product_names (</p>
-              <p className="pl-4">id VARCHAR(50) PRIMARY KEY,</p>
-              <p className="pl-4">name VARCHAR(255) NOT NULL,</p>
-              <p className="pl-4">status ENUM('Enabled', 'Disabled')</p>
-              <p>);</p>
-            </div>
-          </div>
-          <div className="mt-4 pt-3 border-t border-[#1e293b] flex items-center gap-2 text-[10px] text-slate-400 font-mono">
-            <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" />
-            <span>Referential Integrity: Active</span>
-          </div>
-        </div>
-
         <div className="bg-[#0f172a] p-5 rounded-2xl border border-slate-850/80 shadow-md space-y-4">
           <div className="text-left space-y-1 pb-3 border-b border-slate-850">
             <h3 className="text-sm font-extrabold text-white">Add Product Name</h3>
@@ -190,11 +168,11 @@ export default function ProductNamesModule({
                     </td>
                   </tr>
                 ) : (
-                  productNames.map((pn) => {
+                  productNames.map((pn, index) => {
                     const isEditing = editingId === pn.id;
                     return (
                       <tr key={pn.id} className="hover:bg-[#020617]/50 transition-colors">
-                        <td className="py-4 px-6 font-mono font-bold text-white">{pn.id}</td>
+                        <td className="py-4 px-6 font-mono font-bold text-white">{index + 1}</td>
                         <td className="py-4 px-6">
                           {isEditing ? (
                             <input

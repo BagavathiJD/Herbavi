@@ -1,8 +1,8 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { RowDataPacket } from "mysql2";
-import { query } from "../db/pool.js";
-import { mapProduct } from "../db/rowMappers.js";
-import { logSqlQuery } from "../services/sqlLogger.js";
+import { query } from "../db/pool";
+import { mapProduct } from "../db/rowMappers";
+import { logSqlQuery } from "../services/sqlLogger";
 
 const router = Router();
 
@@ -29,20 +29,9 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
     }
     sql += " ORDER BY p.created_at DESC";
 
-    const displaySql =
-      "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id" +
-      (conditions.length > 0
-        ? "\nWHERE " +
-          conditions
-            .map((c) =>
-              c.includes("LIKE")
-                ? c.replace(/\?/g, `'${String(search).replace(/'/g, "''")}%'`)
-                : c.replace("?", `'${String(status)}'`)
-            )
-            .join(" AND ")
-        : "") +
-      "\nORDER BY p.created_at DESC;";
-    logSqlQuery(displaySql);
+    logSqlQuery(
+      "SELECT p.*, m.name AS measurement_name FROM products p LEFT JOIN measurements m ON p.measurement_id = m.id ORDER BY p.created_at DESC;"
+    );
 
     const rows = await query<RowDataPacket[]>(sql, params);
     res.json(rows.map(mapProduct));
@@ -56,32 +45,71 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
     const { name, description, imageUrl, measurementId, price, status } =
       req.body;
 
-    if (!name || !measurementId || price === undefined) {
+    if (!name || !String(name).trim()) {
+      res.status(400).json({ error: "Product name is required." });
+      return;
+    }
+
+    if (!measurementId) {
+      res.status(400).json({ error: "Measurement is required." });
+      return;
+    }
+
+    if (price === undefined || price === null || price === "") {
+      res.status(400).json({ error: "Price is required." });
+      return;
+    }
+
+    if (!imageUrl || !String(imageUrl).trim()) {
+      res.status(400).json({ error: "Product image is required. Please upload an image." });
+      return;
+    }
+
+    const resolvedName = String(name).trim();
+    const resolvedDescription = String(description || "").trim();
+    const resolvedImageUrl = String(imageUrl).trim();
+    const resolvedMeasurementId = String(measurementId);
+    const resolvedPrice = Number(price);
+    const resolvedStatus = status === "Inactive" ? "Inactive" : "Active";
+
+    if (isNaN(resolvedPrice) || resolvedPrice <= 0) {
+      res.status(400).json({ error: "Price must be a valid number greater than 0." });
+      return;
+    }
+
+    const productNameRow = await query<RowDataPacket[]>(
+      "SELECT id, status FROM product_names WHERE name = ?",
+      [resolvedName]
+    );
+    if (productNameRow.length === 0) {
       res.status(400).json({
-        error: "Product name, measurement level, and price are required.",
+        error: "Product name must exist in Product Name master. Add it there first.",
+      });
+      return;
+    }
+    if (productNameRow[0].status === "Disabled") {
+      res.status(400).json({
+        error: "Selected product name is disabled in Product Name master.",
+      });
+      return;
+    }
+
+    const measurement = await query<RowDataPacket[]>(
+      "SELECT id, status FROM measurements WHERE id = ?",
+      [resolvedMeasurementId]
+    );
+    if (measurement.length === 0) {
+      res.status(400).json({ error: "Measurement not found." });
+      return;
+    }
+    if (measurement[0].status === "Disabled") {
+      res.status(400).json({
+        error: "Selected measurement is disabled. Choose an enabled unit.",
       });
       return;
     }
 
     const id = "p-" + Date.now();
-    const resolvedName = String(name).trim();
-    const resolvedDescription = String(description || "").trim();
-    const resolvedImageUrl = String(
-      imageUrl ||
-        "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=200"
-    ).trim();
-    const resolvedMeasurementId = String(measurementId);
-    const resolvedPrice = Number(price);
-    const resolvedStatus = status === "Inactive" ? "Inactive" : "Active";
-
-    const measurement = await query<RowDataPacket[]>(
-      "SELECT id FROM measurements WHERE id = ?",
-      [resolvedMeasurementId]
-    );
-    if (measurement.length === 0) {
-      res.status(400).json({ error: "Measurement not found" });
-      return;
-    }
 
     await query(
       `INSERT INTO products (id, name, description, image_url, measurement_id, price, status, created_at)
@@ -97,14 +125,20 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
       ]
     );
 
+    const imageLog =
+      resolvedImageUrl.length > 80
+        ? resolvedImageUrl.slice(0, 40) + "...[uploaded image]"
+        : resolvedImageUrl;
+
     logSqlQuery(
-      `INSERT INTO products (id, name, description, image_url, measurement_id, price, status, created_at) \nVALUES ('${id}', '${resolvedName.replace(/'/g, "''")}', '${resolvedDescription.replace(/'/g, "''")}', '${resolvedImageUrl}', '${resolvedMeasurementId}', ${resolvedPrice}, '${resolvedStatus}', NOW());`
+      `INSERT INTO products (id, name, description, image_url, measurement_id, price, status, created_at) \nVALUES ('${id}', '${resolvedName.replace(/'/g, "''")}', '${resolvedDescription.replace(/'/g, "''")}', '${imageLog}', '${resolvedMeasurementId}', ${resolvedPrice}, '${resolvedStatus}', NOW());`
     );
 
     const rows = await query<RowDataPacket[]>(
       "SELECT id, name, description, image_url, measurement_id, price, status, created_at FROM products WHERE id = ?",
       [id]
     );
+
     res.status(201).json(mapProduct(rows[0]));
   } catch (err) {
     next(err);
@@ -163,7 +197,7 @@ router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
     );
 
     logSqlQuery(
-      `UPDATE products \nSET name = '${String(updatedName).replace(/'/g, "''")}', description = '${String(updatedDescription).replace(/'/g, "''")}', image_url = '${updatedImageUrl}', measurement_id = '${updatedMeasurementId}', price = ${updatedPrice}, status = '${updatedStatus}' \nWHERE id = '${id}';`
+      `UPDATE products SET name = '${String(updatedName).replace(/'/g, "''")}', price = ${updatedPrice}, status = '${updatedStatus}' WHERE id = '${id}';`
     );
 
     const rows = await query<RowDataPacket[]>(
@@ -203,7 +237,7 @@ router.delete(
       }
 
       await query("DELETE FROM products WHERE id = ?", [id]);
-      logSqlQuery(`DELETE FROM products \nWHERE id = '${id}';`);
+      logSqlQuery(`DELETE FROM products WHERE id = '${id}';`);
       res.json({ message: "Product deleted successfully" });
     } catch (err) {
       next(err);

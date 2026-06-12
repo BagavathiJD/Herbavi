@@ -17,6 +17,57 @@ async function schemaIsCompatible(
   return rows.length > 0;
 }
 
+async function ensureCustomerPasswordHash(
+  connection: mysql.Connection
+): Promise<void> {
+  const [cols] = await connection.query<mysql.RowDataPacket[]>(
+    `SELECT COLUMN_NAME FROM information_schema.COLUMNS
+     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'customers' AND COLUMN_NAME = 'password_hash'`,
+    [dbConfig.database]
+  );
+  if (cols.length === 0) {
+    await connection.query(
+      "ALTER TABLE customers ADD COLUMN password_hash VARCHAR(255) NULL AFTER phone"
+    );
+    console.log("Added password_hash column to customers.");
+  }
+}
+
+async function migrateAdminUsersToCustomers(
+  connection: mysql.Connection
+): Promise<void> {
+  const [tables] = await connection.query<mysql.RowDataPacket[]>(
+    `SELECT TABLE_NAME FROM information_schema.TABLES
+     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'admin_users'`,
+    [dbConfig.database]
+  );
+  if (tables.length === 0) return;
+
+  await connection.query(
+    `INSERT INTO customers (id, name, email, phone, password_hash, total_orders, total_spend, status, join_date)
+     SELECT au.id, au.name, au.email, au.phone, au.password_hash, 0, 0.00, 'Active', au.created_at
+     FROM admin_users au
+     WHERE NOT EXISTS (SELECT 1 FROM customers c WHERE c.email = au.email)`
+  );
+  await connection.query("DROP TABLE IF EXISTS admin_users");
+  console.log("Migrated admin_users into customers and removed admin_users table.");
+}
+
+async function ensureImageColumns(connection: mysql.Connection): Promise<void> {
+  const [cols] = await connection.query<mysql.RowDataPacket[]>(
+    `SELECT DATA_TYPE, CHARACTER_MAXIMUM_LENGTH
+     FROM information_schema.COLUMNS
+     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'products' AND COLUMN_NAME = 'image_url'`,
+    [dbConfig.database]
+  );
+
+  if (cols.length > 0 && cols[0].DATA_TYPE !== "mediumtext" && cols[0].DATA_TYPE !== "longtext") {
+    await connection.query("ALTER TABLE products MODIFY image_url MEDIUMTEXT");
+    await connection.query("ALTER TABLE orders MODIFY product_image_url MEDIUMTEXT");
+    console.log("Expanded image_url columns to MEDIUMTEXT for uploaded images.");
+  }
+}
+
 async function rebuildSchema(connection: mysql.Connection): Promise<void> {
   console.log("Rebuilding schema (incompatible or missing tables detected)...");
   await connection.query("SET FOREIGN_KEY_CHECKS = 0");
@@ -59,6 +110,10 @@ export async function runMigrations(): Promise<void> {
       await connection.query(sql);
       console.log(`Migration applied: ${file}`);
     }
+
+    await ensureCustomerPasswordHash(connection);
+    await migrateAdminUsersToCustomers(connection);
+    await ensureImageColumns(connection);
   } finally {
     await connection.end();
   }
