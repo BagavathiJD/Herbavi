@@ -17,23 +17,23 @@ async function schemaIsCompatible(
   return rows.length > 0;
 }
 
-async function ensureCustomerPasswordHash(
+async function ensureUsersRoleColumn(
   connection: mysql.Connection
 ): Promise<void> {
   const [cols] = await connection.query<mysql.RowDataPacket[]>(
     `SELECT COLUMN_NAME FROM information_schema.COLUMNS
-     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'customers' AND COLUMN_NAME = 'password_hash'`,
+     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'users' AND COLUMN_NAME = 'role'`,
     [dbConfig.database]
   );
   if (cols.length === 0) {
     await connection.query(
-      "ALTER TABLE customers ADD COLUMN password_hash VARCHAR(255) NULL AFTER phone"
+      "ALTER TABLE users ADD COLUMN role ENUM('Admin', 'Staff') NOT NULL DEFAULT 'Admin' AFTER phone_number"
     );
-    console.log("Added password_hash column to customers.");
+    console.log("Added role column to users.");
   }
 }
 
-async function migrateAdminUsersToCustomers(
+async function migrateLegacyAdminUsers(
   connection: mysql.Connection
 ): Promise<void> {
   const [tables] = await connection.query<mysql.RowDataPacket[]>(
@@ -44,13 +44,39 @@ async function migrateAdminUsersToCustomers(
   if (tables.length === 0) return;
 
   await connection.query(
-    `INSERT INTO customers (id, name, email, phone, password_hash, total_orders, total_spend, status, join_date)
-     SELECT au.id, au.name, au.email, au.phone, au.password_hash, 0, 0.00, 'Active', au.created_at
+    `INSERT INTO users (user_name, password, email, phone_number, role, created_at, updated_at)
+     SELECT au.name, au.password_hash, au.email,
+            COALESCE(NULLIF(au.phone, ''), '0000000000'), 'Admin', au.created_at, au.created_at
      FROM admin_users au
-     WHERE NOT EXISTS (SELECT 1 FROM customers c WHERE c.email = au.email)`
+     WHERE NOT EXISTS (SELECT 1 FROM users u WHERE LOWER(u.email) = LOWER(au.email))`
   );
   await connection.query("DROP TABLE IF EXISTS admin_users");
-  console.log("Migrated admin_users into customers and removed admin_users table.");
+  console.log("Migrated admin_users into users and removed admin_users table.");
+}
+
+async function migrateCustomerCredentialsToUsers(
+  connection: mysql.Connection
+): Promise<void> {
+  const [cols] = await connection.query<mysql.RowDataPacket[]>(
+    `SELECT COLUMN_NAME FROM information_schema.COLUMNS
+     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'customers' AND COLUMN_NAME = 'password_hash'`,
+    [dbConfig.database]
+  );
+  if (cols.length === 0) return;
+
+  await connection.query(
+    `INSERT INTO users (user_name, password, email, phone_number, role, created_at, updated_at)
+     SELECT c.name, c.password_hash, c.email,
+            COALESCE(NULLIF(c.phone, ''), '0000000000'), 'Admin', c.join_date, c.join_date
+     FROM customers c
+     WHERE c.password_hash IS NOT NULL AND c.password_hash != ''
+     AND NOT EXISTS (SELECT 1 FROM users u WHERE LOWER(u.email) = LOWER(c.email))`
+  );
+
+  await connection.query("ALTER TABLE customers DROP COLUMN password_hash");
+  console.log(
+    "Moved login credentials from customers to users and removed password_hash column."
+  );
 }
 
 async function ensureImageColumns(connection: mysql.Connection): Promise<void> {
@@ -76,6 +102,7 @@ async function rebuildSchema(connection: mysql.Connection): Promise<void> {
   await connection.query("DROP TABLE IF EXISTS product_names");
   await connection.query("DROP TABLE IF EXISTS measurements");
   await connection.query("DROP TABLE IF EXISTS customers");
+  await connection.query("DROP TABLE IF EXISTS users");
   await connection.query("DROP TABLE IF EXISTS schema_migrations");
   await connection.query("SET FOREIGN_KEY_CHECKS = 1");
 }
@@ -111,8 +138,9 @@ export async function runMigrations(): Promise<void> {
       console.log(`Migration applied: ${file}`);
     }
 
-    await ensureCustomerPasswordHash(connection);
-    await migrateAdminUsersToCustomers(connection);
+    await ensureUsersRoleColumn(connection);
+    await migrateLegacyAdminUsers(connection);
+    await migrateCustomerCredentialsToUsers(connection);
     await ensureImageColumns(connection);
   } finally {
     await connection.end();

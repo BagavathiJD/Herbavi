@@ -3,6 +3,7 @@ import { RowDataPacket } from "mysql2";
 import { query } from "../db/pool";
 import { mapProduct } from "../db/rowMappers";
 import { logSqlQuery } from "../services/sqlLogger";
+import { deleteProductCascade } from "../services/productDeletion.js";
 
 const router = Router();
 
@@ -225,20 +226,13 @@ router.delete(
         return;
       }
 
-      const orderRef = await query<RowDataPacket[]>(
-        "SELECT id FROM orders WHERE product_id = ? LIMIT 1",
-        [id]
-      );
-      if (orderRef.length > 0) {
-        res.status(400).json({
-          error: "Cannot delete product. It is referenced by existing orders.",
-        });
-        return;
-      }
-
-      await query("DELETE FROM products WHERE id = ?", [id]);
-      logSqlQuery(`DELETE FROM products WHERE id = '${id}';`);
-      res.json({ message: "Product deleted successfully" });
+      const { deletedOrders } = await deleteProductCascade(id);
+      res.json({
+        message:
+          deletedOrders > 0
+            ? `Product deleted successfully (${deletedOrders} related order(s) removed).`
+            : "Product deleted successfully",
+      });
     } catch (err) {
       next(err);
     }

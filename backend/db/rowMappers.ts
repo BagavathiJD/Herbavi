@@ -62,6 +62,7 @@ export function mapAppUser(row: RowDataPacket) {
     userName: row.user_name,
     email: row.email,
     phoneNumber: row.phone_number ?? "",
+    role: row.role === "Staff" ? "Staff" : "Admin",
     createdAt:
       row.created_at instanceof Date
         ? row.created_at.toISOString()
