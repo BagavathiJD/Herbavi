@@ -7,7 +7,7 @@ import {
   AlertCircle,
   X
 } from "lucide-react";
-import { Product, Measurement, ProductName } from "../types";
+import { Product, Measurement, ProductName, formatProductMeasurement, formatCurrency } from "../types";
 
 interface ProductFormProps {
   initialProduct?: Product | null;
@@ -32,6 +32,7 @@ export default function ProductForm({
   const [imageUrl, setImageUrl] = useState("");
   const [imageFileName, setImageFileName] = useState("");
   const [measurementId, setMeasurementId] = useState("");
+  const [measurementValue, setMeasurementValue] = useState("1");
   const [price, setPrice] = useState("");
   const [status, setStatus] = useState<"Active" | "Inactive">("Active");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -43,6 +44,7 @@ export default function ProductForm({
       setImageUrl(initialProduct.imageUrl || "");
       setImageFileName(initialProduct.imageUrl ? "Current product image" : "");
       setMeasurementId(initialProduct.measurementId);
+      setMeasurementValue(initialProduct.measurementValue || "1");
       setPrice(initialProduct.price.toString());
       setStatus(initialProduct.status);
     } else {
@@ -55,6 +57,7 @@ export default function ProductForm({
       setDescription("");
       setImageUrl("");
       setImageFileName("");
+      setMeasurementValue("1");
       setPrice("");
       setStatus("Active");
     }
@@ -67,6 +70,14 @@ export default function ProductForm({
     }
     if (!measurementId) {
       tempErrors.measurementId = "Please select a measurement unit.";
+    }
+    if (!measurementValue.trim()) {
+      tempErrors.measurementValue = "Please enter the volume or quantity (e.g. 1, 2).";
+    } else {
+      const numValue = Number(measurementValue);
+      if (isNaN(numValue) || numValue <= 0) {
+        tempErrors.measurementValue = "Volume must be a valid number greater than 0.";
+      }
     }
     if (!price) {
       tempErrors.price = "Price is required.";
@@ -153,6 +164,7 @@ export default function ProductForm({
       description: description.trim(),
       imageUrl: imageUrl.trim(),
       measurementId,
+      measurementValue: measurementValue.trim(),
       price: Number(price),
       status
     });
@@ -238,11 +250,11 @@ export default function ProductForm({
 
             <div className="space-y-1.5 text-left">
               <label className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1">
-                <span>Price (USD $)</span>
+                <span>Price (INR ₹)</span>
                 <span className="text-rose-500">*</span>
               </label>
               <div className="relative">
-                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 font-bold">$</span>
+                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 font-bold">₹</span>
                 <input
                   id="form-product-price"
                   disabled={isSubmitting}
@@ -269,38 +281,76 @@ export default function ProductForm({
 
             <div className="space-y-1.5 text-left">
               <label className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1">
-                <span>Measurement Master Level</span>
+                <span>Product Measurement</span>
                 <span className="text-rose-500">*</span>
               </label>
-              <select
-                id="form-product-measurement"
-                disabled={isSubmitting}
-                value={measurementId}
-                onChange={(e) => setMeasurementId(e.target.value)}
-                className={`w-full text-xs p-3 bg-[#020617] text-white border rounded-xl focus:outline-none focus:ring-2 cursor-pointer ${
-                  errors.measurementId
-                    ? "border-rose-800 focus:ring-rose-950/30"
-                    : "border-slate-800 focus:border-indigo-500 focus:ring-indigo-950/25"
-                }`}
-              >
-                {activeMeasurements.length === 0 ? (
-                  <option value="" disabled className="bg-[#020617]">
-                    No enabled measurements (Configure in Settings first!)
-                  </option>
-                ) : (
-                  activeMeasurements.map((m) => (
-                    <option key={m.id} value={m.id} className="bg-[#020617] text-white">
-                      {m.name}
-                    </option>
-                  ))
-                )}
-              </select>
-              {errors.measurementId && (
-                <p className="text-rose-400 text-[11px] flex items-center gap-1 font-medium mt-1">
-                  <AlertCircle className="w-3.5 h-3.5" />
-                  <span>{errors.measurementId}</span>
-                </p>
-              )}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
+                    Volume / Quantity
+                  </label>
+                  <input
+                    id="form-product-measurement-value"
+                    disabled={isSubmitting}
+                    type="number"
+                    step="any"
+                    min="0.01"
+                    placeholder="e.g. 1, 2"
+                    value={measurementValue}
+                    onChange={(e) => setMeasurementValue(e.target.value)}
+                    className={`w-full text-xs p-3 bg-[#020617] text-white border rounded-xl focus:outline-none focus:ring-2 ${
+                      errors.measurementValue
+                        ? "border-rose-800 focus:ring-rose-950/30"
+                        : "border-slate-800 focus:border-indigo-500 focus:ring-indigo-950/25"
+                    }`}
+                  />
+                  {errors.measurementValue && (
+                    <p className="text-rose-400 text-[11px] flex items-center gap-1 font-medium mt-1">
+                      <AlertCircle className="w-3.5 h-3.5" />
+                      <span>{errors.measurementValue}</span>
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
+                    Unit
+                  </label>
+                  <select
+                    id="form-product-measurement"
+                    disabled={isSubmitting}
+                    value={measurementId}
+                    onChange={(e) => setMeasurementId(e.target.value)}
+                    className={`w-full text-xs p-3 bg-[#020617] text-white border rounded-xl focus:outline-none focus:ring-2 cursor-pointer ${
+                      errors.measurementId
+                        ? "border-rose-800 focus:ring-rose-950/30"
+                        : "border-slate-800 focus:border-indigo-500 focus:ring-indigo-950/25"
+                    }`}
+                  >
+                    {activeMeasurements.length === 0 ? (
+                      <option value="" disabled className="bg-[#020617]">
+                        No enabled measurements (Configure in Settings first!)
+                      </option>
+                    ) : (
+                      activeMeasurements.map((m) => (
+                        <option key={m.id} value={m.id} className="bg-[#020617] text-white">
+                          {m.name}
+                        </option>
+                      ))
+                    )}
+                  </select>
+                  {errors.measurementId && (
+                    <p className="text-rose-400 text-[11px] flex items-center gap-1 font-medium mt-1">
+                      <AlertCircle className="w-3.5 h-3.5" />
+                      <span>{errors.measurementId}</span>
+                    </p>
+                  )}
+                </div>
+              </div>
+              <p className="text-[10px] text-slate-500">
+                Example: volume <span className="text-slate-400">1</span> + unit{" "}
+                <span className="text-slate-400">Kilogram (Kg)</span> →{" "}
+                <span className="text-slate-400">1 Kilogram (Kg)</span>
+              </p>
             </div>
 
             <div className="space-y-1.5 text-left">
@@ -431,13 +481,13 @@ export default function ProductForm({
                 <div>
                   <p className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Price</p>
                   <p className="text-sm font-bold text-emerald-400 mt-0.5">
-                    {price ? `$${Number(price).toFixed(2)}` : "—"}
+                    {price ? formatCurrency(Number(price)) : "—"}
                   </p>
                 </div>
                 <div>
                   <p className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Measurement</p>
                   <p className="text-sm font-semibold text-slate-200 mt-0.5">
-                    {selectedMeasurement?.name || "—"}
+                    {formatProductMeasurement(measurementValue, selectedMeasurement?.name)}
                   </p>
                 </div>
               </div>

@@ -90,7 +90,7 @@ router.post(
   async (_req: Request, res: Response, next: NextFunction) => {
     try {
       const products = await query<RowDataPacket[]>(
-        "SELECT id, name, image_url, measurement_id, price FROM products LIMIT 100"
+        "SELECT id, name, image_url, measurement_id, measurement_value, price FROM products LIMIT 100"
       );
       const customers = await query<RowDataPacket[]>(
         "SELECT id, name FROM customers LIMIT 100"
@@ -120,7 +120,9 @@ router.post(
         [randomProduct.measurement_id]
       );
       const measureName =
-        measureRows.length > 0 ? measureRows[0].name : "Piece (pcs)";
+        measureRows.length > 0
+          ? `${randomProduct.measurement_value ?? "1"} ${measureRows[0].name}`
+          : "1 Piece (pcs)";
       const total = parseFloat(
         (Number(randomProduct.price) * qty).toFixed(2)
       );

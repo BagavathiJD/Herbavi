@@ -106,6 +106,7 @@
       "description": "Pure, cold-pressed raw honey harvested from wild forest blooms.",
       "imageUrl": "https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&q=80&w=200",
       "measurementId": "m1",
+      "measurementValue": "1",
       "price": 18.5,
       "status": "Active",
       "createdAt": "2026-06-02T14:30:22Z"
@@ -116,6 +117,7 @@
       "description": "Medium roast coffee beans with undertones of toasted hazelnut and citrus.",
       "imageUrl": "https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&q=80&w=200",
       "measurementId": "m2",
+      "measurementValue": "500",
       "price": 12.99,
       "status": "Active",
       "createdAt": "2026-06-03T10:15:05Z"
@@ -126,6 +128,7 @@
       "description": "Extra virgin oil suitable for high-heat cooking, roasting, and salad dressings.",
       "imageUrl": "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&q=80&w=200",
       "measurementId": "m3",
+      "measurementValue": "1",
       "price": 24,
       "status": "Active",
       "createdAt": "2026-06-04T08:22:41Z"
@@ -136,6 +139,7 @@
       "description": "Double-walled reusable drinking mug with anti-spill silicone lid.",
       "imageUrl": "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&q=80&w=200",
       "measurementId": "m5",
+      "measurementValue": "1",
       "price": 14.95,
       "status": "Active",
       "createdAt": "2026-06-06T11:40:02Z"
@@ -146,6 +150,7 @@
       "description": "Plump and sweet berries packed with antioxidants, fresh from local organic farms.",
       "imageUrl": "https://images.unsplash.com/photo-1601004890684-d8cbf643f5f2?auto=format&fit=crop&q=80&w=200",
       "measurementId": "m6",
+      "measurementValue": "2",
       "price": 8,
       "status": "Active",
       "createdAt": "2026-06-07T09:05:12Z"

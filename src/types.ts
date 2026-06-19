@@ -4,9 +4,36 @@ export interface Product {
   description: string;
   imageUrl: string;
   measurementId: string; // references Measurement
+  measurementValue: string; // e.g. "1", "2" — combined with unit as "1 Kilogram (Kg)"
   price: number;
   status: 'Active' | 'Inactive';
   createdAt: string;
+}
+
+export function formatProductMeasurement(
+  measurementValue: string | undefined,
+  unitName: string | undefined
+): string {
+  const value = measurementValue?.trim();
+  const unit = unitName?.trim();
+  if (value && unit) return `${value} ${unit}`;
+  if (unit) return unit;
+  if (value) return value;
+  return "—";
+}
+
+export const CURRENCY_SYMBOL = "₹";
+
+export function formatCurrency(
+  amount: number,
+  options?: { minimumFractionDigits?: number; maximumFractionDigits?: number }
+): string {
+  const minimumFractionDigits = options?.minimumFractionDigits ?? 2;
+  const maximumFractionDigits = options?.maximumFractionDigits ?? 2;
+  return `${CURRENCY_SYMBOL}${amount.toLocaleString("en-IN", {
+    minimumFractionDigits,
+    maximumFractionDigits,
+  })}`;
 }
 
 export interface Measurement {

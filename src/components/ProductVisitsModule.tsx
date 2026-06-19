@@ -10,7 +10,7 @@ import {
   SlidersHorizontal,
   ChevronDown
 } from "lucide-react";
-import { Product, Measurement } from "../types";
+import { Product, Measurement, formatProductMeasurement, formatCurrency } from "../types";
 
 interface ProductVisitsModuleProps {
   products: Product[];
@@ -151,9 +151,9 @@ export default function ProductVisitsModule({
             className="text-xs p-2.5 bg-[#020617] text-white border border-slate-800 rounded-xl focus:outline-none cursor-pointer"
           >
             <option value="All">All Retail Prices</option>
-            <option value="under-10">Under $10.00</option>
-            <option value="10-20">$10.00 - $20.00</option>
-            <option value="over-20">Over $20.00</option>
+            <option value="under-10">Under ₹10.00</option>
+            <option value="10-20">₹10.00 - ₹20.00</option>
+            <option value="over-20">Over ₹20.00</option>
           </select>
         </div>
       </div>
@@ -208,10 +208,10 @@ export default function ProductVisitsModule({
                         </button>
                       </td>
                       <td className="py-3.5 px-6 font-medium text-slate-300">
-                        {measure ? measure.name : "N/A"}
+                        {formatProductMeasurement(p.measurementValue, measure?.name)}
                       </td>
                       <td className="py-3.5 px-6 font-mono font-bold text-slate-200">
-                        ${p.price.toFixed(2)}
+                        {formatCurrency(p.price)}
                       </td>
                       <td className="py-3.5 px-6">
                         <div className="flex items-center gap-1.5">

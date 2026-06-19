@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { 
   ShoppingBag, 
-  DollarSign, 
+  IndianRupee, 
   ShoppingCart, 
   Users, 
   ArrowUpRight, 
@@ -12,7 +12,7 @@ import {
   Plus,
   PackageCheck
 } from "lucide-react";
-import { Product, Order, Customer, Measurement } from "../types";
+import { Product, Order, Customer, Measurement, formatProductMeasurement, formatCurrency } from "../types";
 
 interface DashboardModuleProps {
   products: Product[];
@@ -46,13 +46,13 @@ export default function DashboardModule({
     {
       id: "revenue",
       title: "Total Revenue",
-      value: `$${totalRevenue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      value: formatCurrency(totalRevenue),
       changeValue: "+14.2%",
       isPositive: true,
       color: "text-emerald-400",
       textColor: "text-emerald-400",
       bgColor: "bg-emerald-950/30 border-emerald-900/30",
-      icon: DollarSign,
+      icon: IndianRupee,
     },
     {
       id: "orders",
@@ -187,7 +187,7 @@ export default function DashboardModule({
             </div>
             <div className="flex items-center gap-1.5 text-xs text-slate-400 font-mono">
               <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 inline-block"></span>
-              <span>USD ($)</span>
+              <span>INR (₹)</span>
             </div>
           </div>
 
@@ -257,7 +257,7 @@ export default function DashboardModule({
                 }}
               >
                 <p className="text-slate-400 uppercase tracking-widest text-[8px]">Revenue [{computedPoints[hoveredPointIdx].month}]</p>
-                <p className="font-bold text-emerald-400 text-xs">${computedPoints[hoveredPointIdx].value.toLocaleString(undefined, {minimumFractionDigits: 0})}</p>
+                <p className="font-bold text-emerald-400 text-xs">{formatCurrency(computedPoints[hoveredPointIdx].value, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
               </div>
             )}
           </div>
@@ -308,11 +308,13 @@ export default function DashboardModule({
                       />
                       <div className="text-left space-y-0.5 max-w-[130px]">
                         <h4 className="text-xs font-bold text-slate-200 truncate group-hover:text-indigo-400 transition-colors" title={p.name}>{p.name}</h4>
-                        <p className="text-[10px] text-slate-500 font-mono font-medium">{measure ? measure.name.split(" ")[0] : "Unit"}</p>
+                        <p className="text-[10px] text-slate-500 font-mono font-medium">
+                          {formatProductMeasurement(p.measurementValue, measure?.name)}
+                        </p>
                       </div>
                     </div>
                     <div className="text-right space-y-0.5">
-                      <p className="text-xs font-bold text-slate-100 font-mono">${(p.price).toFixed(2)}</p>
+                      <p className="text-xs font-bold text-slate-100 font-mono">{formatCurrency(p.price)}</p>
                       <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full border leading-none inline-block ${
                         p.status === "Active" 
                           ? "bg-emerald-950/40 text-emerald-400 border-emerald-900/50" 
@@ -396,10 +398,10 @@ export default function DashboardModule({
                         </span>
                       </div>
                     </td>
-                    <td className="py-3.5 px-5 font-mono text-slate-400">${order.price.toFixed(2)}</td>
+                    <td className="py-3.5 px-5 font-mono text-slate-400">{formatCurrency(order.price)}</td>
                     <td className="py-3.5 px-4 font-mono font-medium text-slate-400">{order.quantity}</td>
                     <td className="py-3.5 px-5 font-bold font-mono text-indigo-400">
-                      ${order.totalAmount.toFixed(2)}
+                      {formatCurrency(order.totalAmount)}
                     </td>
                     <td className="py-3.5 px-5">
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${getStatusBadge(order.orderStatus)}`}>

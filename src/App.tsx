@@ -25,7 +25,7 @@ import UsersModule from "./components/UsersModule";
 import AuthGate from "./registration/AuthGate";
 import { authHeaders, clearToken, getToken } from "./registration/auth";
 // Types
-import { Product, Order, Measurement, ProductName, Customer, AppUser, SqlQueryLog, DbMetrics, AdminUser } from "./types";
+import { Product, Order, Measurement, ProductName, Customer, AppUser, SqlQueryLog, DbMetrics, AdminUser, formatProductMeasurement, formatCurrency } from "./types";
 
 export default function App() {
   const [authUser, setAuthUser] = useState<AdminUser | null>(null);
@@ -609,7 +609,7 @@ export default function App() {
                     <div className="space-y-0.5">
                       <p className="font-bold text-white text-xs">{selectedOrderForView.productName}</p>
                       <p className="text-[10px] text-slate-400 font-mono">sku: {selectedOrderForView.productId}</p>
-                      <p className="text-xs font-bold text-indigo-400 font-mono">${selectedOrderForView.price.toFixed(2)}</p>
+                      <p className="text-xs font-bold text-indigo-400 font-mono">{formatCurrency(selectedOrderForView.price)}</p>
                     </div>
                   </div>
                 </div>
@@ -637,7 +637,7 @@ export default function App() {
                 <div className="text-right">
                   <span className="text-[9px] uppercase tracking-wider font-bold text-indigo-400 leading-none">Net amount</span>
                   <p className="text-lg font-black font-mono text-indigo-400 leading-none mt-1">
-                    ${selectedOrderForView.totalAmount.toFixed(2)}
+                    {formatCurrency(selectedOrderForView.totalAmount)}
                   </p>
                 </div>
               </div>
@@ -719,21 +719,26 @@ export default function App() {
 
                   <div className="grid grid-cols-2 gap-3 text-left">
                     <div className="p-2 py-2.5 bg-[#020617]/50 border border-slate-850 rounded-xl">
-                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block leading-none">Master Level ID</span>
-                      <span className="text-xs font-mono font-bold text-slate-200 inline-block mt-1">{selectedProductForView.measurementId}</span>
+                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block leading-none">Measurement Volume</span>
+                      <span className="text-xs font-mono font-bold text-slate-200 inline-block mt-1">
+                        {selectedProductForView.measurementValue || "1"}
+                      </span>
                     </div>
 
                     <div className="p-2 py-2.5 bg-[#020617]/50 border border-slate-850 rounded-xl">
-                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block leading-none">Standard Retail Unit</span>
+                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block leading-none">Full Measurement</span>
                       <span className="text-xs font-bold text-slate-200 inline-block mt-1">
-                        {measurements.find(m => m.id === selectedProductForView.measurementId)?.name || "N/A"}
+                        {formatProductMeasurement(
+                          selectedProductForView.measurementValue,
+                          measurements.find(m => m.id === selectedProductForView.measurementId)?.name
+                        )}
                       </span>
                     </div>
                   </div>
 
                   <div className="p-3 bg-indigo-950/20 border border-indigo-900/35 rounded-xl">
                     <span className="text-[9px] font-bold text-indigo-400 uppercase tracking-wider block leading-none">Catalog Sourced Price</span>
-                    <span className="text-base font-black font-mono text-indigo-400 inline-block mt-1">${selectedProductForView.price.toFixed(2)}</span>
+                    <span className="text-base font-black font-mono text-indigo-400 inline-block mt-1">{formatCurrency(selectedProductForView.price)}</span>
                   </div>
                 </div>
               </div>

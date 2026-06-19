@@ -29,6 +29,7 @@ export function mapProduct(row: RowDataPacket) {
     description: row.description ?? "",
     imageUrl: row.image_url ?? "",
     measurementId: row.measurement_id,
+    measurementValue: row.measurement_value ?? "1",
     price: Number(row.price),
     status: row.status,
     createdAt: row.created_at instanceof Date

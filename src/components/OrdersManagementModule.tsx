@@ -13,7 +13,7 @@ import {
   ShoppingBag,
   Sparkles
 } from "lucide-react";
-import { Order } from "../types";
+import { Order, formatCurrency } from "../types";
 
 interface OrdersManagementModuleProps {
   orders: Order[];
@@ -100,7 +100,7 @@ export default function OrdersManagementModule({
           </div>
           <div>
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Net Commerce Volume</p>
-            <p className="text-lg font-extrabold font-mono text-indigo-400 mt-1">${totalVolumeAmount.toFixed(2)}</p>
+            <p className="text-lg font-extrabold font-mono text-indigo-400 mt-1">{formatCurrency(totalVolumeAmount)}</p>
           </div>
         </div>
 
@@ -223,12 +223,12 @@ export default function OrdersManagementModule({
 
                     {/* Retail Sourced unit price */}
                     <td className="py-4 px-6 text-right font-mono text-slate-400">
-                      ${o.price.toFixed(2)}
+                      {formatCurrency(o.price)}
                     </td>
 
                     {/* Total billing price */}
                     <td className="py-4 px-6 text-right font-bold font-mono text-indigo-400">
-                      ${o.totalAmount.toFixed(2)}
+                      {formatCurrency(o.totalAmount)}
                     </td>
 
                     {/* Order Status change dropdown */}

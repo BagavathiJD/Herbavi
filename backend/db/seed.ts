@@ -82,14 +82,15 @@ export async function seedDatabase(data?: SeedData): Promise<void> {
 
     for (const p of seed.products) {
       await conn.execute(
-        `INSERT INTO products (id, name, description, image_url, measurement_id, price, status, created_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO products (id, name, description, image_url, measurement_id, measurement_value, price, status, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           p.id,
           p.name,
           p.description,
           p.imageUrl,
           p.measurementId,
+          p.measurementValue ?? "1",
           p.price,
           p.status,
           new Date(p.createdAt),

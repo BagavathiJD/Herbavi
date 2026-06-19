@@ -10,7 +10,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { search, status } = req.query;
     let sql =
-      "SELECT p.id, p.name, p.description, p.image_url, p.measurement_id, p.price, p.status, p.created_at FROM products p";
+      "SELECT p.id, p.name, p.description, p.image_url, p.measurement_id, p.measurement_value, p.price, p.status, p.created_at FROM products p";
     const conditions: string[] = [];
     const params: unknown[] = [];
 
@@ -42,7 +42,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
 
 router.post("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { name, description, imageUrl, measurementId, price, status } =
+    const { name, description, imageUrl, measurementId, measurementValue, price, status } =
       req.body;
 
     if (!name || !String(name).trim()) {
@@ -52,6 +52,15 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
 
     if (!measurementId) {
       res.status(400).json({ error: "Measurement is required." });
+      return;
+    }
+
+    if (
+      measurementValue === undefined ||
+      measurementValue === null ||
+      !String(measurementValue).trim()
+    ) {
+      res.status(400).json({ error: "Measurement volume is required (e.g. 1, 2)." });
       return;
     }
 
@@ -69,11 +78,20 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
     const resolvedDescription = String(description || "").trim();
     const resolvedImageUrl = String(imageUrl).trim();
     const resolvedMeasurementId = String(measurementId);
+    const resolvedMeasurementValue = String(measurementValue).trim();
     const resolvedPrice = Number(price);
     const resolvedStatus = status === "Inactive" ? "Inactive" : "Active";
 
     if (isNaN(resolvedPrice) || resolvedPrice <= 0) {
       res.status(400).json({ error: "Price must be a valid number greater than 0." });
+      return;
+    }
+
+    const parsedMeasurementValue = Number(resolvedMeasurementValue);
+    if (isNaN(parsedMeasurementValue) || parsedMeasurementValue <= 0) {
+      res.status(400).json({
+        error: "Measurement volume must be a valid number greater than 0 (e.g. 1, 2).",
+      });
       return;
     }
 
@@ -112,14 +130,15 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
     const id = "p-" + Date.now();
 
     await query(
-      `INSERT INTO products (id, name, description, image_url, measurement_id, price, status, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, NOW())`,
+      `INSERT INTO products (id, name, description, image_url, measurement_id, measurement_value, price, status, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
       [
         id,
         resolvedName,
         resolvedDescription,
         resolvedImageUrl,
         resolvedMeasurementId,
+        resolvedMeasurementValue,
         resolvedPrice,
         resolvedStatus,
       ]
@@ -131,11 +150,11 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
         : resolvedImageUrl;
 
     logSqlQuery(
-      `INSERT INTO products (id, name, description, image_url, measurement_id, price, status, created_at) \nVALUES ('${id}', '${resolvedName.replace(/'/g, "''")}', '${resolvedDescription.replace(/'/g, "''")}', '${imageLog}', '${resolvedMeasurementId}', ${resolvedPrice}, '${resolvedStatus}', NOW());`
+      `INSERT INTO products (id, name, description, image_url, measurement_id, measurement_value, price, status, created_at) \nVALUES ('${id}', '${resolvedName.replace(/'/g, "''")}', '${resolvedDescription.replace(/'/g, "''")}', '${imageLog}', '${resolvedMeasurementId}', '${resolvedMeasurementValue.replace(/'/g, "''")}', ${resolvedPrice}, '${resolvedStatus}', NOW());`
     );
 
     const rows = await query<RowDataPacket[]>(
-      "SELECT id, name, description, image_url, measurement_id, price, status, created_at FROM products WHERE id = ?",
+      "SELECT id, name, description, image_url, measurement_id, measurement_value, price, status, created_at FROM products WHERE id = ?",
       [id]
     );
 
@@ -148,11 +167,11 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
 router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
-    const { name, description, imageUrl, measurementId, price, status } =
+    const { name, description, imageUrl, measurementId, measurementValue, price, status } =
       req.body;
 
     const existing = await query<RowDataPacket[]>(
-      "SELECT id, name, description, image_url, measurement_id, price, status, created_at FROM products WHERE id = ?",
+      "SELECT id, name, description, image_url, measurement_id, measurement_value, price, status, created_at FROM products WHERE id = ?",
       [id]
     );
     if (existing.length === 0) {
@@ -168,9 +187,23 @@ router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
       imageUrl !== undefined ? String(imageUrl).trim() : row.image_url;
     const updatedMeasurementId =
       measurementId !== undefined ? String(measurementId) : row.measurement_id;
+    const updatedMeasurementValue =
+      measurementValue !== undefined
+        ? String(measurementValue).trim()
+        : row.measurement_value;
     const updatedPrice =
       price !== undefined ? Number(price) : Number(row.price);
     const updatedStatus = status !== undefined ? status : row.status;
+
+    if (measurementValue !== undefined) {
+      const parsedMeasurementValue = Number(updatedMeasurementValue);
+      if (isNaN(parsedMeasurementValue) || parsedMeasurementValue <= 0) {
+        res.status(400).json({
+          error: "Measurement volume must be a valid number greater than 0 (e.g. 1, 2).",
+        });
+        return;
+      }
+    }
 
     if (measurementId !== undefined) {
       const measurement = await query<RowDataPacket[]>(
@@ -184,12 +217,13 @@ router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
     }
 
     await query(
-      `UPDATE products SET name = ?, description = ?, image_url = ?, measurement_id = ?, price = ?, status = ? WHERE id = ?`,
+      `UPDATE products SET name = ?, description = ?, image_url = ?, measurement_id = ?, measurement_value = ?, price = ?, status = ? WHERE id = ?`,
       [
         updatedName,
         updatedDescription,
         updatedImageUrl,
         updatedMeasurementId,
+        updatedMeasurementValue,
         updatedPrice,
         updatedStatus,
         id,
@@ -201,7 +235,7 @@ router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
     );
 
     const rows = await query<RowDataPacket[]>(
-      "SELECT id, name, description, image_url, measurement_id, price, status, created_at FROM products WHERE id = ?",
+      "SELECT id, name, description, image_url, measurement_id, measurement_value, price, status, created_at FROM products WHERE id = ?",
       [id]
     );
     res.json(mapProduct(rows[0]));

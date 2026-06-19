@@ -90,6 +90,7 @@ export default function SqlConsole({
       { col: "description", type: "TEXT", attr: "NULLABLE" },
       { col: "image_url", type: "VARCHAR(500)", attr: "NULLABLE" },
       { col: "measurement_id", type: "VARCHAR(50)", attr: "FOREIGN KEY REFERENCES measurements(id)" },
+      { col: "measurement_value", type: "VARCHAR(50)", attr: "NOT NULL DEFAULT '1'" },
       { col: "price", type: "DECIMAL(10,2)", attr: "NOT NULL" },
       { col: "status", type: "ENUM('Active', 'Inactive')", attr: "DEFAULT 'Active'" },
       { col: "created_at", type: "TIMESTAMP", attr: "DEFAULT CURRENT_TIMESTAMP" },

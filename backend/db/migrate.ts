@@ -53,6 +53,22 @@ async function migrateAdminUsersToCustomers(
   console.log("Migrated admin_users into customers and removed admin_users table.");
 }
 
+async function ensureMeasurementValueColumn(
+  connection: mysql.Connection
+): Promise<void> {
+  const [cols] = await connection.query<mysql.RowDataPacket[]>(
+    `SELECT COLUMN_NAME FROM information_schema.COLUMNS
+     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'products' AND COLUMN_NAME = 'measurement_value'`,
+    [dbConfig.database]
+  );
+  if (cols.length === 0) {
+    await connection.query(
+      "ALTER TABLE products ADD COLUMN measurement_value VARCHAR(50) NOT NULL DEFAULT '1' AFTER measurement_id"
+    );
+    console.log("Added measurement_value column to products.");
+  }
+}
+
 async function ensureImageColumns(connection: mysql.Connection): Promise<void> {
   const [cols] = await connection.query<mysql.RowDataPacket[]>(
     `SELECT DATA_TYPE, CHARACTER_MAXIMUM_LENGTH
@@ -113,6 +129,7 @@ export async function runMigrations(): Promise<void> {
 
     await ensureCustomerPasswordHash(connection);
     await migrateAdminUsersToCustomers(connection);
+    await ensureMeasurementValueColumn(connection);
     await ensureImageColumns(connection);
   } finally {
     await connection.end();
