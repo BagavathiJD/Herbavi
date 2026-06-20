@@ -31,11 +31,21 @@ CREATE TABLE IF NOT EXISTS customers (
   name          VARCHAR(150) NOT NULL,
   email         VARCHAR(150) NOT NULL UNIQUE,
   phone         VARCHAR(50),
-  password_hash VARCHAR(255),
   total_orders  INT NOT NULL DEFAULT 0,
   total_spend   DECIMAL(10,2) NOT NULL DEFAULT 0.00,
   status        ENUM('Active', 'Blocked') NOT NULL DEFAULT 'Active',
   join_date     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS users (
+  id            INT AUTO_INCREMENT PRIMARY KEY,
+  user_name     VARCHAR(100) NOT NULL,
+  password      VARCHAR(255) NOT NULL,
+  email         VARCHAR(150) NOT NULL UNIQUE,
+  phone_number  VARCHAR(15)  NOT NULL,
+  role          ENUM('Admin', 'Staff') NOT NULL DEFAULT 'Admin',
+  created_at    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS orders (

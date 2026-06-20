@@ -3,6 +3,7 @@ import { RowDataPacket } from "mysql2";
 import { query } from "../db/pool.js";
 import { mapProductName } from "../db/rowMappers.js";
 import { logSqlQuery } from "../services/sqlLogger.js";
+import { deleteProductCascade } from "../services/productDeletion.js";
 
 const router = Router();
 
@@ -123,24 +124,27 @@ router.delete(
       }
 
       const productName = existing[0].name;
-      const inUse = await query<RowDataPacket[]>(
-        "SELECT id FROM products WHERE name = ? LIMIT 1",
+      const linkedProducts = await query<RowDataPacket[]>(
+        "SELECT id FROM products WHERE name = ?",
         [productName]
       );
-      if (inUse.length > 0) {
-        logSqlQuery(
-          `DELETE FROM product_names WHERE id = '${id}'; -- FAILED WITH FOREIGN KEY CONSTRAINT`
-        );
-        res.status(400).json({
-          error:
-            "Cannot delete product name. It is currently in use by one or more products.",
-        });
-        return;
+
+      let removedOrders = 0;
+      for (const product of linkedProducts) {
+        const result = await deleteProductCascade(String(product.id));
+        removedOrders += result.deletedOrders;
       }
 
       await query("DELETE FROM product_names WHERE id = ?", [id]);
       logSqlQuery(`DELETE FROM product_names \nWHERE id = '${id}';`);
-      res.json({ message: "Product name deleted successfully" });
+
+      const removedProducts = linkedProducts.length;
+      let message = "Product name deleted successfully";
+      if (removedProducts > 0) {
+        message += ` (${removedProducts} product(s) and ${removedOrders} related order(s) removed)`;
+      }
+
+      res.json({ message });
     } catch (err) {
       next(err);
     }

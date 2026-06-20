@@ -97,6 +97,7 @@ export interface AppUser {
   userName: string;
   email: string;
   phoneNumber: string;
+  role: 'Admin' | 'Staff';
   createdAt: string;
 }
 

@@ -9,7 +9,7 @@ const router = Router();
 router.get("/", async (_req: Request, res: Response, next: NextFunction) => {
   try {
     const sql =
-      "SELECT id, user_name, email, phone_number, created_at FROM users ORDER BY created_at DESC";
+      "SELECT id, user_name, email, phone_number, role, created_at FROM users ORDER BY created_at DESC";
     logSqlQuery(sql + ";");
     const rows = await query<RowDataPacket[]>(sql);
     res.json(rows.map(mapAppUser));

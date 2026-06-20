@@ -54,13 +54,14 @@ export default function UsersModule({ users = [] }: UsersModuleProps) {
                 <th className="py-4 px-6">User Name</th>
                 <th className="py-4 px-6">Mail</th>
                 <th className="py-4 px-6">Phone Number</th>
+                <th className="py-4 px-6">Role</th>
                 <th className="py-4 px-6">Registered At</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-850 text-xs text-slate-300">
               {filteredUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="text-center py-20 text-slate-500">
+                  <td colSpan={6} className="text-center py-20 text-slate-500">
                     No users yet. Sign up from the login page.
                   </td>
                 </tr>
@@ -79,6 +80,15 @@ export default function UsersModule({ users = [] }: UsersModuleProps) {
                       <span className="flex items-center gap-1.5">
                         <Phone className="w-3.5 h-3.5 text-slate-500" />
                         {u.phoneNumber || "—"}
+                      </span>
+                    </td>
+                    <td className="py-4 px-6">
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                        u.role === "Admin"
+                          ? "bg-indigo-950/50 text-indigo-400 border border-indigo-900/50"
+                          : "bg-slate-800 text-slate-400 border border-slate-700"
+                      }`}>
+                        {u.role}
                       </span>
                     </td>
                     <td className="py-4 px-6 font-mono text-slate-400">

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import LoginPage from "./LoginPage";
 import SignUpPage from "./SignUpPage";
+import ForgotPasswordPage from "./ForgotPasswordPage";
 import { AdminUser } from "../types";
 
 interface AuthGateProps {
@@ -8,7 +9,7 @@ interface AuthGateProps {
 }
 
 export default function AuthGate({ onAuthenticated }: AuthGateProps) {
-  const [mode, setMode] = useState<"login" | "signup">("login");
+  const [mode, setMode] = useState<"login" | "signup" | "forgotpassword">("login");
 
   return (
     <div className="min-h-screen bg-[#020617] flex items-center justify-center p-4">
@@ -16,12 +17,15 @@ export default function AuthGate({ onAuthenticated }: AuthGateProps) {
         <LoginPage
           onLoginSuccess={onAuthenticated}
           onSwitchToSignUp={() => setMode("signup")}
+          onSwitchToForgotPassword={() => setMode("forgotpassword")}
         />
-      ) : (
+      ) : mode === "signup" ? (
         <SignUpPage
           onSignUpSuccess={onAuthenticated}
           onSwitchToLogin={() => setMode("login")}
         />
+      ) : (
+        <ForgotPasswordPage onSwitchToLogin={() => setMode("login")} />
       )}
     </div>
   );

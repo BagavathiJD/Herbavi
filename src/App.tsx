@@ -214,7 +214,8 @@ export default function App() {
       });
 
       if (!res.ok) {
-        throw new Error("Could not delete selected catalog row.");
+        const err = await res.json();
+        throw new Error(err.error || "Could not delete selected catalog row.");
       }
 
       await syncDatabaseState(true);

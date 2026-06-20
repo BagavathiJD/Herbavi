@@ -6,9 +6,10 @@ import { setToken } from "./auth";
 interface LoginPageProps {
   onLoginSuccess: (user: AdminUser) => void;
   onSwitchToSignUp: () => void;
+  onSwitchToForgotPassword: () => void;
 }
 
-export default function LoginPage({ onLoginSuccess, onSwitchToSignUp }: LoginPageProps) {
+export default function LoginPage({ onLoginSuccess, onSwitchToSignUp, onSwitchToForgotPassword }: LoginPageProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -95,13 +96,23 @@ export default function LoginPage({ onLoginSuccess, onSwitchToSignUp }: LoginPag
           />
         </div>
 
+        <div className="text-right">
+          <button
+            type="button"
+            onClick={onSwitchToForgotPassword}
+            className="text-indigo-400 hover:text-indigo-300 text-xs font-semibold cursor-pointer transition-colors"
+          >
+            Forgot password?
+          </button>
+        </div>
+
         <button
           type="submit"
           disabled={isSubmitting}
           className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 transition-colors"
         >
           <LogIn className="w-4 h-4" />
-          <span>{isSubmitting ? "Signing in..." : "Sign In"}</span>
+          <span>{isSubmitting ? "Logging in..." : "Log In"}</span>
         </button>
 
         <p className="text-center text-xs text-slate-400 pt-2">
