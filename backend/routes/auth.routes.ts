@@ -170,4 +170,50 @@ router.get("/me", async (req: Request, res: Response, next: NextFunction) => {
   }
 });
 
+router.post("/forgot-password", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email, newPassword } = req.body;
+
+    if (!email || !String(email).trim()) {
+      res.status(400).json({ error: "Email is required." });
+      return;
+    }
+
+    if (!newPassword || String(newPassword).length < 6) {
+      res.status(400).json({ error: "Password must be at least 6 characters." });
+      return;
+    }
+
+    const trimmedEmail = String(email).trim().toLowerCase();
+
+    // Check if user exists
+    const rows = await query<RowDataPacket[]>(
+      "SELECT id FROM users WHERE email = ?",
+      [trimmedEmail]
+    );
+
+    if (rows.length === 0) {
+      res.status(404).json({ error: "No account found with this email address." });
+      return;
+    }
+
+    // Hash the new password
+    const passwordHash = await bcrypt.hash(String(newPassword), 10);
+
+    // Update the password
+    await query(
+      "UPDATE users SET password = ?, updated_at = NOW() WHERE email = ?",
+      [passwordHash, trimmedEmail]
+    );
+
+    logSqlQuery(
+      `UPDATE users SET password = '[hash]', updated_at = NOW() WHERE email = '${trimmedEmail}';`
+    );
+
+    res.json({ message: "Password reset successfully. Please log in with your new password." });
+  } catch (err) {
+    next(err);
+  }
+});
+
 export default router;
