@@ -52,6 +52,11 @@ export default function LoginPage({ onLoginSuccess, onSwitchToSignUp, onSwitchTo
     }
   };
 
+
+
+
+  
+
   return (
     <div className="w-full max-w-md">
       <div className="text-center mb-8">

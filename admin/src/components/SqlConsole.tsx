@@ -7,7 +7,7 @@ import {
   HelpCircle, 
   CheckCircle, 
   Zap, 
-  Layers, 
+  Layers,
   FileCode,
   ShieldAlert,
   Cpu,

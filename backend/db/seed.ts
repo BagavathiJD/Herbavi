@@ -6,7 +6,7 @@ import {
   Product,
   Order,
   Customer,
-} from "../../src/types.js";
+} from "../../admin/src/types.js";
 import { getConnection } from "./pool.js";
 
 const DB_JSON_PATH = path.join(process.cwd(), "data", "db.json");

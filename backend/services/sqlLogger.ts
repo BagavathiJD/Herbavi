@@ -1,4 +1,4 @@
-import { SqlQueryLog } from "../../src/types.js";
+import { SqlQueryLog } from "../../admin/src/types.js";
 
 let sqlLogsCache: SqlQueryLog[] = [];
 
