@@ -16,7 +16,7 @@ router.get("/db-metrics", async (_req: Request, res: Response, next: NextFunctio
     const metricsSql =
       "SELECT COUNT(*) AS cnt FROM information_schema.tables WHERE table_schema = ?";
     logSqlQuery(
-      "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
       0.2
     );
     const tableRows = await query<RowDataPacket[]>(metricsSql, [
@@ -61,9 +61,9 @@ router.post("/db/reseed", async (_req: Request, res: Response, next: NextFunctio
   try {
     clearSqlLogs();
     await seedDatabase();
-    logSqlQuery("DROP DATABASE IF EXISTS ecommerce_admin;");
-    logSqlQuery("CREATE DATABASE ecommerce_admin;");
-    logSqlQuery("USE ecommerce_admin;");
+    logSqlQuery("DROP DATABASE IF EXISTS herbavi;");
+    logSqlQuery("CREATE DATABASE herbavi;");
+    logSqlQuery("USE herbavi;");
     logSqlQuery("INSERT INTO measurements SELECT * ...;");
     logSqlQuery("INSERT INTO products SELECT * ...;");
     res.json({ message: "Database re-seeded successfully!" });

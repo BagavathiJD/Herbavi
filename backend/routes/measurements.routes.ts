@@ -41,7 +41,7 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
     }
 
     await query(
-      "INSERT INTO measurements (id, name, status, created_at) VALUES (?, ?, ?, NOW())",
+      "INSERT IGNORE  INTO measurements (id, name, status, created_at) VALUES (?, ?, ?, NOW())",
       [id, trimmedName, resolvedStatus]
     );
 

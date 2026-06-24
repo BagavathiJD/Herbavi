@@ -112,12 +112,13 @@ router.post("/login", async (req: Request, res: Response, next: NextFunction) =>
     }
 
     const trimmedEmail = String(email).trim().toLowerCase();
+    console.log("Login request received");
 
     const rows = await query<RowDataPacket[]>(
       "SELECT id, user_name, email, phone_number, password, created_at FROM users WHERE email = ?",
       [trimmedEmail]
     );
-
+    console.log("User rows:", rows);  
     if (rows.length === 0) {
       res.status(401).json({ error: "Invalid email or password." });
       return;
@@ -129,6 +130,7 @@ router.post("/login", async (req: Request, res: Response, next: NextFunction) =>
       res.status(401).json({ error: "Invalid email or password." });
       return;
     }
+    console.log("Password valid:", valid);
 
     logSqlQuery(`SELECT * FROM users WHERE email = '${trimmedEmail}';`);
 
@@ -136,9 +138,14 @@ router.post("/login", async (req: Request, res: Response, next: NextFunction) =>
     const token = signToken(user);
 
     res.json({ token, user });
-  } catch (err) {
-    next(err);
-  }
+  }catch (err) {
+  console.error("LOGIN ERROR:", err);
+
+  return res.status(500).json({
+    error: err instanceof Error ? err.message : String(err),
+    stack: err instanceof Error ? err.stack : undefined,
+  });
+}
 });
 
 router.get("/me", async (req: Request, res: Response, next: NextFunction) => {
