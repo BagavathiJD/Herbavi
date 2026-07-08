@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import bcrypt from "bcryptjs";
 import mysql from "mysql2/promise";
 import { dbConfig } from "../config/env";
 import { getPool } from "./pool";
@@ -27,9 +28,13 @@ async function ensureUsersRoleColumn(
   );
   if (cols.length === 0) {
     await connection.query(
-      "ALTER TABLE users ADD COLUMN role ENUM('Admin', 'Staff') NOT NULL DEFAULT 'Admin' AFTER phone_number"
+      "ALTER TABLE users ADD COLUMN role ENUM('Admin','User') NOT NULL DEFAULT 'User' AFTER phone_number"
     );
     console.log("Added role column to users.");
+  } else {
+    await connection.query(
+      "ALTER TABLE users MODIFY COLUMN role ENUM('Admin','User') NOT NULL DEFAULT 'User'"
+    );
   }
 }
 
@@ -67,15 +72,15 @@ async function migrateCustomerCredentialsToUsers(
   await connection.query(
     `INSERT INTO users (user_name, password, email, phone_number, role, created_at, updated_at)
      SELECT c.name, c.password_hash, c.email,
-            COALESCE(NULLIF(c.phone, ''), '0000000000'), 'Admin', c.join_date, c.join_date
-     FROM customers c
-     WHERE c.password_hash IS NOT NULL AND c.password_hash != ''
-     AND NOT EXISTS (SELECT 1 FROM users u WHERE LOWER(u.email) = LOWER(c.email))`
-  );
+              COALESCE(NULLIF(c.phone, ''), '0000000000'), 'User', c.join_date, c.join_date
+       FROM customers c
+       WHERE c.password_hash IS NOT NULL AND c.password_hash != ''
+       AND NOT EXISTS (SELECT 1 FROM users u WHERE LOWER(u.email) = LOWER(c.email))`
+    );
 
   await connection.query("ALTER TABLE customers DROP COLUMN password_hash");
   console.log(
-    "Moved login credentials from customers to users and removed password_hash column."
+    "Moved login credentials from customers to users as User role and removed password_hash column."
   );
 }
 
@@ -108,6 +113,53 @@ async function ensureImageColumns(connection: mysql.Connection): Promise<void> {
     await connection.query("ALTER TABLE orders MODIFY product_image_url MEDIUMTEXT");
     console.log("Expanded image_url columns to MEDIUMTEXT for uploaded images.");
   }
+}
+
+async function ensureUserAddressColumn(connection: mysql.Connection): Promise<void> {
+  const [cols] = await connection.query<mysql.RowDataPacket[]>(
+    `SELECT COLUMN_NAME FROM information_schema.COLUMNS
+     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'users' AND COLUMN_NAME = 'address'`,
+    [dbConfig.database]
+  );
+  if (cols.length === 0) {
+    await connection.query(
+      "ALTER TABLE users ADD COLUMN address TEXT NULL AFTER phone_number"
+    );
+    console.log("Added address column to users.");
+  }
+}
+
+async function migrateEcommerceAdminUsers(connection: mysql.Connection): Promise<void> {
+  // The cross-database migration from `herbavi` is disabled.
+  // All data should be created and stored in the configured database (see DB_DATABASE).
+  // If you previously had a separate `herbavi` schema and need to migrate,
+  // implement an explicit one-off migration outside of this automated runner.
+  console.log("Skipping migrateEcommerceAdminUsers: cross-database migration disabled.");
+}
+
+async function ensureDefaultUsers(connection: mysql.Connection): Promise<void> {
+  const [rows] = await connection.query<mysql.RowDataPacket[]>(
+    "SELECT COUNT(*) AS cnt FROM users"
+  );
+  const userCount = Number(rows[0]?.cnt ?? 0);
+  if (userCount > 0) {
+    return;
+  }
+
+  const adminHash = await bcrypt.hash("Admin123!", 10);
+  const userHash = await bcrypt.hash("User123!", 10);
+
+  await connection.query(
+    `INSERT INTO users (user_name, password, email, phone_number, role, created_at, updated_at)
+     VALUES
+       ('Admin User', ?, 'admin@herbavi.com', '0000000000', 'Admin', NOW(), NOW()),
+       ('Normal User', ?, 'user@herbavi.com', '0000000000', 'User', NOW(), NOW())`,
+    [adminHash, userHash]
+  );
+
+  console.log(
+    "Created default Herbavi auth users: admin@herbavi.com, user@herbavi.com."
+  );
 }
 
 async function rebuildSchema(connection: mysql.Connection): Promise<void> {
@@ -160,7 +212,9 @@ export async function runMigrations(): Promise<void> {
     await ensureUsersRoleColumn(connection);
     await migrateLegacyAdminUsers(connection);
     await migrateCustomerCredentialsToUsers(connection);
+    await ensureDefaultUsers(connection);
     await ensureImageColumns(connection);
+    await ensureUserAddressColumn(connection);
   } finally {
     await connection.end();
   }

@@ -32,7 +32,7 @@ export default function ProductForm({
   const [imageUrl, setImageUrl] = useState("");
   const [imageFileName, setImageFileName] = useState("");
   const [measurementId, setMeasurementId] = useState("");
-  const [measurementValue, setMeasurementValue] = useState("1");
+  const [measurementValue, setMeasurementValue] = useState("");
   const [price, setPrice] = useState("");
   const [status, setStatus] = useState<"Active" | "Inactive">("Active");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -48,16 +48,12 @@ export default function ProductForm({
       setPrice(initialProduct.price.toString());
       setStatus(initialProduct.status);
     } else {
-      const enabledMeasurements = measurements.filter((m) => m.status === "Enabled");
-      if (enabledMeasurements.length > 0) {
-        setMeasurementId(enabledMeasurements[0].id);
-      }
-      const enabledNames = productNames.filter((pn) => pn.status === "Enabled");
-      setName(enabledNames.length > 0 ? enabledNames[0].name : "");
+      setName("");
       setDescription("");
       setImageUrl("");
       setImageFileName("");
-      setMeasurementValue("1");
+      setMeasurementId("");
+      setMeasurementValue("");
       setPrice("");
       setStatus("Active");
     }
@@ -198,8 +194,9 @@ export default function ProductForm({
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6 font-sans">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-          {/* Left: Form */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:items-start">
+          {/* Left: Form — fixed on desktop */}
+          <div className="lg:sticky lg:top-0 lg:self-start z-10">
           <div className="bg-[#0f172a] p-6 rounded-2xl border border-slate-850/80 shadow-md space-y-4">
             <h4 className="text-xs font-black uppercase tracking-widest text-indigo-400 pb-2 border-b border-slate-850">
               Product Details
@@ -227,6 +224,9 @@ export default function ProductForm({
                   </option>
                 ) : (
                   <>
+                    <option value="" disabled className="bg-[#020617] text-slate-500">
+                      Select product
+                    </option>
                     {!activeProductNames.some((pn) => pn.name === name) && name && (
                       <option value={name} className="bg-[#020617] text-white">
                         {name}
@@ -261,7 +261,7 @@ export default function ProductForm({
                   type="number"
                   step="0.01"
                   min="0.01"
-                  placeholder="24.99"
+                  placeholder="499.00"
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
                   className={`w-full text-xs p-3 pl-8 bg-[#020617] text-white border rounded-xl focus:outline-none focus:ring-2 ${
@@ -295,7 +295,7 @@ export default function ProductForm({
                     type="number"
                     step="any"
                     min="0.01"
-                    placeholder="e.g. 1, 2"
+                    placeholder="Select measurement"
                     value={measurementValue}
                     onChange={(e) => setMeasurementValue(e.target.value)}
                     className={`w-full text-xs p-3 bg-[#020617] text-white border rounded-xl focus:outline-none focus:ring-2 ${
@@ -331,11 +331,16 @@ export default function ProductForm({
                         No enabled measurements (Configure in Settings first!)
                       </option>
                     ) : (
-                      activeMeasurements.map((m) => (
-                        <option key={m.id} value={m.id} className="bg-[#020617] text-white">
-                          {m.name}
+                      <>
+                        <option value="" disabled className="bg-[#020617] text-slate-500">
+                          Select unit
                         </option>
-                      ))
+                        {activeMeasurements.map((m) => (
+                          <option key={m.id} value={m.id} className="bg-[#020617] text-white">
+                            {m.name}
+                          </option>
+                        ))}
+                      </>
                     )}
                   </select>
                   {errors.measurementId && (
@@ -441,9 +446,10 @@ export default function ProductForm({
               )}
             </div>
           </div>
+          </div>
 
-          {/* Right: Preview */}
-          <div className="bg-[#0f172a] p-6 rounded-2xl border border-slate-850/80 shadow-md lg:sticky lg:top-6">
+          {/* Right: Preview — scrollable on desktop */}
+          <div className="bg-[#0f172a] p-6 rounded-2xl border border-slate-850/80 shadow-md lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto">
             <h4 className="text-xs font-black uppercase tracking-widest text-indigo-400 pb-2 border-b border-slate-850 mb-4">
               Product Preview
             </h4>
@@ -524,15 +530,17 @@ export default function ProductForm({
           <button
             type="submit"
             disabled={isSubmitting}
-            className="px-6 py-2.5 text-xs font-bold bg-indigo-650 text-white rounded-xl shadow-md hover:bg-indigo-600 transition-all flex items-center gap-1.5 disabled:opacity-50 cursor-pointer border border-indigo-700"
+            className="px-6 py-2.5 text-xs font-bold bg-[#1f3a28] text-white rounded-xl shadow-md hover:bg-[#172d22] transition-all flex items-center gap-1.5 disabled:opacity-50 cursor-pointer border border-[#1f3a28]"
           >
             <Save className="w-4 h-4" />
             <span>
               {isSubmitting
-                ? "Processing Transaction..."
+                ? initialProduct
+                  ? "Updating..."
+                  : "Adding..."
                 : initialProduct
                   ? "Update Product"
-                  : "Insert Product"}
+                  : "Add Product"}
             </span>
           </button>
         </div>

@@ -17,15 +17,13 @@ interface ProductVisitsModuleProps {
   measurements: Measurement[];
   onEditTrigger: (product: Product) => void;
   onDeleteProduct: (id: string) => Promise<void>;
-  onViewProductDetails: (product: Product) => void;
 }
 
 export default function ProductVisitsModule({
   products,
   measurements,
   onEditTrigger,
-  onDeleteProduct,
-  onViewProductDetails
+  onDeleteProduct
 }: ProductVisitsModuleProps) {
   // Filters & State holds
   const [searchTerm, setSearchTerm] = useState("");
@@ -82,16 +80,16 @@ export default function ProductVisitsModule({
       
       {/* 1. Dynamic Visitation Sparklines Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <div className="bg-gradient-to-br from-emerald-950/30 to-[#0f172a] p-5 rounded-2xl text-white border border-emerald-900/35 shadow-md flex items-center justify-between">
+        <div className="bg-gradient-to-br from-indigo-950/30 to-[#0f172a] p-5 rounded-2xl text-white border border-indigo-900/35 shadow-md flex items-center justify-between">
           <div className="text-left space-y-1">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[#a7f3d0]">Aggregated Product Visual Visits</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-indigo-300">Aggregated Product Visual Visits</p>
             <h3 className="text-2xl font-black font-mono leading-none mt-1">{totalVisitsCount.toLocaleString()}</h3>
             <p className="text-[11px] text-slate-400 flex items-center gap-1 mt-1.5">
-              <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
+              <TrendingUp className="w-3.5 h-3.5 text-indigo-400" />
               <span>Simulating customer page loads in catalog index</span>
             </p>
           </div>
-          <Eye className="w-12 h-12 text-emerald-450 opacity-15 shrink-0" />
+          <Eye className="w-12 h-12 text-indigo-455 opacity-15 shrink-0" />
         </div>
 
         <div className="bg-gradient-to-br from-indigo-950/30 to-[#0f172a] p-5 rounded-2xl text-white border border-indigo-900/35 shadow-md flex items-center justify-between">
@@ -193,19 +191,14 @@ export default function ProductVisitsModule({
                         <img 
                           src={p.imageUrl} 
                           alt={p.name} 
-                          onClick={() => onViewProductDetails(p)}
-                          className="w-10 h-10 object-cover rounded-xl border border-slate-800 bg-[#020617] cursor-pointer hover:opacity-85"
+                          className="w-10 h-10 object-cover rounded-xl border border-slate-800 bg-[#020617]"
                           referrerPolicy="no-referrer"
                         />
                       </td>
                       <td className="py-3.5 px-6 text-left">
-                        <button
-                          id={`vst-details-name-${p.id}`}
-                          onClick={() => onViewProductDetails(p)}
-                          className="font-bold text-white hover:text-indigo-400 text-left hover:underline block cursor-pointer"
-                        >
+                        <span className="font-bold text-[#1f3a28]">
                           {p.name}
-                        </button>
+                        </span>
                       </td>
                       <td className="py-3.5 px-6 font-medium text-slate-300">
                         {formatProductMeasurement(p.measurementValue, measure?.name)}
@@ -228,7 +221,7 @@ export default function ProductVisitsModule({
                           <button
                             id={`vst-edit-btn-${p.id}`}
                             onClick={() => onEditTrigger(p)}
-                            className="p-1.5 hover:bg-indigo-950/50 border border-indigo-900/60 text-indigo-400 rounded-lg transition-colors cursor-pointer"
+                            className="p-1.5 bg-[#1f3a28] hover:bg-[#172d22] border border-[#1f3a28] text-white rounded-lg transition-colors cursor-pointer"
                             title="Edit this item"
                           >
                             <Edit3 className="w-3.5 h-3.5" />
@@ -254,12 +247,6 @@ export default function ProductVisitsModule({
               )}
             </tbody>
           </table>
-        </div>
-
-        {/* Index Metrics Info footer */}
-        <div className="p-4 bg-[#020617]/70 border-t border-slate-850 text-xs text-slate-400 font-mono text-left flex justify-between items-center flex-wrap gap-2">
-          <span>Search matches: {filteredProducts.length} row instances</span>
-          <span>Indexed parameters: Product Management relational integrity enforced</span>
         </div>
       </div>
 

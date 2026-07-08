@@ -231,6 +231,13 @@ router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
       ]
     );
 
+    if (name !== undefined && updatedName !== row.name) {
+      await query("UPDATE orders SET product_name = ? WHERE product_id = ?", [
+        updatedName,
+        id,
+      ]);
+    }
+
     logSqlQuery(
       `UPDATE products SET name = '${String(updatedName).replace(/'/g, "''")}', price = ${updatedPrice}, status = '${updatedStatus}' WHERE id = '${id}';`
     );

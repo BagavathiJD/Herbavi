@@ -78,16 +78,16 @@ export default function ForgotPasswordPage({ onSwitchToLogin }: ForgotPasswordPa
   return (
     <div className="w-full max-w-md">
       <div className="text-center mb-8">
-        <div className="inline-flex p-3 bg-indigo-600 rounded-xl text-white shadow-lg shadow-indigo-600/30 mb-4">
+        <div className="inline-flex p-3 bg-[#1f3a28] rounded-xl text-white shadow-md mb-4">
           <Boxes className="w-8 h-8" />
         </div>
-        <h1 className="text-xl font-extrabold text-white tracking-wide uppercase">Herbavi Admin</h1>
-        <p className="text-xs text-slate-400 mt-1">Reset your password</p>
+        <h1 className="text-xl font-extrabold text-black tracking-wide uppercase">Herbavi Admin</h1>
+        <p className="text-xs text-gray-600 mt-1">Reset your password</p>
       </div>
 
       <form
         onSubmit={handleSubmit}
-        className="bg-[#0f172a] border border-slate-800 rounded-2xl p-6 space-y-4 shadow-xl"
+        className="bg-white border border-gray-200 rounded-2xl p-6 space-y-4 shadow-lg"
       >
         {error && (
           <div className="p-3 bg-red-950/40 text-red-400 border border-red-900/50 text-xs rounded-xl flex items-start gap-2">
@@ -104,7 +104,7 @@ export default function ForgotPasswordPage({ onSwitchToLogin }: ForgotPasswordPa
         )}
 
         <div className="space-y-1.5 text-left">
-          <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+          <label className="text-xs font-bold text-gray-600 uppercase tracking-wider">
             Confirm Email
           </label>
           <input
@@ -114,12 +114,12 @@ export default function ForgotPasswordPage({ onSwitchToLogin }: ForgotPasswordPa
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="admin@herbavi.com"
-            className="w-full text-xs p-3 bg-[#020617] text-white border border-slate-800 rounded-xl focus:outline-none focus:border-indigo-500 disabled:opacity-50"
+            className="w-full text-xs p-3 bg-white text-black border border-gray-300 rounded-xl focus:outline-none focus:border-[#1f3a28] disabled:opacity-50"
           />
         </div>
 
         <div className="space-y-1.5 text-left">
-          <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+          <label className="text-xs font-bold text-gray-600 uppercase tracking-wider">
             New Password
           </label>
           <input
@@ -129,12 +129,12 @@ export default function ForgotPasswordPage({ onSwitchToLogin }: ForgotPasswordPa
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             placeholder="••••••••"
-            className="w-full text-xs p-3 bg-[#020617] text-white border border-slate-800 rounded-xl focus:outline-none focus:border-indigo-500 disabled:opacity-50"
+            className="w-full text-xs p-3 bg-white text-black border border-gray-300 rounded-xl focus:outline-none focus:border-[#1f3a28] disabled:opacity-50"
           />
         </div>
 
         <div className="space-y-1.5 text-left">
-          <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+          <label className="text-xs font-bold text-gray-600 uppercase tracking-wider">
             Confirm Password
           </label>
           <input
@@ -144,26 +144,26 @@ export default function ForgotPasswordPage({ onSwitchToLogin }: ForgotPasswordPa
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder="••••••••"
-            className="w-full text-xs p-3 bg-[#020617] text-white border border-slate-800 rounded-xl focus:outline-none focus:border-indigo-500 disabled:opacity-50"
+            className="w-full text-xs p-3 bg-white text-black border border-gray-300 rounded-xl focus:outline-none focus:border-[#1f3a28] disabled:opacity-50"
           />
         </div>
 
         <button
           type="submit"
           disabled={isSubmitting || success}
-          className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 transition-colors"
+          className="w-full py-3 bg-[#1f3a28] hover:bg-[#172d22] text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 transition-colors"
         >
           <KeyRound className="w-4 h-4" />
           <span>{isSubmitting ? "Resetting..." : "Reset Password"}</span>
         </button>
 
-        <p className="text-center text-xs text-slate-400 pt-2">
+        <p className="text-center text-xs text-gray-600 pt-2">
           Remember your password?{" "}
           <button
             type="button"
             onClick={onSwitchToLogin}
             disabled={isSubmitting}
-            className="text-indigo-400 font-semibold hover:text-indigo-300 cursor-pointer disabled:opacity-50"
+            className="text-[#1f3a28] font-semibold hover:text-[#172d22] cursor-pointer disabled:opacity-50"
           >
             Back to login
           </button>

@@ -1,0 +1,471 @@
+@font-face {
+  font-family: 'icomoon';
+  src:  url('fonts/icomoona167.eot?dspvph');
+  src:  url('fonts/icomoona167.eot?dspvph#iefix') format('embedded-opentype'),
+    url('fonts/icomoona167.ttf?dspvph') format('truetype'),
+    url('fonts/icomoona167.woff?dspvph') format('woff'),
+    url('fonts/icomoona167.svg?dspvph#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-CheckLight:before {
+  content: "\e98c";
+}
+.icon-Pen:before {
+  content: "\e98d";
+}
+.icon-Rocket:before {
+  content: "\e98e";
+}
+.icon-HearthFill2:before {
+  content: "\e98f";
+}
+.icon-ArrowRight2:before {
+  content: "\e990";
+}
+.icon-Spark:before {
+  content: "\e991";
+}
+.icon-Stock:before {
+  content: "\e992";
+}
+.icon-Grid2:before {
+  content: "\e993";
+}
+.icon-Harmonize:before {
+  content: "\e989";
+}
+.icon-PlantResearch:before {
+  content: "\e98a";
+}
+.icon-GreenProtect:before {
+  content: "\e98b";
+}
+.icon-OrangeSlice:before {
+  content: "\e988";
+}
+.icon-VerifiedStroke:before {
+  content: "\e987";
+}
+.icon-RectangleRight:before {
+  content: "\e985";
+}
+.icon-RectangleLeft:before {
+  content: "\e986";
+}
+.icon-Pick:before {
+  content: "\e984";
+}
+.icon-Bell:before {
+  content: "\e983";
+}
+.icon-VideoPause:before {
+  content: "\e982";
+}
+.icon-Upload:before {
+  content: "\e981";
+}
+.icon-Refresh:before {
+  content: "\e980";
+}
+.icon-Like:before {
+  content: "\e97d";
+}
+.icon-LikeFill:before {
+  content: "\e97e";
+}
+.icon-Verified:before {
+  content: "\e97c";
+}
+.icon-Link:before {
+  content: "\e97b";
+}
+.icon-Sparkle2:before {
+  content: "\e97a";
+}
+.icon-Star-Sharp:before {
+  content: "\e979";
+}
+.icon-Star-Sharp-Stroke:before {
+  content: "\e97f";
+}
+.icon-sidebar:before {
+  content: "\e978";
+}
+.icon-OpenMenu:before {
+  content: "\e977";
+}
+.icon-SkinTreatment:before {
+  content: "\e903";
+}
+.icon-Glass:before {
+  content: "\e918";
+}
+.icon-LeafHand:before {
+  content: "\e91c";
+}
+.icon-GrandMo:before {
+  content: "\e920";
+}
+.icon-BoxLeaf:before {
+  content: "\e921";
+}
+.icon-Coconut:before {
+  content: "\e928";
+}
+.icon-Daisy:before {
+  content: "\e929";
+}
+.icon-Plant:before {
+  content: "\e940";
+}
+.icon-Polygon:before {
+  content: "\e944";
+}
+.icon-ProductLifecycle:before {
+  content: "\e900";
+}
+.icon-BloodSymbol:before {
+  content: "\e901";
+}
+.icon-CustomerExperience:before {
+  content: "\e902";
+}
+.icon-ScreenShieldCheck:before {
+  content: "\e904";
+}
+.icon-WorldDelivery:before {
+  content: "\e905";
+}
+.icon-ShopLocationPin:before {
+  content: "\e906";
+}
+.icon-RecycleLeaf:before {
+  content: "\e907";
+}
+.icon-Recycle:before {
+  content: "\e908";
+}
+.icon-EcoFriendlyPackage:before {
+  content: "\e909";
+}
+.icon-WaterDropLeaf:before {
+  content: "\e90a";
+}
+.icon-CareCrue:before {
+  content: "\e90b";
+}
+.icon-Mindfullness:before {
+  content: "\e90c";
+}
+.icon-Telephone:before {
+  content: "\e90d";
+}
+.icon-AllAgree:before {
+  content: "\e90e";
+}
+.icon-PainKiller:before {
+  content: "\e90f";
+}
+.icon-DNA:before {
+  content: "\e910";
+}
+.icon-Warranty:before {
+  content: "\e911";
+}
+.icon-DoubleMail:before {
+  content: "\e912";
+}
+.icon-Meditation:before {
+  content: "\e913";
+}
+.icon-HyaluronicAcid:before {
+  content: "\e914";
+}
+.icon-EcoBiotechnilogy:before {
+  content: "\e915";
+}
+.icon-HandHolding:before {
+  content: "\e916";
+}
+.icon-GreenInitiative:before {
+  content: "\e917";
+}
+.icon-StarSparkle:before {
+  content: "\e919";
+}
+.icon-ApprovedDocument:before {
+  content: "\e91a";
+}
+.icon-Dashboard:before {
+  content: "\e91d";
+}
+.icon-Edit:before {
+  content: "\e91e";
+}
+.icon-Grid4Col:before {
+  content: "\e922";
+}
+.icon-Grid3Col:before {
+  content: "\e923";
+}
+.icon-Grid2Col:before {
+  content: "\e924";
+}
+.icon-List:before {
+  content: "\e925";
+}
+.icon-ArrowLongRight:before {
+  content: "\e926";
+}
+.icon-ArrowLongLeft:before {
+  content: "\e927";
+}
+.icon-Quote:before {
+  content: "\e92a";
+}
+.icon-ArrowCaretUp:before {
+  content: "\e92b";
+}
+.icon-ArrowCaretDown:before {
+  content: "\e95d";
+}
+.icon-ArrowCaretRight:before {
+  content: "\e94f";
+}
+.icon-ArrowCaretLeft:before {
+  content: "\e950";
+}
+.icon-ShoppingBag:before {
+  content: "\e92c";
+}
+.icon-LogoFacebook:before {
+  content: "\e91f";
+}
+.icon-LogoInstagram:before {
+  content: "\e92d";
+}
+.icon-LogoX:before {
+  content: "\e92f";
+}
+.icon-LogoThread:before {
+  content: "\e931";
+}
+.icon-LogoTiktok:before {
+  content: "\e932";
+}
+.icon-ShoppingCart:before {
+  content: "\e92e";
+}
+.icon-ArrowRight:before {
+  content: "\e930";
+}
+.icon-ArrowDown:before {
+  content: "\e968";
+}
+.icon-ArrowLeft:before {
+  content: "\e970";
+}
+.icon-ArrowUp:before {
+  content: "\e976";
+}
+.icon-UserCircle:before {
+  content: "\e933";
+}
+.icon-EyeSlash:before {
+  content: "\e969";
+}
+.icon-EyeOpen:before {
+  content: "\e934";
+}
+.icon-Hearth:before {
+  content: "\e935";
+}
+.icon-Compare:before {
+  content: "\e936";
+}
+.icon-Star:before {
+  content: "\e937";
+}
+.icon-ArrowRightUp:before {
+  content: "\e938";
+}
+.icon-Leaf:before {
+  content: "\e939";
+}
+.icon-Earth:before {
+  content: "\e93a";
+}
+.icon-Chemistry:before {
+  content: "\e93b";
+}
+.icon-FourLeafClover:before {
+  content: "\e93c";
+}
+.icon-Envelope:before {
+  content: "\e93d";
+}
+.icon-Send:before {
+  content: "\e93e";
+}
+.icon-Phone:before {
+  content: "\e93f";
+}
+.icon-DotLocation:before {
+  content: "\e941";
+}
+.icon-DNA2:before {
+  content: "\e942";
+}
+.icon-Leaves:before {
+  content: "\e943";
+}
+.icon-PlayCircle:before {
+  content: "\e945";
+}
+.icon-Plus:before {
+  content: "\e946";
+}
+.icon-Minus:before {
+  content: "\e953";
+}
+.icon-FacebookFill:before {
+  content: "\e947";
+}
+.icon-InstagramFill:before {
+  content: "\e948";
+}
+.icon-ThreadFill:before {
+  content: "\e949";
+}
+.icon-YoutubeFill:before {
+  content: "\e94a";
+}
+.icon-TiktokFill:before {
+  content: "\e94b";
+}
+.icon-FingerPrint:before {
+  content: "\e94c";
+}
+.icon-Box:before {
+  content: "\e94d";
+}
+.icon-StarSroke:before {
+  content: "\e94e";
+}
+.icon-PlusCircleFill:before {
+  content: "\e951";
+}
+.icon-MinusCircleFill:before {
+  content: "\e952";
+}
+.icon-ArrowRightCircleFill:before {
+  content: "\e954";
+}
+.icon-ArrowLeftCircleFill:before {
+  content: "\e955";
+}
+.icon-ArrowLeftUp:before {
+  content: "\e956";
+}
+.icon-Sparkle:before {
+  content: "\e957";
+}
+.icon-Gift:before {
+  content: "\e958";
+}
+.icon-Thunder:before {
+  content: "\e959";
+}
+.icon-Check:before {
+  content: "\e95a";
+}
+.icon-CheckThin:before {
+  content: "\e95f";
+}
+.icon-Share:before {
+  content: "\e95b";
+}
+.icon-Question:before {
+  content: "\e95c";
+}
+.icon-Split:before {
+  content: "\e95e";
+}
+.icon-EqualizerControl:before {
+  content: "\e960";
+}
+.icon-Return:before {
+  content: "\e961";
+}
+.icon-Close:before {
+  content: "\e962";
+}
+.icon-Trash:before {
+  content: "\e963";
+}
+.icon-Timer:before {
+  content: "\e964";
+}
+.icon-Note:before {
+  content: "\e965";
+}
+.icon-Clock:before {
+  content: "\e966";
+}
+.icon-HearthFill:before {
+  content: "\e967";
+}
+.icon-CheckCircleFill:before {
+  content: "\e96a";
+}
+.icon-WomenHearth:before {
+  content: "\e96b";
+}
+.icon-Logout:before {
+  content: "\e96c";
+}
+.icon-Payment:before {
+  content: "\e96d";
+}
+.icon-Search:before {
+  content: "\e96e";
+}
+.icon-Setting:before {
+  content: "\e96f";
+}
+.icon-Truck:before {
+  content: "\e971";
+}
+.icon-Star2:before {
+  content: "\e972";
+}
+.icon-CircleCheck:before {
+  content: "\e91b";
+}
+.icon-CircleCheck2:before {
+  content: "\e973";
+}
+.icon-Snow:before {
+  content: "\e974";
+}
+.icon-WaterLily:before {
+  content: "\e975";
+}

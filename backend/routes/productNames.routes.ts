@@ -74,7 +74,9 @@ router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
       return;
     }
 
-    const updatedName = name !== undefined ? String(name).trim() : existing[0].name;
+    const row = existing[0];
+    const oldName = row.name;
+    const updatedName = name !== undefined ? String(name).trim() : oldName;
     const updatedStatus =
       status !== undefined ? status : existing[0].status;
 
@@ -93,6 +95,24 @@ router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
       "UPDATE product_names SET name = ?, status = ? WHERE id = ?",
       [updatedName, updatedStatus, id]
     );
+
+    if (name !== undefined && updatedName !== oldName) {
+      await query("UPDATE products SET name = ? WHERE name = ?", [
+        updatedName,
+        oldName,
+      ]);
+      await query("UPDATE orders SET product_name = ? WHERE product_name = ?", [
+        updatedName,
+        oldName,
+      ]);
+
+      logSqlQuery(
+        `UPDATE products SET name = '${String(updatedName).replace(/'/g, "''")}' WHERE name = '${String(oldName).replace(/'/g, "''")}';`
+      );
+      logSqlQuery(
+        `UPDATE orders SET product_name = '${String(updatedName).replace(/'/g, "''")}' WHERE product_name = '${String(oldName).replace(/'/g, "''")}';`
+      );
+    }
 
     logSqlQuery(
       `UPDATE product_names \nSET name = '${String(updatedName).replace(/'/g, "''")}', status = '${updatedStatus}' \nWHERE id = '${id}';`

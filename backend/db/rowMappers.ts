@@ -57,13 +57,19 @@ export function mapOrder(row: RowDataPacket) {
   };
 }
 
+function normalizeRole(role: unknown) {
+  const value = String(role ?? "").trim().toLowerCase();
+  if (value === "admin") return "Admin";
+  return "User";
+}
+
 export function mapAppUser(row: RowDataPacket) {
   return {
     id: String(row.id),
     userName: row.user_name,
     email: row.email,
     phoneNumber: row.phone_number ?? "",
-    role: row.role === "Staff" ? "Staff" : "Admin",
+    role: normalizeRole(row.role),
     createdAt:
       row.created_at instanceof Date
         ? row.created_at.toISOString()

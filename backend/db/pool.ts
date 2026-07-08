@@ -14,7 +14,9 @@ export async function query<T = mysql.RowDataPacket[]>(
   sql: string,
   params?: unknown[]
 ): Promise<T> {
-  const [rows] = await getPool().execute(sql, params);
+  const [rows] = params === undefined
+    ? await getPool().execute(sql)
+    : await getPool().execute(sql, params as mysql.ExecuteValues);
   return rows as T;
 }
 

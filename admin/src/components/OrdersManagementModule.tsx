@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { 
   Search, 
   ShoppingCart, 
-  Eye, 
-  ArrowRight,
   TrendingUp,
   Package,
   Calendar,
@@ -18,7 +16,6 @@ import { Order, formatCurrency } from "../types";
 interface OrdersManagementModuleProps {
   orders: Order[];
   onUpdateStatus: (id: string, newStatus: string) => Promise<void>;
-  onViewOrderDetails: (order: Order) => void;
   onSimulateOrder: () => Promise<void>;
   isSimulating: boolean;
 }
@@ -26,7 +23,6 @@ interface OrdersManagementModuleProps {
 export default function OrdersManagementModule({
   orders,
   onUpdateStatus,
-  onViewOrderDetails,
   onSimulateOrder,
   isSimulating
 }: OrdersManagementModuleProps) {
@@ -40,17 +36,17 @@ export default function OrdersManagementModule({
   const getStatusStyle = (status: string) => {
     switch (status) {
       case "Pending":
-        return "bg-amber-950/40 text-amber-400 border-amber-900/50";
+        return "bg-amber-100 text-amber-800 border-amber-200";
       case "Processing":
-        return "bg-blue-950/40 text-blue-400 border-blue-900/50";
+        return "bg-blue-100 text-blue-800 border-blue-200";
       case "Shipped":
-        return "bg-purple-950/40 text-purple-400 border-purple-900/50";
+        return "bg-purple-100 text-purple-800 border-purple-200";
       case "Delivered":
-        return "bg-emerald-950/40 text-emerald-400 border-emerald-900/50";
+        return "bg-green-100 text-[#1f3a28] border-green-200";
       case "Cancelled":
-        return "bg-rose-950/40 text-rose-400 border-rose-900/50";
+        return "bg-red-100 text-red-700 border-red-200";
       default:
-        return "bg-slate-900 text-slate-300 border-slate-800";
+        return "bg-gray-100 text-gray-700 border-gray-200";
     }
   };
 
@@ -114,7 +110,7 @@ export default function OrdersManagementModule({
             id="order-btn-simulate"
             onClick={onSimulateOrder}
             disabled={isSimulating}
-            className="px-3.5 py-1.5 bg-indigo-650 hover:bg-indigo-600 border border-indigo-700 font-bold text-[10px] rounded-lg transition-all flex items-center gap-1 cursor-pointer disabled:opacity-50"
+            className="px-3.5 py-1.5 bg-[#1f3a28] hover:bg-[#172d22] border border-[#1f3a28] font-bold text-[10px] rounded-lg transition-all flex items-center gap-1 cursor-pointer disabled:opacity-50 text-white"
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>{isSimulating ? "Inserting query..." : "Simulate Order"}</span>
@@ -178,13 +174,12 @@ export default function OrdersManagementModule({
                 <th className="py-3.5 px-6 text-right">Total Amount</th>
                 <th className="py-3.5 px-6 text-center">Status Mapped</th>
                 <th className="py-3.5 px-6 font-center">Log Date</th>
-                <th className="py-3.5 px-6 text-center">Admin Controls</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-850 text-slate-300">
               {paginatedOrders.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className="text-center py-20 text-slate-500">
+                  <td colSpan={8} className="text-center py-20 text-slate-500">
                     No customer orders found matching current criteria.
                   </td>
                 </tr>
@@ -257,21 +252,6 @@ export default function OrdersManagementModule({
                     {/* Date stamp */}
                     <td className="py-4 px-6 text-slate-500 font-mono text-[10px]">
                       {new Date(o.orderDate).toLocaleDateString()}
-                    </td>
-
-                    {/* Details click helper */}
-                    <td className="py-4 px-6">
-                      <div className="flex justify-center">
-                        <button
-                          id={`ord-details-btn-${o.id}`}
-                          onClick={() => onViewOrderDetails(o)}
-                          className="p-1 px-2.5 text-[10px] hover:bg-slate-805 hover:bg-slate-800 rounded-lg text-slate-300 font-extrabold border border-slate-800 transition-colors flex items-center gap-0.5 cursor-pointer"
-                          title="Inspect raw values"
-                        >
-                          <Eye className="w-3.5 h-3.5" />
-                          <span>Inspect</span>
-                        </button>
-                      </div>
                     </td>
                   </tr>
                 ))
