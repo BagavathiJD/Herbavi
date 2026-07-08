@@ -318,7 +318,7 @@
     },
     {
       "id": "log-1781250060212-654",
-      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
       "executedAt": "2026-06-12T07:41:00.212Z",
       "durationMs": 0.2,
       "success": true
@@ -360,7 +360,7 @@
     },
     {
       "id": "log-1781250060197-880",
-      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
       "executedAt": "2026-06-12T07:41:00.197Z",
       "durationMs": 0.2,
       "success": true
@@ -402,7 +402,7 @@
     },
     {
       "id": "log-1781250060182-242",
-      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
       "executedAt": "2026-06-12T07:41:00.182Z",
       "durationMs": 0.2,
       "success": true
@@ -444,7 +444,7 @@
     },
     {
       "id": "log-1781250060165-675",
-      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
       "executedAt": "2026-06-12T07:41:00.165Z",
       "durationMs": 0.2,
       "success": true
@@ -486,7 +486,7 @@
     },
     {
       "id": "log-1781249977759-37",
-      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
       "executedAt": "2026-06-12T07:39:37.759Z",
       "durationMs": 0.2,
       "success": true
@@ -528,7 +528,7 @@
     },
     {
       "id": "log-1781249977746-162",
-      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
       "executedAt": "2026-06-12T07:39:37.746Z",
       "durationMs": 0.2,
       "success": true
@@ -577,7 +577,7 @@
     },
     {
       "id": "log-1781249977732-444",
-      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
       "executedAt": "2026-06-12T07:39:37.732Z",
       "durationMs": 0.2,
       "success": true
@@ -612,7 +612,7 @@
     },
     {
       "id": "log-1781249977725-4",
-      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
       "executedAt": "2026-06-12T07:39:37.725Z",
       "durationMs": 0.2,
       "success": true
@@ -654,7 +654,7 @@
     },
     {
       "id": "log-1781249976073-858",
-      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
       "executedAt": "2026-06-12T07:39:36.073Z",
       "durationMs": 0.2,
       "success": true
@@ -696,7 +696,7 @@
     },
     {
       "id": "log-1781249976060-196",
-      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
       "executedAt": "2026-06-12T07:39:36.060Z",
       "durationMs": 0.2,
       "success": true
@@ -738,7 +738,7 @@
     },
     {
       "id": "log-1781249976048-111",
-      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
       "executedAt": "2026-06-12T07:39:36.048Z",
       "durationMs": 0.2,
       "success": true
@@ -751,37 +751,37 @@
       "success": true
     },
     {
-      "id": "log-1781249976045-385",
-      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
-      "executedAt": "2026-06-12T07:39:36.045Z",
-      "durationMs": 1.97,
-      "success": true
-    },
-    {
-      "id": "log-1781249976043-129",
-      "query": "SELECT * FROM customers ORDER BY join_date DESC;",
-      "executedAt": "2026-06-12T07:39:36.043Z",
-      "durationMs": 2.21,
-      "success": true
-    },
-    {
-      "id": "log-1781249976042-978",
-      "query": "SELECT o.* FROM orders o\nORDER BY o.order_date DESC;",
-      "executedAt": "2026-06-12T07:39:36.042Z",
-      "durationMs": 0.43,
-      "success": true
-    },
-    {
-      "id": "log-1781249976037-464",
-      "query": "SELECT p.*, m.name AS measurement_name \nFROM products p \nLEFT JOIN measurements m ON p.measurement_id = m.id\nORDER BY p.created_at DESC;",
-      "executedAt": "2026-06-12T07:39:36.037Z",
-      "durationMs": 0.83,
-      "success": true
-    },
-    {
       "id": "log-1781249976036-879",
-      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
       "executedAt": "2026-06-12T07:39:36.036Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781249944933-858",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
+      "executedAt": "2026-06-12T07:39:04.933Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781249943758-986",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
+      "executedAt": "2026-06-12T07:39:03.758Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781249788320-956",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
+      "executedAt": "2026-06-12T07:36:28.320Z",
+      "durationMs": 0.2,
+      "success": true
+    },
+    {
+      "id": "log-1781249788294-558",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
+      "executedAt": "2026-06-12T07:36:28.294Z",
       "durationMs": 0.2,
       "success": true
     },
@@ -822,7 +822,7 @@
     },
     {
       "id": "log-1781249944933-858",
-      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
       "executedAt": "2026-06-12T07:39:04.933Z",
       "durationMs": 0.2,
       "success": true
@@ -864,7 +864,7 @@
     },
     {
       "id": "log-1781249944891-949",
-      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
       "executedAt": "2026-06-12T07:39:04.891Z",
       "durationMs": 0.2,
       "success": true
@@ -906,7 +906,7 @@
     },
     {
       "id": "log-1781249943758-986",
-      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
       "executedAt": "2026-06-12T07:39:03.758Z",
       "durationMs": 0.2,
       "success": true
@@ -948,7 +948,7 @@
     },
     {
       "id": "log-1781249943741-783",
-      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
       "executedAt": "2026-06-12T07:39:03.741Z",
       "durationMs": 0.2,
       "success": true
@@ -997,7 +997,7 @@
     },
     {
       "id": "log-1781249941292-147",
-      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
       "executedAt": "2026-06-12T07:39:01.292Z",
       "durationMs": 0.2,
       "success": true
@@ -1039,7 +1039,7 @@
     },
     {
       "id": "log-1781249941279-343",
-      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
       "executedAt": "2026-06-12T07:39:01.279Z",
       "durationMs": 0.2,
       "success": true
@@ -1074,7 +1074,7 @@
     },
     {
       "id": "log-1781249941182-343",
-      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
       "executedAt": "2026-06-12T07:39:01.182Z",
       "durationMs": 0.2,
       "success": true
@@ -1116,7 +1116,7 @@
     },
     {
       "id": "log-1781249941169-313",
-      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
       "executedAt": "2026-06-12T07:39:01.169Z",
       "durationMs": 0.2,
       "success": true
@@ -1158,7 +1158,7 @@
     },
     {
       "id": "log-1781249788337-941",
-      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
       "executedAt": "2026-06-12T07:36:28.337Z",
       "durationMs": 0.2,
       "success": true
@@ -1171,10 +1171,10 @@
       "success": true
     },
     {
-      "id": "log-1781249788332-364",
-      "query": "SELECT id, name, status, created_at FROM measurements ORDER BY name ASC;",
-      "executedAt": "2026-06-12T07:36:28.332Z",
-      "durationMs": 2.49,
+      "id": "log-1781249788264-607",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
+      "executedAt": "2026-06-12T07:36:28.264Z",
+      "durationMs": 0.2,
       "success": true
     },
     {
@@ -1200,7 +1200,7 @@
     },
     {
       "id": "log-1781249788320-956",
-      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
       "executedAt": "2026-06-12T07:36:28.320Z",
       "durationMs": 0.2,
       "success": true
@@ -1242,7 +1242,7 @@
     },
     {
       "id": "log-1781249788294-558",
-      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
       "executedAt": "2026-06-12T07:36:28.294Z",
       "durationMs": 0.2,
       "success": true
@@ -1284,7 +1284,7 @@
     },
     {
       "id": "log-1781249788264-607",
-      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
       "executedAt": "2026-06-12T07:36:28.264Z",
       "durationMs": 0.2,
       "success": true
@@ -1326,7 +1326,7 @@
     },
     {
       "id": "log-1781248867985-283",
-      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'ecommerce_admin';",
+      "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'herbavi';",
       "executedAt": "2026-06-12T07:21:07.985Z",
       "durationMs": 0.2,
       "success": true

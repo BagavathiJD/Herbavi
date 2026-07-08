@@ -10,7 +10,6 @@ import {
   Menu,
   X,
   ChevronRight,
-  TrendingUp,
   Boxes,
   LogOut
 } from "lucide-react";
@@ -72,47 +71,44 @@ export default function Sidebar({ currentTab, setTab, user, onLogout }: SidebarP
   };
 
   const SidebarContent = () => (
-    <div className="flex flex-col h-full bg-[#0f172a] text-slate-200 border-r border-[#1e293b] select-none">
-      {/* Brand Header */}
-      <div className="flex items-center gap-3 px-6 py-5 border-b border-[#1e293b]">
-        <div className="p-2 bg-indigo-600 rounded-lg text-white shadow-lg shadow-indigo-600/30">
+    <div className="flex flex-col h-full bg-white text-black border-r border-gray-200 select-none">
+      <div className="flex items-center gap-3 px-6 py-5 border-b border-gray-200">
+        <div className="p-2 bg-[#1f3a28] rounded-lg text-white shadow-md">
           <Boxes className="w-5 h-5" />
         </div>
         <div>
-          <h1 className="font-bold text-sm text-white tracking-wider uppercase">herbavi</h1>
-          <p className="text-[10px] text-slate-400 font-mono">v1.2.0 • RELATIONAL</p>
+          <h1 className="font-bold text-sm text-black tracking-wider uppercase">herbavi</h1>
+          <p className="text-[10px] text-gray-500 font-mono">Admin Panel</p>
         </div>
       </div>
 
-      {/* User Mini Profile */}
-      <div className="px-6 py-4 border-b border-[#1e293b] bg-[#111c34]">
+      <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <div className="w-10 h-10 rounded-full border-2 border-indigo-500 bg-indigo-950 flex items-center justify-center text-indigo-300 font-bold text-sm">
+            <div className="w-10 h-10 rounded-full border-2 border-[#1f3a28] bg-white flex items-center justify-center text-[#1f3a28] font-bold text-sm">
               {user.name.charAt(0).toUpperCase()}
             </div>
-            <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-[#111c34] rounded-full"></span>
+            <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
           </div>
           <div className="flex-1 min-w-0">
-            <h4 className="text-sm font-semibold text-white truncate">{user.name}</h4>
-            <span className="text-[11px] text-indigo-400 font-medium">{user.role}</span>
+            <h4 className="text-sm font-semibold text-black truncate">{user.name}</h4>
+            <span className="text-[11px] text-[#1f3a28] font-medium">{user.role}</span>
           </div>
         </div>
         <button
           type="button"
           onClick={onLogout}
-          className="mt-3 w-full flex items-center justify-center gap-2 py-2 text-[11px] font-semibold text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg border border-slate-800 transition-colors cursor-pointer"
+          className="mt-3 w-full flex items-center justify-center gap-2 py-2 text-[11px] font-semibold text-gray-600 hover:text-[#1f3a28] hover:bg-white rounded-lg border border-gray-200 transition-colors cursor-pointer"
         >
           <LogOut className="w-3.5 h-3.5" />
           <span>Sign Out</span>
         </button>
       </div>
 
-      {/* Menu Area */}
-      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
+      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6">
         {menuItems.map((group, groupIdx) => (
           <div key={groupIdx} className="space-y-1.5">
-            <p className="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest">{group.group}</p>
+            <p className="px-3 text-[10px] font-bold text-gray-500 uppercase tracking-widest">{group.group}</p>
             <div className="space-y-0.5">
               {group.items.map((item) => {
                 const Icon = item.icon;
@@ -125,21 +121,15 @@ export default function Sidebar({ currentTab, setTab, user, onLogout }: SidebarP
                     onClick={() => handleSelectTab(item.id)}
                     className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-medium transition-all group duration-150 ${
                       isActive 
-                        ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/10" 
-                        : "text-slate-400 hover:bg-[#1e293b]/50 hover:text-white"
+                        ? "bg-[#1f3a28] text-white shadow-md" 
+                        : "text-gray-600 hover:bg-gray-100 hover:text-[#1f3a28]"
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
-                      <Icon className={`w-4 h-4 transition-transform duration-150 ${isActive ? "text-white" : "text-slate-400 group-hover:scale-110"}`} />
+                      <Icon className={`w-4 h-4 transition-transform duration-150 ${isActive ? "text-white" : "text-gray-500 group-hover:text-[#1f3a28]"}`} />
                       <span>{item.label}</span>
                     </div>
-                    {item.badge ? (
-                      <span className="px-1.5 py-0.5 text-[9px] font-mono font-bold bg-[#1e293b] text-indigo-400 rounded-full border border-[#334155]">
-                        {item.badge}
-                      </span>
-                    ) : (
-                      <ChevronRight className={`w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 ${isActive ? "hidden" : ""}`} />
-                    )}
+                    <ChevronRight className={`w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 ${isActive ? "hidden" : ""}`} />
                   </button>
                 );
               })}
@@ -147,51 +137,36 @@ export default function Sidebar({ currentTab, setTab, user, onLogout }: SidebarP
           </div>
         ))}
       </div>
-
-      {/* Footer Banner */}
-      <div className="p-4 border-t border-[#1e293b] bg-[#0c1322]">
-        <div className="flex items-center justify-between p-3 bg-[#111c34] rounded-lg border border-[#1e293b]">
-          <div className="flex items-center gap-2">
-            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
-            <span className="text-[10px] text-slate-300 font-semibold font-mono">MYSQL SIMULATOR</span>
-          </div>
-          <span className="text-[10px] font-mono text-emerald-400 font-bold">ONLINE</span>
-        </div>
-      </div>
     </div>
   );
 
   return (
     <>
-      {/* Mobile Toggle Bar */}
-      <div className="lg:hidden flex items-center justify-between px-4 py-3 bg-[#0f172a] text-white border-b border-[#1e293b] fixed top-0 left-0 right-0 z-40">
+      <div className="lg:hidden flex items-center justify-between px-4 py-3 bg-white text-black border-b border-gray-200 fixed top-0 left-0 right-0 z-40">
         <div className="flex items-center gap-2">
-          <Boxes className="w-5 h-5 text-indigo-500" />
+          <Boxes className="w-5 h-5 text-[#1f3a28]" />
           <span className="font-semibold text-xs uppercase tracking-wider">herbavi</span>
         </div>
         <button 
           id="mobile-sidebar-toggle"
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="p-1.5 hover:bg-[#1e293b] rounded-lg transition-colors"
+          className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
         >
           {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
       </div>
 
-      {/* Off-canvas background overlay */}
       {mobileOpen && (
         <div 
           onClick={() => setMobileOpen(false)}
-          className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40 transition-opacity"
+          className="lg:hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity"
         />
       )}
 
-      {/* Desktop sidebar */}
       <aside className="hidden lg:block w-64 h-screen sticky top-0 shrink-0 z-30">
         <SidebarContent />
       </aside>
 
-      {/* Mobile drawer container */}
       <aside className={`lg:hidden fixed top-[49px] bottom-0 left-0 w-64 z-50 transform ${mobileOpen ? "translate-x-0" : "-translate-x-full"} transition-transform duration-300 ease-in-out`}>
         <SidebarContent />
       </aside>

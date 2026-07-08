@@ -1,0 +1,1184 @@
+/* =============================================================================
+   Herbavi brand palette
+   Page bg:   #F3ECE1  |  Primary:  #2C4A34  |  Accent:   #C9A24B
+   Card:      #FBF8F3  |  Heading:  #1F3A28
+   ============================================================================= */
+
+:root {
+  --herbavi-page-bg: #f3ece1;
+  --herbavi-primary: #2c4a34;
+  --herbavi-primary-hover: #243d2b;
+  --herbavi-heading: #1f3a28;
+  --herbavi-accent: #c9a24b;
+  --herbavi-accent-soft: rgba(201, 162, 75, 0.16);
+  --herbavi-card: #fbf8f3;
+  --herbavi-text: #3d5344;
+  --herbavi-text-muted: #5c6b60;
+  --herbavi-border: rgba(44, 74, 52, 0.12);
+  --herbavi-shadow: 0 4px 20px rgba(31, 58, 40, 0.08);
+  --herbavi-shadow-hover: 0 8px 28px rgba(31, 58, 40, 0.14);
+}
+
+/* ---- Global page shell ---- */
+body.herbavi-theme,
+body.herbavi-theme #wrapper {
+  background-color: var(--herbavi-page-bg);
+  color: var(--herbavi-text);
+}
+
+body.herbavi-theme .flat-spacing,
+body.herbavi-theme .flat-spacing-3,
+body.herbavi-theme .flat-spacing-4,
+body.herbavi-theme .flat-spacing-5 {
+  background-color: transparent;
+}
+
+body.herbavi-theme h1,
+body.herbavi-theme h2,
+body.herbavi-theme h3,
+body.herbavi-theme h4,
+body.herbavi-theme h5,
+body.herbavi-theme h6,
+body.herbavi-theme .page-title,
+body.herbavi-theme .text-display-xl {
+  color: var(--herbavi-heading);
+}
+
+body.herbavi-theme a.link,
+body.herbavi-theme .cl-text-main {
+  color: var(--herbavi-heading);
+}
+
+body.herbavi-theme a.link:hover {
+  color: var(--herbavi-primary);
+}
+
+/* ---- Header ---- */
+body.herbavi-theme .header-v4 .header-inner {
+  background: var(--herbavi-card);
+  border: 1px solid var(--herbavi-border);
+  box-shadow: var(--herbavi-shadow);
+}
+
+body.herbavi-theme .header-v4:not(.hd-v4_s2).header-sticky .header-inner {
+  box-shadow: var(--herbavi-shadow-hover);
+}
+
+body.herbavi-theme .box-nav-menu .item-link,
+body.herbavi-theme .box-nav-menu .item-link .text {
+  color: var(--herbavi-heading);
+}
+
+body.herbavi-theme .box-nav-menu .item-link:hover,
+body.herbavi-theme .box-nav-menu .item-link:hover .text {
+  color: var(--herbavi-primary);
+}
+
+body.herbavi-theme .nav-icon-item {
+  color: var(--herbavi-heading);
+}
+
+body.herbavi-theme .nav-icon-item:hover {
+  color: var(--herbavi-primary);
+}
+
+body.herbavi-theme .number-order {
+  background: var(--herbavi-accent) !important;
+  color: var(--herbavi-heading) !important;
+}
+
+/* ---- Buttons ---- */
+body.herbavi-theme .tf-btn:not(.btn-white):not(.btn-stroke):not(.btn-stroke-2):not(.btn-trans):not(.btn-light):not(.btn-light-2):not(.btn-out) {
+  background: var(--herbavi-primary);
+  color: #fff;
+}
+
+body.herbavi-theme .tf-btn:not(.btn-white):not(.btn-stroke):not(.btn-stroke-2):not(.btn-trans):not(.btn-light):not(.btn-light-2):not(.btn-out):hover {
+  background: var(--herbavi-primary-hover);
+  color: #fff;
+}
+
+body.herbavi-theme .tf-btn.btn-stroke-black,
+body.herbavi-theme .tf-btn.hv-black:hover {
+  background: var(--herbavi-primary);
+  border-color: var(--herbavi-primary);
+  color: #fff;
+}
+
+body.herbavi-theme #gridLayout .card-product .tf-btn.btn-white {
+  background: var(--herbavi-primary);
+  color: #fff;
+  border: 1px solid var(--herbavi-primary);
+}
+
+body.herbavi-theme #gridLayout .card-product .tf-btn.btn-white:hover {
+  background: var(--herbavi-primary-hover);
+  border-color: var(--herbavi-primary-hover);
+  color: #fff;
+}
+
+body.herbavi-theme #goTop {
+  background: var(--herbavi-primary);
+  border-color: var(--herbavi-primary);
+}
+
+body.herbavi-theme #goTop:hover {
+  background: var(--herbavi-primary-hover);
+}
+
+/* ---- Shop banner ---- */
+.herbavi-shop-banner {
+  background: var(--herbavi-page-bg);
+  overflow: hidden;
+  width: 100%;
+}
+
+body.herbavi-theme .herbavi-shop-banner .page-title {
+  color: var(--herbavi-heading);
+}
+
+body.herbavi-theme .herbavi-shop-banner .page-desc,
+body.herbavi-theme .herbavi-shop-banner .breadcrumb {
+  color: var(--herbavi-text-muted);
+}
+
+body.herbavi-theme .herbavi-shop-banner .breadcrumb .link {
+  color: var(--herbavi-primary);
+}
+
+body.herbavi-theme #product-count-grid.count-text {
+  color: var(--herbavi-heading);
+  font-weight: 600;
+}
+
+body.herbavi-theme .herbavi-tradition-filter {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px 28px;
+}
+
+body.herbavi-theme .herbavi-tradition-filter button {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--herbavi-text-muted);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+body.herbavi-theme .herbavi-tradition-filter button:hover,
+body.herbavi-theme .herbavi-tradition-filter button.is-active {
+  color: var(--herbavi-heading);
+}
+
+body.herbavi-theme .herbavi-tradition-filter button.is-active {
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  text-decoration-color: var(--herbavi-accent);
+}
+
+body.herbavi-theme .herbavi-tradition-bar {
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  width: 100%;
+  margin-top: 0;
+  margin-bottom: 16px;
+  padding: 14px 0;
+  background: rgba(243, 236, 225, 0.97);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--herbavi-border);
+  box-shadow: 0 4px 16px rgba(31, 58, 40, 0.06);
+}
+
+body.herbavi-theme .herbavi-tradition-bar .container-full {
+  width: 100%;
+  max-width: 100%;
+}
+
+body.herbavi-theme .herbavi-tradition-bar.tf-shop-control {
+  display: block;
+  background: rgba(243, 236, 225, 0.97);
+}
+
+body.herbavi-theme .herbavi-tradition-bar .col-left {
+  justify-content: flex-start;
+  padding: 0;
+}
+
+body.herbavi-theme .herbavi-products-page {
+  overflow: visible;
+}
+
+body.herbavi-theme .tf-shop-control {
+  background: transparent;
+}
+
+body.herbavi-theme .tf-shop-control .col-left {
+  justify-content: flex-start;
+}
+
+/* ---- Product cards ---- */
+#gridLayout .card-product {
+  box-shadow: var(--herbavi-shadow);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--herbavi-card);
+  border: 1px solid var(--herbavi-border);
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+#gridLayout .card-product:hover {
+  box-shadow: var(--herbavi-shadow-hover);
+}
+
+#gridLayout .card-product .card-product_info {
+  text-align: left;
+  place-content: start;
+  padding: 12px 14px 16px;
+  background: var(--herbavi-card);
+}
+
+#gridLayout .card-product .card-product_info .price-wrap {
+  justify-content: flex-start;
+}
+
+#gridLayout .card-product .name-product,
+body.herbavi-theme .herbavi-shop-card .herbavi-product-title,
+body.herbavi-theme .herbavi-products-grid .herbavi-product-title {
+  margin-top: 0;
+  color: var(--herbavi-heading);
+  font-size: 17px;
+  line-height: 1.35;
+  font-weight: 600;
+  text-transform: capitalize;
+  letter-spacing: -0.01em;
+}
+
+#gridLayout .card-product .name-product:hover,
+body.herbavi-theme .herbavi-shop-card .herbavi-product-title:hover {
+  color: var(--herbavi-primary);
+}
+
+#gridLayout .card-product .product-card-desc,
+body.herbavi-theme .herbavi-shop-card .herbavi-product-desc {
+  font-size: 13px;
+  line-height: 1.5;
+  font-weight: 400;
+  font-style: normal;
+  color: var(--herbavi-text-muted);
+  margin: 4px 0 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+#gridLayout .card-product .price-wrap {
+  margin-top: 6px;
+}
+
+#gridLayout .card-product .price-new {
+  color: var(--herbavi-accent);
+  font-weight: 700;
+}
+
+body.herbavi-theme .product-badge_item.new {
+  background: var(--herbavi-accent-soft);
+  color: var(--herbavi-heading);
+  border: 1px solid rgba(201, 162, 75, 0.35);
+}
+
+body.herbavi-theme .product-badge_item.best {
+  background: var(--herbavi-accent-soft);
+  color: var(--herbavi-heading);
+}
+
+/* ---- Footer ---- */
+body.herbavi-theme .herbavi-footer {
+  background: var(--herbavi-page-bg);
+  padding: 0 15px 15px;
+}
+
+body.herbavi-theme .herbavi-footer .footer_wrap {
+  background: var(--herbavi-primary);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+body.herbavi-theme .herbavi-footer .infiniteSlide-footer-text {
+  padding: 28px 0 20px;
+}
+
+body.herbavi-theme .herbavi-footer .infiniteSlide-footer-text .text-display-xl {
+  color: var(--herbavi-card);
+}
+
+body.herbavi-theme .herbavi-footer .footer-heading {
+  color: var(--herbavi-accent);
+}
+
+body.herbavi-theme .herbavi-footer .footer-menu-list a,
+body.herbavi-theme .herbavi-footer .footer-menu-list .link {
+  color: rgba(251, 248, 243, 0.88);
+}
+
+body.herbavi-theme .herbavi-footer .footer-menu-list a:hover {
+  color: var(--herbavi-accent);
+}
+
+body.herbavi-theme .herbavi-footer .footer-bottom .br-line {
+  background: rgba(251, 248, 243, 0.15);
+}
+
+body.herbavi-theme .herbavi-footer .footer-bottom .link {
+  color: var(--herbavi-card);
+}
+
+body.herbavi-theme .herbavi-footer .footer-bottom .link:hover {
+  color: var(--herbavi-accent);
+}
+
+body.herbavi-theme .herbavi-footer .ft-text-nocopy {
+  color: rgba(251, 248, 243, 0.72);
+}
+
+/* ---- Full-width header ---- */
+.header-v4 {
+  width: 100%;
+  max-width: 100%;
+}
+
+.header-v4 .header-inner {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  width: 100%;
+  max-width: 100%;
+  border-radius: 0;
+}
+
+.header-v4 .header-inner .container-full {
+  width: 100%;
+  max-width: 100%;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+@media (min-width: 1440px) {
+  .header-v4 .header-inner .container-full {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+.header-v4.offset-top {
+  margin-top: 0;
+}
+
+.header-v4.header-inner-page {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.header-v4.header-inner-page .header-inner {
+  border-radius: 0;
+}
+
+.herbavi-shop-banner.banner-connected {
+  margin-top: 0;
+  margin-left: 0;
+  margin-right: 0;
+  border-radius: 0;
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (min-width: 768px) {
+  .herbavi-shop-banner .bg-img-item {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .herbavi-shop-banner .bg-img-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+  }
+
+  .herbavi-shop-banner .banner-content {
+    position: relative;
+    z-index: 2;
+  }
+}
+
+#gridLayout.tf-grid-layout {
+  grid-template-columns: repeat(2, 1fr);
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  #gridLayout.tf-grid-layout {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 992px) {
+  #gridLayout.tf-grid-layout {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.infiniteSlide-footer-text {
+  overflow: hidden;
+}
+
+.infiniteSlide-footer-text .text-display-xl {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 767px) {
+  #wrapper {
+    overflow-x: hidden;
+  }
+
+  .header-v4 .header-inner .container-full {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .herbavi-shop-banner.banner-connected {
+    padding-top: 20px;
+    padding-bottom: 16px;
+  }
+
+  .herbavi-shop-banner.flat-spacing-5,
+  .herbavi-shop-banner.flat-spacing-6 {
+    padding-top: 20px;
+    padding-bottom: 16px;
+  }
+
+  .herbavi-shop-banner .container.banner-content {
+    max-width: 100%;
+    width: 100%;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .herbavi-shop-banner .bg-img-item {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: 160px;
+    margin-top: 16px;
+    overflow: hidden;
+  }
+
+  .herbavi-shop-banner .bg-img-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: right center;
+  }
+
+  .herbavi-shop-banner .page-title {
+    font-size: clamp(24px, 6.5vw, 32px);
+    line-height: 1.15;
+    margin-bottom: 8px;
+  }
+
+  .herbavi-shop-banner .page-desc {
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 0;
+  }
+
+  .herbavi-shop-banner .breadcrumb {
+    margin-bottom: 10px;
+  }
+
+  .flat-spacing .container-full {
+    width: 100%;
+    max-width: 100%;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  #gridLayout.tf-grid-layout {
+    column-gap: 10px;
+    row-gap: 16px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  #gridLayout .card-product .name-product,
+  body.herbavi-theme .herbavi-shop-card .herbavi-product-title,
+  body.herbavi-theme .herbavi-products-grid .herbavi-product-title {
+    font-size: 15px;
+    line-height: 1.35;
+    font-weight: 600;
+    text-transform: capitalize;
+  }
+
+  #gridLayout .card-product .product-card-desc,
+  body.herbavi-theme .herbavi-shop-card .herbavi-product-desc {
+    font-size: 12px;
+    font-weight: 400;
+  }
+
+  #gridLayout .card-product .price-new {
+    font-size: 13px;
+  }
+
+  #gridLayout .card-product .product-action_bot .tf-btn {
+    font-size: 11px;
+    padding: 8px 6px;
+  }
+
+  #gridLayout .card-product .product-action_list {
+    display: none;
+  }
+
+  .tf-shop-control.sticky-top,
+  body.herbavi-theme .herbavi-tradition-bar.sticky-top {
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .wrapper-control-shop.gridLayout-wrapper {
+    width: 100%;
+  }
+}
+
+@media (max-width: 575px) {
+  #gridLayout.tf-grid-layout {
+    column-gap: 8px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .footer-v4 .footer-inner_wrap .footer-wrap-1,
+  .footer-v4 .footer-inner_wrap .footer-wrap-2,
+  .footer-v4 .footer-inner_wrap .footer-wrap-3,
+  .footer-v4 .footer-inner_wrap .footer-wrap-4 {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+/* ---- Cart, checkout & account surfaces ---- */
+body.herbavi-theme .popup-shopping-cart,
+body.herbavi-theme .offcanvas {
+  background: var(--herbavi-card);
+  color: var(--herbavi-text);
+}
+
+body.herbavi-theme .popup-shopping-cart .title,
+body.herbavi-theme .popup-shopping-cart .name-product {
+  color: var(--herbavi-heading);
+}
+
+body.herbavi-theme .popup-shopping-cart .price-new,
+body.herbavi-theme .tf-cart-total .total-price {
+  color: var(--herbavi-accent);
+  font-weight: 700;
+}
+
+body.herbavi-theme .tf-btn.style-2.type-2,
+body.herbavi-theme .tf-btn.style-2.type-2.btn-light {
+  background: var(--herbavi-primary);
+  color: #fff;
+  border: 1px solid var(--herbavi-primary);
+}
+
+body.herbavi-theme .tf-btn.style-2.type-2:hover,
+body.herbavi-theme .tf-btn.style-2.type-2.btn-light:hover {
+  background: var(--herbavi-primary-hover);
+  border-color: var(--herbavi-primary-hover);
+  color: #fff;
+}
+
+body.herbavi-theme .tf-btn-line {
+  color: var(--herbavi-primary);
+}
+
+body.herbavi-theme .tf-btn-line:hover {
+  color: var(--herbavi-heading);
+}
+
+body.herbavi-theme .tf-btn-tab.active {
+  color: var(--herbavi-heading);
+}
+
+body.herbavi-theme .tf-btn-tab.active::before,
+body.herbavi-theme .list-tab-btn-1 .tf-btn-tab.active::before {
+  background: var(--herbavi-accent);
+}
+
+/* ---- Forms ---- */
+body.herbavi-theme input.form-control,
+body.herbavi-theme textarea.form-control,
+body.herbavi-theme select.form-select {
+  background: var(--herbavi-card);
+  border-color: var(--herbavi-border);
+  color: var(--herbavi-heading);
+}
+
+body.herbavi-theme input.form-control:focus,
+body.herbavi-theme textarea.form-control:focus,
+body.herbavi-theme select.form-select:focus {
+  border-color: var(--herbavi-primary);
+  box-shadow: 0 0 0 3px rgba(44, 74, 52, 0.12);
+}
+
+/* ---- Home: Our story & Our ingredients eyebrows ---- */
+.herbavi-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 22px;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--herbavi-heading);
+  line-height: 1;
+}
+
+.herbavi-eyebrow .eyebrow-text {
+  white-space: nowrap;
+}
+
+.herbavi-br-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, var(--herbavi-primary) 0%, var(--herbavi-accent) 100%);
+  box-shadow: 0 0 0 3px var(--herbavi-accent-soft);
+}
+
+.about-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.about-text .about-heading {
+  width: 100%;
+  text-align: left;
+}
+
+body.herbavi-theme .about {
+  background: var(--herbavi-page-bg);
+  color: var(--herbavi-text);
+}
+
+body.herbavi-theme .about-heading,
+body.herbavi-theme h2.about-heading {
+  color: var(--herbavi-heading);
+}
+
+body.herbavi-theme .about-heading em {
+  color: var(--herbavi-accent);
+}
+
+body.herbavi-theme .about-copy {
+  color: var(--herbavi-text-muted);
+}
+
+body.herbavi-theme .ingredient-card {
+  background: var(--herbavi-card);
+  border-color: var(--herbavi-border);
+}
+
+body.herbavi-theme .ingredient-pill {
+  background: rgba(251, 248, 243, 0.85);
+  border-color: var(--herbavi-border);
+  color: var(--herbavi-heading);
+}
+
+body.herbavi-theme .about-cta {
+  background: var(--herbavi-primary);
+  color: #fff;
+}
+
+body.herbavi-theme .about-cta:hover {
+  background: var(--herbavi-primary-hover);
+  color: #fff;
+}
+
+.herbavi-ingredients-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  max-width: 560px;
+}
+
+.herbavi-ingredients-heading .s-title {
+  color: var(--herbavi-heading);
+  text-align: left;
+  margin-top: 0;
+}
+
+body.herbavi-theme .section-ingredient-2 .col-content.bg-main_100 {
+  background: var(--herbavi-page-bg) !important;
+}
+
+body.herbavi-theme .section-ingredient-2 .col-media {
+  background: var(--herbavi-primary);
+}
+
+body.herbavi-theme .section-ingredient-2 .wg-ingredient {
+  background: var(--herbavi-primary);
+}
+
+body.herbavi-theme .section-ingredient-2 .sect-heading-v2 {
+  padding-left: 8vw;
+  padding-right: 8vw;
+}
+
+@media (max-width: 767px) {
+  body.herbavi-theme .section-ingredient-2 .sect-heading-v2 {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .herbavi-eyebrow {
+    margin-bottom: 16px;
+  }
+}
+
+/* ---- Header account & auth modal ---- */
+body.herbavi-theme .herbavi-account-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--herbavi-heading);
+}
+
+body.herbavi-theme .herbavi-account-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+body.herbavi-theme .nav-account .dropdown-account {
+  min-width: 240px;
+  border: 1px solid var(--herbavi-border);
+  box-shadow: var(--herbavi-shadow-hover);
+  right: 0;
+  left: auto;
+}
+
+body.herbavi-theme .nav-account .herbavi-account-meta {
+  padding: 12px 24px 8px;
+  border-bottom: 1px solid var(--herbavi-border);
+}
+
+body.herbavi-theme .herbavi-account-name {
+  display: block;
+  font-weight: 700;
+  color: var(--herbavi-heading);
+}
+
+body.herbavi-theme .herbavi-account-email {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--herbavi-text-muted);
+  word-break: break-word;
+}
+
+body.herbavi-theme .herbavi-logout-btn {
+  width: 100%;
+  padding: 8px 24px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  color: var(--herbavi-heading);
+  font: inherit;
+  cursor: pointer;
+}
+
+body.herbavi-theme .herbavi-logout-btn:hover {
+  color: var(--herbavi-primary);
+}
+
+.herbavi-auth-modal .modal-content {
+  border: 1px solid var(--herbavi-border);
+  border-radius: 24px;
+  overflow: visible;
+  background: var(--herbavi-card);
+  box-shadow: var(--herbavi-shadow-hover);
+}
+
+.herbavi-auth-dialog {
+  max-width: 860px;
+  width: calc(100% - 24px);
+}
+
+.herbavi-auth-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 2;
+  border: 0;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--herbavi-heading);
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.herbavi-auth-shell {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  padding: 14px;
+}
+
+@media (min-width: 768px) {
+  .herbavi-auth-shell {
+    grid-template-columns: 0.92fr 1.08fr;
+    min-height: 520px;
+    align-items: stretch;
+  }
+}
+
+.herbavi-auth-intro {
+  padding: 36px 28px;
+  background: linear-gradient(160deg, rgba(44, 74, 52, 0.96), rgba(31, 58, 40, 0.98));
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 18px;
+  min-height: 220px;
+}
+
+@media (min-width: 768px) {
+  .herbavi-auth-intro {
+    min-height: 100%;
+  }
+}
+
+.herbavi-auth-eyebrow {
+  margin: 0 0 12px;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.herbavi-auth-title {
+  margin: 0 0 12px;
+  font-size: clamp(2rem, 4vw, 2.6rem);
+  line-height: 1.05;
+  color: #fff;
+}
+
+.herbavi-auth-copy {
+  margin: 0;
+  max-width: 28ch;
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.6;
+}
+
+.herbavi-auth-panel {
+  padding: 28px 22px 24px;
+  border-radius: 18px;
+  background: #fff;
+}
+
+@media (min-width: 768px) {
+  .herbavi-auth-panel {
+    padding: 32px 28px 28px 18px;
+  }
+}
+
+.herbavi-auth-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 24px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(44, 74, 52, 0.08);
+}
+
+.herbavi-auth-tab {
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 16px;
+  background: transparent;
+  color: var(--herbavi-text-muted);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.herbavi-auth-tab.active {
+  background: var(--herbavi-primary);
+  color: #fff;
+}
+
+.herbavi-auth-form {
+  display: grid;
+  gap: 16px;
+}
+
+.herbavi-auth-field label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--herbavi-heading);
+}
+
+.herbavi-auth-field .form-control {
+  background: #fff;
+  border: 1px solid var(--herbavi-border);
+  border-radius: 12px;
+  color: var(--herbavi-heading);
+  min-height: 46px;
+  padding: 12px 14px;
+}
+
+.herbavi-auth-textarea {
+  min-height: 104px;
+  resize: vertical;
+  line-height: 1.55;
+}
+
+.herbavi-auth-textarea::placeholder {
+  color: #8a968f;
+  font-size: 14px;
+}
+
+.herbavi-auth-hint {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--herbavi-text-muted);
+}
+
+.herbavi-auth-field .form-control:focus {
+  border-color: var(--herbavi-primary);
+  box-shadow: 0 0 0 3px rgba(44, 74, 52, 0.12);
+}
+
+.herbavi-auth-error {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(185, 28, 28, 0.08);
+  border: 1px solid rgba(185, 28, 28, 0.18);
+  color: #991b1b;
+  font-size: 13px;
+}
+
+.herbavi-auth-footnote {
+  margin: 4px 0 0;
+  font-size: 13px;
+}
+
+.herbavi-auth-footnote a {
+  color: var(--herbavi-primary);
+  text-decoration: none;
+}
+
+.herbavi-auth-footnote a:hover {
+  color: var(--herbavi-heading);
+}
+
+.herbavi-auth-toast {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: min(420px, calc(100vw - 32px));
+  padding: 14px 16px;
+  border-radius: 14px;
+  box-shadow: var(--herbavi-shadow-hover);
+  cursor: pointer;
+  animation: herbaviToastIn 0.28s ease;
+}
+
+.herbavi-auth-toast--success {
+  background: #ecfdf3;
+  border: 1px solid rgba(44, 74, 52, 0.18);
+  color: var(--herbavi-heading);
+}
+
+.herbavi-auth-toast--error {
+  background: #fef2f2;
+  border: 1px solid rgba(185, 28, 28, 0.18);
+  color: #991b1b;
+}
+
+.herbavi-auth-toast__message {
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.45;
+  font-weight: 600;
+}
+
+.herbavi-auth-toast__close {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.65;
+  padding: 0;
+}
+
+.herbavi-auth-toast__close:hover {
+  opacity: 1;
+}
+
+@keyframes herbaviToastIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---- Quick view modal ---- */
+body.herbavi-theme .modal-quickview.herbavi-quickview .modal-dialog {
+  max-width: min(680px, calc(100vw - 32px));
+}
+
+body.herbavi-theme .modal-quickview.herbavi-quickview .modal-content {
+  align-items: center;
+  border: 1px solid var(--herbavi-border);
+  border-radius: 16px;
+  background: var(--herbavi-card);
+  box-shadow: var(--herbavi-shadow-hover);
+}
+
+body.herbavi-theme .modal-quickview.herbavi-quickview .col-left {
+  flex: 0 0 auto;
+  width: auto;
+  max-width: none;
+  padding: 28px 12px 28px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--herbavi-page-bg);
+}
+
+body.herbavi-theme .modal-quickview.herbavi-quickview .herbavi-quickview-image {
+  width: 200px;
+  max-width: 100%;
+  aspect-ratio: 4 / 5;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--herbavi-card);
+  border: 1px solid var(--herbavi-border);
+  box-shadow: var(--herbavi-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.herbavi-theme .modal-quickview.herbavi-quickview .herbavi-quickview-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 10px;
+}
+
+body.herbavi-theme .modal-quickview.herbavi-quickview .col-right {
+  flex: 1;
+  min-width: 0;
+  width: auto;
+  padding: 28px 28px 28px 16px;
+}
+
+body.herbavi-theme .modal-quickview.herbavi-quickview .btn-close-popup {
+  right: 16px;
+  top: 16px;
+  color: var(--herbavi-heading);
+}
+
+body.herbavi-theme .modal-quickview.herbavi-quickview .product-infor-name {
+  color: var(--herbavi-heading);
+  font-size: clamp(1.25rem, 2.4vw, 1.5rem);
+  line-height: 1.25;
+}
+
+body.herbavi-theme .modal-quickview.herbavi-quickview .tf-product-info-wrap .tf-product-info-list {
+  margin-bottom: 0;
+}
+
+body.herbavi-theme .modal-quickview.herbavi-quickview .tf-product-info-actions .tf-btn {
+  background: var(--herbavi-primary);
+  border-color: var(--herbavi-primary);
+}
+
+body.herbavi-theme .modal-quickview.herbavi-quickview .tf-product-info-actions .tf-btn:hover {
+  background: var(--herbavi-primary-hover);
+  border-color: var(--herbavi-primary-hover);
+}
+
+@media (min-width: 768px) {
+  body.herbavi-theme .modal-quickview.herbavi-quickview .modal-content > * {
+    width: auto;
+  }
+
+  body.herbavi-theme .modal-quickview.herbavi-quickview .herbavi-quickview-image {
+    width: 220px;
+  }
+}
+
+@media (max-width: 767px) {
+  body.herbavi-theme .modal-quickview.herbavi-quickview .modal-content {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  body.herbavi-theme .modal-quickview.herbavi-quickview .col-left {
+    padding: 24px 24px 0;
+  }
+
+  body.herbavi-theme .modal-quickview.herbavi-quickview .herbavi-quickview-image {
+    width: min(180px, 55vw);
+    margin: 0 auto;
+  }
+
+  body.herbavi-theme .modal-quickview.herbavi-quickview .col-right {
+    padding: 20px 20px 24px;
+  }
+}

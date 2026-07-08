@@ -20,7 +20,6 @@ interface DashboardModuleProps {
   customers: Customer[];
   measurements: Measurement[];
   setTab: (tab: string) => void;
-  onViewOrder: (order: Order) => void;
 }
 
 export default function DashboardModule({
@@ -28,8 +27,7 @@ export default function DashboardModule({
   orders,
   customers,
   measurements,
-  setTab,
-  onViewOrder
+  setTab
 }: DashboardModuleProps) {
   // Statistics Computations
   const totalProducts = products.length;
@@ -49,9 +47,8 @@ export default function DashboardModule({
       value: formatCurrency(totalRevenue),
       changeValue: "+14.2%",
       isPositive: true,
-      color: "text-emerald-400",
-      textColor: "text-emerald-400",
-      bgColor: "bg-emerald-950/30 border-emerald-900/30",
+      color: "text-[#1f3a28]",
+      iconBg: "bg-green-100 border-green-200",
       icon: IndianRupee,
     },
     {
@@ -60,9 +57,8 @@ export default function DashboardModule({
       value: totalOrders.toString(),
       changeValue: "+8.4%",
       isPositive: true,
-      color: "text-indigo-400",
-      textColor: "text-indigo-400",
-      bgColor: "bg-indigo-950/30 border-indigo-900/30",
+      color: "text-blue-700",
+      iconBg: "bg-blue-100 border-blue-200",
       icon: ShoppingCart,
     },
     {
@@ -71,9 +67,8 @@ export default function DashboardModule({
       value: totalProducts.toString(),
       changeValue: `+${products.filter(p => new Date(p.createdAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)).length} new this wk`,
       isPositive: true,
-      color: "text-amber-400",
-      textColor: "text-amber-400",
-      bgColor: "bg-amber-950/30 border-amber-900/30",
+      color: "text-amber-700",
+      iconBg: "bg-amber-100 border-amber-200",
       icon: ShoppingBag,
     },
     {
@@ -82,9 +77,8 @@ export default function DashboardModule({
       value: totalCustomers.toString(),
       changeValue: "+4.1%",
       isPositive: true,
-      color: "text-teal-400",
-      textColor: "text-teal-400",
-      bgColor: "bg-teal-950/30 border-teal-900/30",
+      color: "text-teal-700",
+      iconBg: "bg-teal-100 border-teal-200",
       icon: Users,
     }
   ];
@@ -103,17 +97,17 @@ export default function DashboardModule({
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "Pending":
-        return "bg-amber-950/40 text-amber-400 border-amber-900/50";
+        return "bg-amber-100 text-amber-800 border-amber-200";
       case "Processing":
-        return "bg-blue-950/40 text-blue-400 border-blue-900/50";
+        return "bg-blue-100 text-blue-800 border-blue-200";
       case "Shipped":
-        return "bg-purple-950/40 text-purple-400 border-purple-900/50";
+        return "bg-purple-100 text-purple-800 border-purple-200";
       case "Delivered":
-        return "bg-emerald-950/40 text-emerald-400 border-emerald-900/50";
+        return "bg-green-100 text-[#1f3a28] border-green-200";
       case "Cancelled":
-        return "bg-rose-955 bg-rose-950/40 text-rose-400 border-rose-900/50";
+        return "bg-red-100 text-red-700 border-red-200";
       default:
-        return "bg-slate-900 text-slate-400 border-slate-800";
+        return "bg-gray-100 text-gray-700 border-gray-200";
     }
   };
 
@@ -156,19 +150,19 @@ export default function DashboardModule({
                 
                 <div className="flex items-center gap-1">
                   {item.isPositive ? (
-                    <ArrowUpRight className="w-3.5 h-3.5 text-emerald-400" />
+                    <ArrowUpRight className="w-3.5 h-3.5 text-[#1f3a28]" />
                   ) : (
-                    <ArrowDownRight className="w-3.5 h-3.5 text-rose-400" />
+                    <ArrowDownRight className="w-3.5 h-3.5 text-red-600" />
                   )}
-                  <span className={`text-xs font-bold font-mono ${item.isPositive ? "text-emerald-400" : "text-rose-400"}`}>
+                  <span className={`text-xs font-bold font-mono ${item.isPositive ? "text-[#1f3a28]" : "text-red-600"}`}>
                     {item.changeValue}
                   </span>
                   <span className="text-[10px] text-slate-500">vs last month</span>
                 </div>
               </div>
 
-              <div className={`p-3 rounded-xl ${item.bgColor} border flex items-center justify-center`}>
-                <Icon className={`w-5 h-5 ${item.color}`} />
+              <div className={`p-3.5 rounded-xl border flex items-center justify-center shrink-0 ${item.iconBg}`}>
+                <Icon className={`w-6 h-6 ${item.color}`} strokeWidth={2.25} />
               </div>
             </div>
           );
@@ -185,8 +179,8 @@ export default function DashboardModule({
               <h3 className="text-sm font-extrabold text-white uppercase tracking-wider">Revenue Trend</h3>
               <p className="text-xs text-slate-400">Six-month transactional revenue overview</p>
             </div>
-            <div className="flex items-center gap-1.5 text-xs text-slate-400 font-mono">
-              <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 inline-block"></span>
+            <div className="flex items-center gap-1.5 text-xs text-slate-500 font-mono">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#1f3a28] inline-block"></span>
               <span>INR (₹)</span>
             </div>
           </div>
@@ -195,16 +189,16 @@ export default function DashboardModule({
           <div className="relative pt-4 overflow-x-auto">
             <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} className="w-full h-auto min-w-[320px]">
               {/* Horizontal grid lines */}
-              <line x1="40" y1="20" x2={chartWidth - 40} y2="20" stroke="#1e293b" strokeWidth="1" strokeDasharray="3" />
-              <line x1="40" y1="65" x2={chartWidth - 40} y2="65" stroke="#1e293b" strokeWidth="1" strokeDasharray="3" />
-              <line x1="40" y1="110" x2={chartWidth - 40} y2="110" stroke="#1e293b" strokeWidth="1" strokeDasharray="3" />
-              <line x1="40" y1={chartHeight - 20} x2={chartWidth - 40} y2={chartHeight - 20} stroke="#334155" strokeWidth="1.5" />
+              <line x1="40" y1="20" x2={chartWidth - 40} y2="20" stroke="#e5e7eb" strokeWidth="1" strokeDasharray="3" />
+              <line x1="40" y1="65" x2={chartWidth - 40} y2="65" stroke="#e5e7eb" strokeWidth="1" strokeDasharray="3" />
+              <line x1="40" y1="110" x2={chartWidth - 40} y2="110" stroke="#e5e7eb" strokeWidth="1" strokeDasharray="3" />
+              <line x1="40" y1={chartHeight - 20} x2={chartWidth - 40} y2={chartHeight - 20} stroke="#d1d5db" strokeWidth="1.5" />
 
               {/* Area Under Curve */}
-              <path d={areaPath} fill="url(#chart-gradient)" opacity="0.2" />
+              <path d={areaPath} fill="url(#chart-gradient)" opacity="0.25" />
 
               {/* Line Curve */}
-              <path d={linePath} fill="none" stroke="#6366f1" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              <path d={linePath} fill="none" stroke="#1f3a28" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
 
               {/* Grid Nodes & Tooltips */}
               {computedPoints.map((pt, i) => (
@@ -218,8 +212,8 @@ export default function DashboardModule({
                     cx={pt.x} 
                     cy={pt.y} 
                     r={hoveredPointIdx === i ? 6 : 4} 
-                    fill="#020617" 
-                    stroke="#6366f1" 
+                    fill="#ffffff" 
+                    stroke="#1f3a28" 
                     strokeWidth="2.5" 
                     className="transition-all duration-150"
                   />
@@ -229,7 +223,7 @@ export default function DashboardModule({
                     y={chartHeight - 5} 
                     fontSize="9" 
                     fontFamily="monospace" 
-                    fill="#475569" 
+                    fill="#4b5563" 
                     textAnchor="middle"
                     className="font-semibold"
                   >
@@ -241,8 +235,8 @@ export default function DashboardModule({
               {/* Gradient Declaration */}
               <defs>
                 <linearGradient id="chart-gradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#6366f1" />
-                  <stop offset="100%" stopColor="#020617" />
+                  <stop offset="0%" stopColor="#1f3a28" />
+                  <stop offset="100%" stopColor="#ffffff" />
                 </linearGradient>
               </defs>
             </svg>
@@ -250,22 +244,22 @@ export default function DashboardModule({
             {/* Interactive Graph Tooltip Overlay */}
             {hoveredPointIdx !== null && (
               <div 
-                className="absolute bg-[#0f172a] text-white px-2.5 py-1.5 rounded-lg text-[10px] font-mono shadow-md border border-slate-800 pointer-events-none transform -translate-x-1/2"
+                className="absolute bg-white text-gray-900 px-2.5 py-1.5 rounded-lg text-[10px] font-mono shadow-md border border-gray-200 pointer-events-none transform -translate-x-1/2"
                 style={{
                   left: `${(computedPoints[hoveredPointIdx].x / chartWidth) * 100}%`,
                   top: `${(computedPoints[hoveredPointIdx].y / chartHeight) * 100 - 32}%`
                 }}
               >
-                <p className="text-slate-400 uppercase tracking-widest text-[8px]">Revenue [{computedPoints[hoveredPointIdx].month}]</p>
-                <p className="font-bold text-emerald-400 text-xs">{formatCurrency(computedPoints[hoveredPointIdx].value, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
+                <p className="text-gray-500 uppercase tracking-widest text-[8px]">Revenue [{computedPoints[hoveredPointIdx].month}]</p>
+                <p className="font-bold text-[#1f3a28] text-xs">{formatCurrency(computedPoints[hoveredPointIdx].value, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
               </div>
             )}
           </div>
 
-          <div className="pt-2.5 flex items-center gap-2 border-t border-slate-800/60 justify-between text-xs text-slate-400 font-medium">
+          <div className="pt-2.5 flex items-center gap-2 border-t border-gray-200 justify-between text-xs text-slate-500 font-medium">
             <span className="flex items-center gap-1">
-              <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Orders up <strong className="text-white">12%</strong> compared to last quarter</span>
+              <TrendingUp className="w-3.5 h-3.5 text-[#1f3a28]" strokeWidth={2.25} />
+              <span>Orders up <strong className="text-gray-900">12%</strong> compared to last quarter</span>
             </span>
             <span className="text-[10px] text-slate-500 font-mono">Simulated DB Live Sync active</span>
           </div>
@@ -281,7 +275,7 @@ export default function DashboardModule({
             <button 
               id="dashboard-new-product-btn"
               onClick={() => setTab("add-product")}
-              className="p-1 px-1.5 bg-indigo-950/60 hover:bg-indigo-900 border border-indigo-900 text-indigo-300 rounded-lg transition-colors cursor-pointer"
+              className="p-1.5 bg-[#1f3a28] hover:bg-[#172d22] border border-[#1f3a28] text-white rounded-lg transition-colors cursor-pointer"
               title="Add New Product"
             >
               <Plus className="w-4 h-4" />
@@ -317,8 +311,8 @@ export default function DashboardModule({
                       <p className="text-xs font-bold text-slate-100 font-mono">{formatCurrency(p.price)}</p>
                       <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full border leading-none inline-block ${
                         p.status === "Active" 
-                          ? "bg-emerald-950/40 text-emerald-400 border-emerald-900/50" 
-                          : "bg-rose-950/40 text-rose-400 border-rose-900/50"
+                          ? "bg-green-100 text-[#1f3a28] border-green-200" 
+                          : "bg-red-100 text-red-700 border-red-200"
                       }`}>
                         {p.status}
                       </span>
@@ -332,7 +326,7 @@ export default function DashboardModule({
           <button 
             id="dashboard-all-products-link"
             onClick={() => setTab("product-list")}
-            className="w-full py-2 bg-slate-900 text-slate-300 hover:bg-slate-800 hover:text-white font-bold text-xs border border-slate-800 rounded-xl transition-all flex items-center justify-center gap-1"
+            className="w-full py-2 bg-gray-50 text-[#1f3a28] hover:bg-[#1f3a28] hover:text-white font-bold text-xs border border-gray-200 hover:border-[#1f3a28] rounded-xl transition-all flex items-center justify-center gap-1"
           >
             <span>View All Products</span>
             <ChevronRight className="w-3.5 h-3.5" />
@@ -351,7 +345,7 @@ export default function DashboardModule({
           <button 
             id="dashboard-all-orders-link"
             onClick={() => setTab("orders-list")}
-            className="px-3.5 py-1.5 text-xs font-bold text-indigo-300 hover:text-white bg-indigo-950/60 hover:bg-indigo-900 rounded-lg transition-all flex items-center gap-1 self-start cursor-pointer border border-indigo-900"
+            className="px-3.5 py-1.5 text-xs font-bold text-white bg-[#1f3a28] hover:bg-[#172d22] rounded-lg transition-all flex items-center gap-1 self-start cursor-pointer border border-[#1f3a28]"
           >
             <span>Manage Orders</span>
             <ArrowUpRight className="w-3.5 h-3.5" />
@@ -370,13 +364,12 @@ export default function DashboardModule({
                 <th className="py-3 px-5">Total Amount</th>
                 <th className="py-3 px-5">Status</th>
                 <th className="py-3 px-5">Date</th>
-                <th className="py-3 px-4 text-center">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-850 text-xs text-slate-300">
               {recentOrders.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className="text-center py-10 text-slate-500">
+                  <td colSpan={8} className="text-center py-10 text-slate-500">
                     No orders have been recorded in the database yet.
                   </td>
                 </tr>
@@ -410,15 +403,6 @@ export default function DashboardModule({
                     </td>
                     <td className="py-3.5 px-5 text-slate-500 font-mono text-[10px]">
                       {new Date(order.orderDate).toLocaleDateString()}
-                    </td>
-                    <td className="py-3.5 px-4 text-center">
-                      <button 
-                        id={`dash-view-order-${order.id}`}
-                        onClick={() => onViewOrder(order)}
-                        className="p-1 px-2.5 text-[10px] hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg font-extrabold border border-slate-800 transition-colors cursor-pointer"
-                      >
-                        Details
-                      </button>
                     </td>
                   </tr>
                 ))

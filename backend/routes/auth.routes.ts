@@ -9,13 +9,20 @@ const router = Router();
 
 const JWT_SECRET = process.env.JWT_SECRET || "herbavi-dev-secret-change-in-production";
 
+function normalizeRole(role: unknown) {
+  const value = String(role ?? "").trim().toLowerCase();
+  if (value === "admin") return "Admin";
+  return "User"; // default to 'User' for new registrations unless explicitly 'admin'
+}
+
 function mapAuthUser(row: RowDataPacket) {
-  const role = row.role === "Staff" ? "Staff" : "Admin";
+  const role = normalizeRole(row.role);
   return {
     id: String(row.id),
     name: row.user_name,
     email: row.email,
     phone: row.phone_number ?? "",
+    address: row.address ?? "",
     role,
     createdAt:
       row.created_at instanceof Date
@@ -34,7 +41,7 @@ function signToken(user: { id: string; email: string; role: string }) {
 
 router.post("/register", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { name, email, password, phone, role } = req.body;
+    const { name, email, password, phone, address } = req.body;
 
     if (!name || !String(name).trim()) {
       res.status(400).json({ error: "User name is required." });
@@ -48,18 +55,19 @@ router.post("/register", async (req: Request, res: Response, next: NextFunction)
       res.status(400).json({ error: "Password must be at least 6 characters." });
       return;
     }
-    if (!phone || !String(phone).trim()) {
-      res.status(400).json({ error: "Phone number is required." });
+    if (!address || !String(address).trim()) {
+      res.status(400).json({ error: "Address is required." });
       return;
     }
 
     const trimmedEmail = String(email).trim().toLowerCase();
     const trimmedName = String(name).trim();
-    const trimmedPhone = String(phone).trim().slice(0, 15);
-    const resolvedRole = role === "Staff" ? "Staff" : "Admin";
+    const trimmedPhone = phone ? String(phone).trim().slice(0, 15) : "";
+    const trimmedAddress = String(address).trim();
+    const resolvedRole = "User";
 
     const existing = await query<RowDataPacket[]>(
-      "SELECT id FROM users WHERE email = ?",
+      "SELECT id FROM users WHERE LOWER(email) = ?",
       [trimmedEmail]
     );
     if (existing.length > 0) {
@@ -70,9 +78,9 @@ router.post("/register", async (req: Request, res: Response, next: NextFunction)
     const passwordHash = await bcrypt.hash(String(password), 10);
 
     await query(
-      `INSERT INTO users (user_name, password, email, phone_number, role, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, NOW(), NOW())`,
-      [trimmedName, passwordHash, trimmedEmail, trimmedPhone, resolvedRole]
+      `INSERT INTO users (user_name, password, email, phone_number, address, role, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())`,
+      [trimmedName, passwordHash, trimmedEmail, trimmedPhone, trimmedAddress, resolvedRole]
     );
 
     const inserted = await query<RowDataPacket[]>(
@@ -90,7 +98,8 @@ router.post("/register", async (req: Request, res: Response, next: NextFunction)
       name: trimmedName,
       email: trimmedEmail,
       phone: trimmedPhone,
-      role: resolvedRole as "Admin" | "Staff",
+      address: trimmedAddress,
+      role: resolvedRole as "Admin" | "User",
       createdAt:
         inserted[0]?.created_at instanceof Date
           ? inserted[0].created_at.toISOString()
@@ -117,7 +126,7 @@ router.post("/login", async (req: Request, res: Response, next: NextFunction) =>
     console.log("Login request received");
 
     const rows = await query<RowDataPacket[]>(
-      "SELECT id, user_name, email, phone_number, password, role, created_at FROM users WHERE email = ?",
+      "SELECT id, user_name, email, phone_number, address, password, role, created_at FROM users WHERE LOWER(email) = ?",
       [trimmedEmail]
     );
     console.log("User rows:", rows);  
@@ -127,7 +136,18 @@ router.post("/login", async (req: Request, res: Response, next: NextFunction) =>
     }
 
     const row = rows[0];
-    const valid = await bcrypt.compare(String(password), row.password);
+    let valid = await bcrypt.compare(String(password), row.password);
+    if (!valid && typeof row.password === "string" && !row.password.startsWith("$2")) {
+      // Legacy support for plaintext password rows: allow authentication,
+      // then immediately upgrade the stored password to a bcrypt hash.
+      if (String(password) === row.password) {
+        valid = true;
+        const upgradedHash = await bcrypt.hash(String(password), 10);
+        await query("UPDATE users SET password = ? WHERE id = ?", [upgradedHash, row.id]);
+        logSqlQuery(`UPDATE users SET password = '[hash]' WHERE id = ${row.id};`);
+      }
+    }
+
     if (!valid) {
       res.status(401).json({ error: "Invalid email or password." });
       return;
@@ -162,7 +182,7 @@ router.get("/me", async (req: Request, res: Response, next: NextFunction) => {
     const payload = jwt.verify(token, JWT_SECRET) as { sub: string };
 
     const rows = await query<RowDataPacket[]>(
-      "SELECT id, user_name, email, phone_number, role, created_at FROM users WHERE id = ?",
+      "SELECT id, user_name, email, phone_number, address, role, created_at FROM users WHERE id = ?",
       [payload.sub]
     );
 
@@ -195,7 +215,7 @@ router.post("/forgot-password", async (req: Request, res: Response, next: NextFu
 
     // Check if user exists
     const rows = await query<RowDataPacket[]>(
-      "SELECT id FROM users WHERE email = ?",
+      "SELECT id FROM users WHERE LOWER(email) = ?",
       [trimmedEmail]
     );
 

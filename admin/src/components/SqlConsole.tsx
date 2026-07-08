@@ -115,7 +115,7 @@ export default function SqlConsole({
       { col: "password", type: "VARCHAR(255)", attr: "NOT NULL — hashed password" },
       { col: "email", type: "VARCHAR(150)", attr: "UNIQUE NOT NULL — sign-up Mail" },
       { col: "phone_number", type: "VARCHAR(15)", attr: "NOT NULL — sign-up Phone" },
-      { col: "role", type: "ENUM('Admin', 'Staff')", attr: "DEFAULT 'Admin'" },
+      { col: "role", type: "ENUM('Admin','User')", attr: "DEFAULT 'User'" },
       { col: "created_at", type: "TIMESTAMP", attr: "DEFAULT CURRENT_TIMESTAMP" },
       { col: "updated_at", type: "TIMESTAMP", attr: "ON UPDATE CURRENT_TIMESTAMP" },
     ],

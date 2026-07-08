@@ -97,7 +97,7 @@ export interface AppUser {
   userName: string;
   email: string;
   phoneNumber: string;
-  role: 'Admin' | 'Staff';
+  role: 'Admin' | 'User';
   createdAt: string;
 }
 
@@ -106,6 +106,6 @@ export interface AdminUser {
   name: string;
   email: string;
   phone: string;
-  role: 'Admin' | 'Staff';
+  role: 'Admin' | 'User';
   createdAt: string;
 }

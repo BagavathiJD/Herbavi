@@ -1,22 +1,266 @@
 @import "tailwindcss";
 
-body {
-  background-color: #020617;
-  color: #cbd5e1;
+:root {
+  --admin-primary: #1f3a28;
+  --admin-primary-hover: #172d22;
+  --admin-bg: #ffffff;
+  --admin-surface: #ffffff;
+  --admin-surface-muted: #f9fafb;
+  --admin-border: #e5e7eb;
+  --admin-text: #000000;
+  --admin-text-muted: #4b5563;
 }
 
-/* Custom dark scrollbar style matching the theme */
+body {
+  background-color: var(--admin-bg);
+  color: var(--admin-text);
+}
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
+
 ::-webkit-scrollbar-track {
-  background: #020617;
+  background: #f3f4f6;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: #d1d5db;
   border-radius: 9999px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: var(--admin-primary);
+}
+
+/* ---- Admin light theme shell ---- */
+.admin-app {
+  background-color: var(--admin-bg);
+  color: var(--admin-text);
+}
+
+/* Dark panel backgrounds -> white */
+.admin-app [class*="020617"],
+.admin-app [class*="0f172a"],
+.admin-app [class*="111c34"],
+.admin-app [class*="0c1322"],
+.admin-app [class*="121b30"] {
+  background-color: var(--admin-surface) !important;
+}
+
+.admin-app thead[class*="020617"],
+.admin-app thead [class*="020617"],
+.admin-app tr[class*="020617"] {
+  background-color: var(--admin-surface-muted) !important;
+}
+
+/* Slate / dark surfaces */
+.admin-app [class*="bg-slate-9"],
+.admin-app [class*="bg-slate-8"] {
+  background-color: var(--admin-surface-muted) !important;
+}
+
+/* Primary buttons & green actions */
+.admin-app button[class*="indigo"],
+.admin-app [class*="bg-indigo-5"],
+.admin-app [class*="bg-indigo-6"],
+.admin-app [class*="bg-indigo-7"],
+.admin-app [class*="bg-indigo-650"],
+.admin-app [class*="bg-emerald-6"]:not([class*="bg-emerald-6/"]) {
+  background-color: var(--admin-primary) !important;
+  border-color: var(--admin-primary) !important;
+  color: #ffffff !important;
+}
+
+.admin-app button[class*="indigo"]:hover,
+.admin-app [class*="hover:bg-indigo-5"]:hover,
+.admin-app [class*="hover:bg-indigo-6"]:hover,
+.admin-app [class*="hover:bg-indigo-7"]:hover,
+.admin-app [class*="hover:bg-indigo-650"]:hover {
+  background-color: var(--admin-primary-hover) !important;
+  border-color: var(--admin-primary-hover) !important;
+  color: #ffffff !important;
+}
+
+/* Sidebar active nav item */
+.admin-app [class*="shadow-indigo"] {
+  background-color: var(--admin-primary) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(31, 58, 40, 0.25) !important;
+}
+
+/* Body text */
+.admin-app [class*="text-slate-2"],
+.admin-app [class*="text-slate-3"] {
+  color: #111827 !important;
+}
+
+.admin-app [class*="text-slate-4"],
+.admin-app [class*="text-slate-5"] {
+  color: var(--admin-text-muted) !important;
+}
+
+.admin-app [class*="text-indigo-3"],
+.admin-app [class*="text-indigo-4"],
+.admin-app [class*="text-indigo-5"] {
+  color: var(--admin-primary) !important;
+}
+
+/* Muted accent icons on light surfaces */
+.admin-app [class*="text-emerald-4"],
+.admin-app [class*="text-amber-4"],
+.admin-app [class*="text-teal-4"] {
+  color: var(--admin-primary) !important;
+}
+
+/* Dashboard stat icon tiles */
+.admin-app [class*="bg-green-100"] {
+  background-color: #dcfce7 !important;
+  border-color: #bbf7d0 !important;
+}
+
+.admin-app [class*="bg-blue-100"] {
+  background-color: #dbeafe !important;
+  border-color: #bfdbfe !important;
+}
+
+.admin-app [class*="bg-amber-100"] {
+  background-color: #fef3c7 !important;
+  border-color: #fde68a !important;
+}
+
+.admin-app [class*="bg-teal-100"] {
+  background-color: #ccfbf1 !important;
+  border-color: #99f6e4 !important;
+}
+
+.admin-app h1,
+.admin-app h2,
+.admin-app h3,
+.admin-app h4,
+.admin-app h5,
+.admin-app h6,
+.admin-app [class*="font-extrabold"][class*="text-white"],
+.admin-app [class*="font-bold"][class*="text-white"]:not(button):not(button *) {
+  color: var(--admin-text) !important;
+}
+
+/* Headings in cards */
+.admin-app [class*="text-[#ffffff]"],
+.admin-app .text-white:not(button):not(a[class*="bg-"]):not([class*="bg-indigo"]):not([class*="1f3a28"]) {
+  color: var(--admin-text) !important;
+}
+
+/* Keep white label text on primary buttons */
+.admin-app button.text-white,
+.admin-app button [class*="text-white"],
+.admin-app [type="submit"].text-white,
+.admin-app [class*="bg-indigo"].text-white,
+.admin-app [class*="1f3a28"].text-white {
+  color: #ffffff !important;
+}
+
+/* Borders */
+.admin-app [class*="border-slate-8"],
+.admin-app [class*="border-slate-85"],
+.admin-app [class*="border-[#1e293b]"],
+.admin-app [class*="border-indigo-9"] {
+  border-color: var(--admin-border) !important;
+}
+
+/* Form fields */
+.admin-app input:not([type="radio"]):not([type="checkbox"]),
+.admin-app select,
+.admin-app textarea {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border-color: #d1d5db !important;
+}
+
+.admin-app input::placeholder,
+.admin-app textarea::placeholder {
+  color: #9ca3af !important;
+}
+
+.admin-app input:focus,
+.admin-app select:focus,
+.admin-app textarea:focus {
+  border-color: var(--admin-primary) !important;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(31, 58, 40, 0.15) !important;
+}
+
+/* Hover rows & ghost buttons */
+.admin-app [class*="hover:bg-slate-9"]:hover,
+.admin-app [class*="hover:bg-slate-8"]:hover,
+.admin-app [class*="hover:bg-[#020617]"]:hover,
+.admin-app [class*="hover:bg-[#1e293b]"]:hover {
+  background-color: #f3f4f6 !important;
+}
+
+.admin-app [class*="hover:bg-indigo-950"]:hover {
+  background-color: rgba(31, 58, 40, 0.08) !important;
+}
+
+.admin-app [class*="hover:text-indigo"]:hover {
+  color: var(--admin-primary) !important;
+}
+
+/* Edit action buttons */
+.admin-app [id*="edit-btn"],
+.admin-app [class*="text-indigo-400"][class*="border-indigo"] {
+  background-color: var(--admin-primary) !important;
+  color: #ffffff !important;
+  border-color: var(--admin-primary) !important;
+}
+
+.admin-app [id*="edit-btn"]:hover,
+.admin-app [class*="text-indigo-400"][class*="border-indigo"]:hover {
+  background-color: var(--admin-primary-hover) !important;
+  border-color: var(--admin-primary-hover) !important;
+  color: #ffffff !important;
+}
+
+.admin-app [id*="edit-btn"] svg,
+.admin-app [id*="edit-btn"] span {
+  color: #ffffff !important;
+}
+
+/* Loading spinner */
+.admin-app [class*="border-indigo-5"] {
+  border-color: var(--admin-primary) !important;
+}
+
+/* Gradients & tinted panels -> subtle green tint on white */
+.admin-app [class*="from-indigo"],
+.admin-app [class*="bg-indigo-950"],
+.admin-app [class*="bg-indigo-950/"] {
+  background: #f0f5f1 !important;
+  background-image: none !important;
+}
+
+/* Modals */
+.admin-app [class*="backdrop-blur"] + div,
+.admin-app .fixed.inset-0 + div {
+  color: var(--admin-text);
+}
+
+.admin-app pre[class*="bg-slate-950"],
+.admin-app pre[class*="slate-950"] {
+  background-color: #f3f4f6 !important;
+  color: var(--admin-primary) !important;
+  border-color: var(--admin-border) !important;
+}
+
+/* Success toast stays green */
+.admin-app #success-floating-toast {
+  background-color: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+  color: #065f46 !important;
+}
+
+.admin-app #success-floating-toast p,
+.admin-app #success-floating-toast span {
+  color: inherit !important;
 }

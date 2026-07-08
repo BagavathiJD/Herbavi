@@ -3,8 +3,9 @@ CREATE TABLE IF NOT EXISTS users (
   user_name     VARCHAR(100) NOT NULL,
   password      VARCHAR(255) NOT NULL,
   email         VARCHAR(150) NOT NULL UNIQUE,
-  phone_number  VARCHAR(15)  NOT NULL,
-  role          ENUM('Admin', 'Staff') NOT NULL DEFAULT 'Admin',
+  phone_number  VARCHAR(15)  NULL DEFAULT NULL,
+  address       TEXT         NULL,
+  role          ENUM('Admin','User') NOT NULL DEFAULT 'User',
   created_at    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

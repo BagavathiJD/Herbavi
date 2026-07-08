@@ -12,7 +12,7 @@ export default function AuthGate({ onAuthenticated }: AuthGateProps) {
   const [mode, setMode] = useState<"login" | "signup" | "forgotpassword">("login");
 
   return (
-    <div className="min-h-screen bg-[#020617] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-white flex items-center justify-center p-4 admin-app">
       {mode === "login" ? (
         <LoginPage
           onLoginSuccess={onAuthenticated}
@@ -21,7 +21,7 @@ export default function AuthGate({ onAuthenticated }: AuthGateProps) {
         />
       ) : mode === "signup" ? (
         <SignUpPage
-          onSignUpSuccess={onAuthenticated}
+          onSignUpSuccess={() => setMode("login")}
           onSwitchToLogin={() => setMode("login")}
         />
       ) : (

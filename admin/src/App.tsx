@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { 
-  X, 
   Terminal, 
   Check, 
-  Sparkles, 
-  FileJson,
-  Plus, 
-  Database,
-  ArrowRight,
-  ShieldCheck,
   AlertCircle
 } from "lucide-react";
 
@@ -23,9 +16,9 @@ import ProductSettingsModule from "./components/ProductSettingsModule";
 import ProductNamesModule from "./components/ProductNamesModule";
 import UsersModule from "./components/UsersModule";
 import AuthGate from "./registration/AuthGate";
-import { authHeaders, clearToken, getToken } from "./registration/auth";
+import { authHeaders, clearToken, getToken, hasActiveSession, normalizeRole } from "./registration/auth";
 // Types
-import { Product, Order, Measurement, ProductName, Customer, AppUser, SqlQueryLog, DbMetrics, AdminUser, formatProductMeasurement, formatCurrency } from "./types";
+import { Product, Order, Measurement, ProductName, Customer, AppUser, SqlQueryLog, DbMetrics, AdminUser } from "./types";
 
 export default function App() {
   const [authUser, setAuthUser] = useState<AdminUser | null>(null);
@@ -50,19 +43,17 @@ export default function App() {
     activeTransactions: 0
   });
 
-  // Edit / Details Inspector variables
+  // Edit variables
   const [selectedProductForEdit, setSelectedProductForEdit] = useState<Product | null>(null);
-  const [selectedProductForView, setSelectedProductForView] = useState<Product | null>(null);
-  const [selectedOrderForView, setSelectedOrderForView] = useState<Order | null>(null);
 
   // Interface Loading states
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [isProcessingForm, setIsProcessingForm] = useState<boolean>(false);
   const [isSimulatingOrder, setIsSimulatingOrder] = useState<boolean>(false);
 
   // Dynamic Floating SQL Log alerts ("Toast" system)
   const [activeToast, setActiveToast] = useState<{ query: string; duration: number } | null>(null);
+  const [successToast, setSuccessToast] = useState<string | null>(null);
 
   const headers = () => ({
     ...authHeaders(),
@@ -113,7 +104,6 @@ export default function App() {
       console.error("Critical error synchronizing MySQL DB segments:", error);
     } finally {
       setIsLoading(false);
-      setIsRefreshing(false);
     }
   };
 
@@ -128,7 +118,9 @@ export default function App() {
         const res = await fetch("/api/auth/me", { headers: authHeaders() });
         if (res.ok) {
           const user = await res.json();
-          setAuthUser(user);
+          if (normalizeRole(user.role) === "admin" && hasActiveSession()) {
+            setAuthUser(user);
+          }
         } else {
           clearToken();
         }
@@ -142,7 +134,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (authUser) {
+    if (authUser && authUser.role !== "User") {
       syncDatabaseState();
     }
   }, [authUser]);
@@ -166,9 +158,9 @@ export default function App() {
     return () => clearTimeout(timer);
   };
 
-  const handleManualReSync = async () => {
-    setIsRefreshing(true);
-    await syncDatabaseState(true);
+  const showSuccessToast = (message: string) => {
+    setSuccessToast(message);
+    setTimeout(() => setSuccessToast(null), 4000);
   };
 
   // --- 1. PRODUCT METADATA MANAGEMENT EVENT ACTIONS ---
@@ -194,7 +186,8 @@ export default function App() {
 
       // Success
       await syncDatabaseState(true);
-      
+      showSuccessToast(isEdit ? "Product updated successfully!" : "Product added successfully!");
+
       // Select the correct tab to redirect
       setTab("product-list");
       setSelectedProductForEdit(null);
@@ -219,6 +212,7 @@ export default function App() {
       }
 
       await syncDatabaseState(true);
+      showSuccessToast("Product deleted successfully!");
     } catch (error: any) {
       alert(error.message);
     }
@@ -294,6 +288,7 @@ export default function App() {
       }
 
       await syncDatabaseState(true);
+      showSuccessToast("Measurement added successfully!");
     } catch (err: any) {
       throw err; // bubble up to handle error banner inside sub-form
     } finally {
@@ -336,6 +331,7 @@ export default function App() {
       }
 
       await syncDatabaseState(true);
+      showSuccessToast("Measurement deleted successfully!");
     } catch (error: any) {
       throw error; // Bubble restrict failures to trigger alert modal gracefully
     }
@@ -414,7 +410,6 @@ export default function App() {
             customers={customers}
             measurements={measurements}
             setTab={setTab}
-            onViewOrder={(order) => setSelectedOrderForView(order)}
           />
         );
 
@@ -449,7 +444,6 @@ export default function App() {
             measurements={measurements}
             onEditTrigger={handleEditProductTrigger}
             onDeleteProduct={handleDeleteProduct}
-            onViewProductDetails={(p) => setSelectedProductForView(p)}
           />
         );
 
@@ -458,7 +452,6 @@ export default function App() {
           <OrdersManagementModule
             orders={orders}
             onUpdateStatus={handleUpdateOrderStatus}
-            onViewOrderDetails={(order) => setSelectedOrderForView(order)}
             onSimulateOrder={handleSimulatePurchaseOrder}
             isSimulating={isSimulatingOrder}
           />
@@ -501,8 +494,8 @@ export default function App() {
 
   if (authChecking) {
     return (
-      <div className="min-h-screen bg-[#020617] flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-white flex items-center justify-center admin-app">
+        <div className="w-8 h-8 border-4 border-[#1f3a28] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -511,8 +504,28 @@ export default function App() {
     return <AuthGate onAuthenticated={setAuthUser} />;
   }
 
+  if (String(authUser.role).trim().toLowerCase() !== "admin") {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center p-6 admin-app">
+        <div className="max-w-md w-full bg-white border border-gray-200 rounded-3xl p-8 text-black shadow-xl">
+          <h1 className="text-2xl font-bold mb-4 text-black">Access denied</h1>
+          <p className="text-sm text-gray-600 mb-6">
+            Your account does not have access to the Herbavi admin panel.
+          </p>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="w-full py-3 bg-[#1f3a28] hover:bg-[#172d22] text-white rounded-xl text-sm font-semibold transition"
+          >
+            Sign out and sign in with an admin account
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex h-screen bg-[#020617] overflow-hidden font-sans text-xs antialiased text-slate-200">
+    <div className="flex h-screen bg-white overflow-hidden font-sans text-xs antialiased text-black admin-app">
       
       {/* Dynamic Left Sidebar Drawer */}
       <Sidebar 
@@ -523,23 +536,20 @@ export default function App() {
       />
 
       {/* Main Panel Content Container */}
-      <div className="flex-1 flex flex-col h-screen overflow-hidden bg-[#020617]">
+      <div className="flex-1 flex flex-col h-screen overflow-hidden bg-white">
         
         {/* Dynamic Header desk */}
         <Header 
           currentTab={currentTab} 
-          onRefresh={handleManualReSync}
-          isRefreshing={isRefreshing}
         />
 
         {/* Global Loading screen or core Content layout */}
-        <main className="flex-1 overflow-y-auto p-4 lg:p-6 scroll-smooth bg-[#020617]">
+        <main className="flex-1 overflow-y-auto p-4 lg:p-6 scroll-smooth bg-white">
           {isLoading ? (
-            <div className="h-full flex flex-col items-center justify-center py-24 text-slate-400 gap-3">
-              <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+            <div className="h-full flex flex-col items-center justify-center py-24 text-gray-600 gap-3">
+              <div className="w-8 h-8 border-4 border-[#1f3a28] border-t-transparent rounded-full animate-spin"></div>
               <div>
-                <p className="text-xs font-bold text-white">Connecting MySQL Server...</p>
-                <p className="text-[10px] text-slate-500 font-mono">schema: ecommerce_admin</p>
+                <p className="text-xs font-bold text-black">Loading...</p>
               </div>
             </div>
           ) : (
@@ -550,6 +560,24 @@ export default function App() {
         </main>
 
       </div>
+
+      {/* --- SUCCESS NOTIFICATION TOAST --- */}
+      {successToast && (
+        <div
+          id="success-floating-toast"
+          onClick={() => setSuccessToast(null)}
+          className="fixed bottom-6 left-6 z-50 bg-emerald-950 text-emerald-100 p-4 rounded-xl shadow-2xl border border-emerald-800/60 max-w-sm flex items-start gap-3 select-none cursor-pointer hover:border-emerald-600/50 hover:bg-emerald-900/90 duration-200 transition-all animate-in slide-in-from-left-4 fade-in"
+        >
+          <div className="p-1.5 bg-emerald-900/60 text-emerald-400 border border-emerald-700/50 rounded-lg shrink-0 mt-0.5">
+            <Check className="w-4 h-4" />
+          </div>
+          <div className="text-left space-y-1">
+            <span className="text-[9px] font-black font-mono text-emerald-400 uppercase tracking-widest block">Success</span>
+            <p className="text-xs font-semibold text-emerald-50 leading-snug">{successToast}</p>
+            <span className="text-[8px] text-emerald-500/80 font-medium">Click to dismiss</span>
+          </div>
+        </div>
+      )}
 
       {/* --- GLOBAL INTUITIVE SQL NOTIFICATION ALERTS ("Toast") --- */}
       {activeToast && (
@@ -567,212 +595,6 @@ export default function App() {
               <span className="text-[8px] text-indigo-400 font-medium">Click to dismiss</span>
             </div>
             <p className="text-[10.5px] font-mono leading-tight truncate text-slate-350">{activeToast.query}</p>
-          </div>
-        </div>
-      )}      {/* --- MODAL 1: ORDER DETAILS DETAILED METADATA ROW INSPECTOR --- */}
-      {selectedOrderForView && (
-        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#0f172a] rounded-2xl max-w-2xl w-full border border-slate-800 overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-150 text-left">
-            
-            {/* Modal Header */}
-            <div className="p-4 bg-[#020617] text-white flex items-center justify-between border-b border-slate-850">
-              <div className="flex items-center gap-2">
-                <Database className="w-5 h-5 text-indigo-400" />
-                <div>
-                  <h4 className="text-sm font-bold font-mono text-white">Row Inspector: order_id [{selectedOrderForView.id}]</h4>
-                  <p className="text-[9px] text-slate-400 font-mono">Database table: orders</p>
-                </div>
-              </div>
-              <button 
-                onClick={() => setSelectedOrderForView(null)}
-                className="p-1 hover:bg-slate-800 rounded-lg text-slate-300 transition-colors cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Modal Content */}
-            <div className="p-6 space-y-6 max-h-[500px] overflow-y-auto">
-              
-              {/* Columns Segment Mapping layout */}
-              <div className="grid grid-cols-2 gap-4">
-                
-                {/* Product Section */}
-                <div className="p-4 bg-[#020617]/60 border border-slate-800 rounded-xl space-y-3">
-                  <span className="text-[10px] font-black text-indigo-400 uppercase font-mono tracking-widest block">Purchased Merchandise</span>
-                  <div className="flex gap-3">
-                    <img 
-                      src={selectedOrderForView.productImageUrl} 
-                      alt={selectedOrderForView.productName} 
-                      className="w-12 h-12 object-cover border border-slate-800 rounded-xl bg-[#0f172a]"
-                      referrerPolicy="no-referrer"
-                    />
-                    <div className="space-y-0.5">
-                      <p className="font-bold text-white text-xs">{selectedOrderForView.productName}</p>
-                      <p className="text-[10px] text-slate-400 font-mono">sku: {selectedOrderForView.productId}</p>
-                      <p className="text-xs font-bold text-indigo-400 font-mono">{formatCurrency(selectedOrderForView.price)}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Customer / Purchaser card Section */}
-                <div className="p-4 bg-[#020617]/60 border border-slate-800 rounded-xl space-y-2">
-                  <span className="text-[10px] font-black text-indigo-400 uppercase font-mono tracking-widest block">Client profile</span>
-                  <div className="space-y-1">
-                    <p className="font-bold text-white text-xs">{selectedOrderForView.userName}</p>
-                    <p className="text-[10px] text-slate-400 font-mono">Customer ID: {selectedOrderForView.userId}</p>
-                    <p className="text-[10px] text-slate-400 font-mono">Purchase Date: {new Date(selectedOrderForView.orderDate).toLocaleString()}</p>
-                  </div>
-                </div>
-
-              </div>
-
-              {/* Numerical Transaction Ledger columns */}
-              <div className="p-4 bg-indigo-950/20 border border-indigo-900/50 rounded-xl flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <span className="text-[9px] uppercase tracking-wider font-bold text-indigo-400 leading-none">Formula billing details</span>
-                  <p className="text-xs font-semibold text-slate-300">
-                    Sourced: {selectedOrderForView.quantity} × {selectedOrderForView.measurementName}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <span className="text-[9px] uppercase tracking-wider font-bold text-indigo-400 leading-none">Net amount</span>
-                  <p className="text-lg font-black font-mono text-indigo-400 leading-none mt-1">
-                    {formatCurrency(selectedOrderForView.totalAmount)}
-                  </p>
-                </div>
-              </div>
-
-              {/* Copyable JSON Row value block */}
-              <div className="space-y-1.5 font-mono">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
-                  <FileJson className="w-3.5 h-3.5" />
-                  <span>Row Object (JSON notation):</span>
-                </span>
-                <pre className="p-4 bg-slate-950 text-emerald-400 rounded-xl text-[10px] leading-relaxed max-height-[160px] overflow-auto select-all border border-slate-850">
-                  {JSON.stringify(selectedOrderForView, null, 2)}
-                </pre>
-              </div>
-
-            </div>
-
-            {/* Modal Actions */}
-            <div className="p-4 bg-[#020617]/80 border-t border-slate-850 flex justify-end">
-              <button
-                onClick={() => setSelectedOrderForView(null)}
-                className="px-5 py-2 text-xs font-bold bg-indigo-600 text-white hover:bg-indigo-700 rounded-xl transition-all cursor-pointer shadow-md"
-              >
-                Close Row Inspector
-              </button>
-            </div>
-
-          </div>
-        </div>
-      )}
-
-      {/* --- MODAL 2: PRODUCT ROW DETAILS AND METADATA INSPECTOR --- */}
-      {selectedProductForView && (
-        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#0f172a] rounded-2xl max-w-2xl w-full border border-slate-800 overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-150 text-left">
-            
-            {/* Modal Header */}
-            <div className="p-4 bg-[#020617] text-white flex items-center justify-between border-b border-slate-850">
-              <div className="flex items-center gap-2">
-                <Database className="w-5 h-5 text-indigo-400" />
-                <div>
-                  <h4 className="text-sm font-bold font-mono text-white">Row Inspector: product_id [{selectedProductForView.id}]</h4>
-                  <p className="text-[9px] text-slate-400 font-mono">Database table: products</p>
-                </div>
-              </div>
-              <button 
-                onClick={() => setSelectedProductForView(null)}
-                className="p-1 hover:bg-slate-800 rounded-lg text-slate-300 transition-colors cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Modal Content */}
-            <div className="p-6 space-y-6 max-h-[500px] overflow-y-auto">
-              
-              <div className="flex flex-col sm:flex-row gap-5">
-                {/* Large visual preview */}
-                <img 
-                  src={selectedProductForView.imageUrl} 
-                  alt={selectedProductForView.name} 
-                  className="w-full sm:w-48 h-48 object-cover rounded-2xl border border-slate-800 bg-[#020617]"
-                  referrerPolicy="no-referrer"
-                />
-
-                {/* Primary properties details */}
-                <div className="flex-1 space-y-4">
-                  <div className="space-y-1">
-                    <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded border inline-block select-none ${
-                      selectedProductForView.status === "Active"
-                        ? "bg-emerald-950/40 text-emerald-400 border border-emerald-900/50"
-                        : "bg-rose-950/40 text-rose-400 border border-rose-900/50"
-                    }`}>
-                      {selectedProductForView.status}
-                    </span>
-                    <h3 className="text-base font-extrabold text-white">{selectedProductForView.name}</h3>
-                    <p className="text-[10px] text-slate-400 font-mono uppercase">ID key: {selectedProductForView.id}</p>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3 text-left">
-                    <div className="p-2 py-2.5 bg-[#020617]/50 border border-slate-850 rounded-xl">
-                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block leading-none">Measurement Volume</span>
-                      <span className="text-xs font-mono font-bold text-slate-200 inline-block mt-1">
-                        {selectedProductForView.measurementValue || "1"}
-                      </span>
-                    </div>
-
-                    <div className="p-2 py-2.5 bg-[#020617]/50 border border-slate-850 rounded-xl">
-                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block leading-none">Full Measurement</span>
-                      <span className="text-xs font-bold text-slate-200 inline-block mt-1">
-                        {formatProductMeasurement(
-                          selectedProductForView.measurementValue,
-                          measurements.find(m => m.id === selectedProductForView.measurementId)?.name
-                        )}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="p-3 bg-indigo-950/20 border border-indigo-900/35 rounded-xl">
-                    <span className="text-[9px] font-bold text-indigo-400 uppercase tracking-wider block leading-none">Catalog Sourced Price</span>
-                    <span className="text-base font-black font-mono text-indigo-400 inline-block mt-1">{formatCurrency(selectedProductForView.price)}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Description */}
-              <div className="space-y-1 bg-[#020617]/50 border border-slate-850 p-4 rounded-xl text-xs text-slate-300">
-                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest font-mono">Product description catalog entry</span>
-                <p className="leading-relaxed mt-1">{selectedProductForView.description || "No customized product descriptions are recorded on the relational schema rows."}</p>
-              </div>
-
-              {/* Copyable JSON Row value block */}
-              <div className="space-y-1.5 font-mono">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
-                  <FileJson className="w-3.5 h-3.5" />
-                  <span>Row Tuple (JSON notation):</span>
-                </span>
-                <pre className="p-4 bg-slate-950 text-emerald-400 rounded-xl text-[10px] leading-relaxed overflow-auto select-all border border-slate-850">
-                  {JSON.stringify(selectedProductForView, null, 2)}
-                </pre>
-              </div>
-
-            </div>
-
-            {/* Modal Actions */}
-            <div className="p-4 bg-[#020617]/80 border-t border-slate-850 flex justify-end">
-              <button
-                onClick={() => setSelectedProductForView(null)}
-                className="px-5 py-2 text-xs font-bold bg-indigo-600 text-white hover:bg-indigo-700 rounded-xl transition-all cursor-pointer shadow-md"
-              >
-                Close Row Inspector
-              </button>
-            </div>
-
           </div>
         </div>
       )}

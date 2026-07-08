@@ -74,9 +74,9 @@ export default function ProductNamesModule({
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:items-start">
 
-      <div className="space-y-6">
+      <div className="lg:sticky lg:top-0 lg:self-start z-10">
         <div className="bg-[#0f172a] p-5 rounded-2xl border border-slate-850/80 shadow-md space-y-4">
           <div className="text-left space-y-1 pb-3 border-b border-slate-850">
             <h3 className="text-sm font-extrabold text-white">Add Product Name</h3>
@@ -107,17 +107,25 @@ export default function ProductNamesModule({
             <div className="space-y-1.5 text-left">
               <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Default Status</label>
               <div className="flex gap-4">
-                <label className="flex items-center gap-1.5 p-2 px-3 bg-[#020617] hover:bg-slate-900/55 border border-slate-800 rounded-xl text-xs font-semibold text-emerald-400 cursor-pointer select-none flex-1">
+                <label className={`flex items-center gap-1.5 p-2 px-3 border rounded-xl text-xs font-semibold cursor-pointer select-none flex-1 ${
+                  newStatus === "Enabled"
+                    ? "bg-[#1f3a28] text-white border-[#1f3a28]"
+                    : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
+                }`}>
                   <input
                     type="radio"
                     name="newProductNameStatus"
                     checked={newStatus === "Enabled"}
                     onChange={() => setNewStatus("Enabled")}
-                    className="accent-emerald-500 cursor-pointer"
+                    className="accent-[#1f3a28] cursor-pointer"
                   />
                   <span>Enabled</span>
                 </label>
-                <label className="flex items-center gap-1.5 p-2 px-3 bg-[#020617] hover:bg-slate-900/55 border border-slate-800 rounded-xl text-xs font-semibold text-slate-500 cursor-pointer select-none flex-1">
+                <label className={`flex items-center gap-1.5 p-2 px-3 border rounded-xl text-xs font-semibold cursor-pointer select-none flex-1 ${
+                  newStatus === "Disabled"
+                    ? "bg-gray-200 text-gray-700 border-gray-300"
+                    : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
+                }`}>
                   <input
                     type="radio"
                     name="newProductNameStatus"
@@ -134,25 +142,24 @@ export default function ProductNamesModule({
               id="pn-btn-insert"
               type="submit"
               disabled={isProcessing}
-              className="w-full py-3 bg-indigo-650 hover:bg-indigo-600 border border-indigo-700 text-white font-bold text-xs rounded-xl shadow-lg shadow-indigo-950/40 flex items-center justify-center gap-1 cursor-pointer transition-all disabled:opacity-50"
+              className="w-full py-3 bg-[#1f3a28] hover:bg-[#172d22] border border-[#1f3a28] text-white font-bold text-xs rounded-xl shadow-lg shadow-[#1f3a28]/20 flex items-center justify-center gap-1 cursor-pointer transition-all disabled:opacity-50"
             >
               <Plus className="w-4 h-4" />
-              <span>{isProcessing ? "Processing statement..." : "INSERT INTO product_names;"}</span>
+              <span>{isProcessing ? "Adding..." : "Add Product Name"}</span>
             </button>
           </form>
         </div>
       </div>
 
-      <div className="lg:col-span-2 bg-[#0f172a] rounded-2xl border border-slate-850/80 shadow-md overflow-hidden flex flex-col h-full justify-between">
-        <div className="space-y-1">
-          <div className="p-5 text-left border-b border-slate-850">
-            <h3 className="text-sm font-extrabold text-[#ffffff] uppercase tracking-wider">Product Name Master Table</h3>
-            <p className="text-xs text-slate-400">Standardized product names referenced by the catalog</p>
-          </div>
+      <div className="lg:col-span-2 bg-[#0f172a] rounded-2xl border border-slate-850/80 shadow-md flex flex-col min-h-0 lg:max-h-[calc(100vh-8rem)] overflow-hidden">
+        <div className="p-5 text-left border-b border-slate-850 shrink-0">
+          <h3 className="text-sm font-extrabold text-[#ffffff] uppercase tracking-wider">Product Name Master Table</h3>
+          <p className="text-xs text-slate-400">Standardized product names referenced by the catalog</p>
+        </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-left" id="product-names-master-table">
-              <thead className="bg-[#020617] border-b border-slate-850 text-[10px] uppercase text-slate-400 font-bold font-mono">
+        <div className="flex-1 min-h-0 overflow-y-auto overflow-x-auto">
+          <table className="w-full text-left" id="product-names-master-table">
+            <thead className="sticky top-0 z-10 bg-[#020617] border-b border-slate-850 text-[10px] uppercase text-slate-400 font-bold font-mono">
                 <tr>
                   <th className="py-4 px-6">Name ID</th>
                   <th className="py-4 px-6">Product Name</th>
@@ -200,8 +207,8 @@ export default function ProductNamesModule({
                           ) : (
                             <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full border leading-none inline-block ${
                               pn.status === "Enabled"
-                                ? "bg-emerald-950/40 text-emerald-400 border-emerald-900/50"
-                                : "bg-slate-900 text-slate-400 border-slate-800"
+                                ? "bg-green-100 text-[#1f3a28] border-green-200"
+                                : "bg-gray-100 text-gray-600 border-gray-200"
                             }`}>
                               {pn.status}
                             </span>
@@ -234,7 +241,7 @@ export default function ProductNamesModule({
                               <button
                                 id={`pn-edit-btn-${pn.id}`}
                                 onClick={() => startEditing(pn)}
-                                className="p-1 hover:bg-indigo-950/50 rounded text-indigo-400 border border-indigo-900/40 text-[10px] font-bold flex items-center gap-0.5 cursor-pointer transition-colors"
+                                className="p-1 px-2 bg-[#1f3a28] hover:bg-[#172d22] rounded text-white border border-[#1f3a28] text-[10px] font-bold flex items-center gap-0.5 cursor-pointer transition-colors"
                                 title="Edit Row parameters"
                               >
                                 <Edit2 className="w-3 h-3" />
@@ -266,12 +273,6 @@ export default function ProductNamesModule({
                 )}
               </tbody>
             </table>
-          </div>
-        </div>
-
-        <div className="p-4 bg-gray-50 border-t border-gray-100 text-xs text-gray-500 font-mono text-left flex justify-between items-center">
-          <span>Row Count: {productNames.length} instances active</span>
-          <span>F_KEY RESTRICT: ACTIVE</span>
         </div>
       </div>
 
