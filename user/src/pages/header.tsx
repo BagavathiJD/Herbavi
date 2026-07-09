@@ -7,12 +7,21 @@ interface HeaderProps {
   variant?: 'home' | 'inner';
 }
 
+function formatDisplayName(name: string): string {
+  return name
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+    .join(' ');
+}
+
 export default function Header({ variant = 'home' }: HeaderProps) {
   const { cartCount, wishlistCount } = useCart();
   const { user, logout } = useAuth();
   const headerClass =
     'tf-header header-v4' + (variant === 'home' ? ' offset-top' : ' header-inner-page');
-  const displayName = user?.name?.trim().split(/\s+/)[0] || 'Account';
+  const displayName = user?.name ? formatDisplayName(user.name).split(/\s+/)[0] : 'Account';
 
   return (
     <header className={headerClass}>
@@ -78,13 +87,15 @@ export default function Header({ variant = 'home' }: HeaderProps) {
                       <>
                         <a href="#;" className="nav-icon-item fw-normal herbavi-account-trigger">
                           <i className="icon icon-UserCircle"></i>
-                          <span className="herbavi-account-label d-none d-xl-inline">{displayName}</span>
+                          <span className="herbavi-account-label herbavi-account-label--user d-none d-xl-inline">
+                            {displayName}
+                          </span>
                         </a>
                         <div className="dropdown-account">
                           <ul className="list-menu-item">
                             <li className="herbavi-account-meta">
-                              <span className="herbavi-account-name">{user.name}</span>
-                              <span className="herbavi-account-email">{user.email}</span>
+                              <div className="herbavi-account-name">{formatDisplayName(user.name)}</div>
+                              <div className="herbavi-account-email">{user.email}</div>
                             </li>
                             <li>
                               <Link to="/account-setting">Account settings</Link>

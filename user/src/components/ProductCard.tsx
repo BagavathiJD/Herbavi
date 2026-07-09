@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import type { Product } from '../types/product.tsx';
 import { useCart } from '../context/CartContext.tsx';
 import { useQuickView } from '../context/QuickViewContext.tsx';
-import { assetPath, displayPrice } from '../utils/format.tsx';
+import { assetPath, displayPrice, getDiscountPercent, parsePriceAmount } from '../utils/format.tsx';
 
 interface ProductCardProps {
   product: Product;
@@ -64,15 +64,21 @@ export default function ProductCard({ product, layout = 'grid' }: ProductCardPro
     openQuickView(product);
   };
 
+  const currentPriceLabel = displayPrice(product.priceDisplay, product.price);
+  const originalAmount = product.oldPrice ? parsePriceAmount(product.oldPrice) : null;
+  const originalPriceLabel =
+    originalAmount != null ? displayPrice(product.oldPrice, originalAmount) : null;
+  const discountPercent =
+    originalAmount != null ? getDiscountPercent(product.price, originalAmount) : null;
+
   return (
     <div className={`${cardClass} herbavi-shop-card`} data-id={product.id} data-brand={product.brand}>
-      <div className="card-product_wrapper">
-        <div className="product-img">
+      <div className="card-product_wrapper herbavi-product-media-wrap">
+        <div className="product-img herbavi-product-media">
           <img
             className="img-product"
             loading="lazy"
-            width={348}
-            height={420}
+            decoding="async"
             src={assetPath(product.image)}
             alt={product.name}
           />
@@ -83,15 +89,25 @@ export default function ProductCard({ product, layout = 'grid' }: ProductCardPro
           </ul>
         )}
         {isGrid && (
-          <ul className={actionListClass}>
+          <ul className={`${actionListClass} herbavi-product-actions`}>
             <li>
-              <a href="#modalQuickView" className={actionIconClass} onClick={handleQuickView}>
+              <a
+                href="#modalQuickView"
+                className={`${actionIconClass} herbavi-action-icon`}
+                onClick={handleQuickView}
+                aria-label="Quick view"
+              >
                 <span className="icon icon-EyeOpen"></span>
                 <span className="tooltip">Quick view</span>
               </a>
             </li>
             <li className={`wishlist${wished ? ' addwishlist' : ''}`}>
-              <a href="#;" className={actionIconClass} onClick={handleWishlist}>
+              <a
+                href="#;"
+                className={`${actionIconClass} herbavi-action-icon`}
+                onClick={handleWishlist}
+                aria-label={wished ? 'Remove from wishlist' : 'Add to wishlist'}
+              >
                 <span className={`icon ${wished ? 'icon-HearthFill' : 'icon-Hearth'}`}></span>
                 <span className="tooltip">{wished ? 'Remove Wishlist' : 'Add to Wishlist'}</span>
               </a>
@@ -99,24 +115,31 @@ export default function ProductCard({ product, layout = 'grid' }: ProductCardPro
           </ul>
         )}
         {isGrid && (
-          <div className="product-action_bot">
-            <a href="#shoppingCart" className="tf-btn hv-black btn-white type-2 w-100" onClick={handleAddToCart}>
+          <div className="product-action_bot herbavi-product-action-bot">
+            <a
+              href="#shoppingCart"
+              className="tf-btn hv-black btn-white type-2 w-100 herbavi-add-cart-btn"
+              onClick={handleAddToCart}
+            >
               Add to cart
               <i className="icon icon-ShoppingCart"></i>
             </a>
           </div>
         )}
       </div>
-      <div className={`card-product_info${isGrid ? ' start' : ''}`}>
+      <div className={`card-product_info herbavi-product-info${isGrid ? ' start' : ''}`}>
         {!isGrid && <ProductRating rating={product.rating} />}
         <Link to={product.url} className="name-product herbavi-product-title link-underline">
           {product.name}
         </Link>
         <p className="product-card-desc herbavi-product-desc">{product.description}</p>
-        <div className="price-wrap">
-          <span className="price-new fw-normal">{displayPrice(product.priceDisplay, product.price)}</span>
-          {product.oldPrice && (
-            <span className="price-old fw-normal cl-text-6">{displayPrice(product.oldPrice)}</span>
+        <div className="price-wrap herbavi-product-pricing">
+          <span className="price-new herbavi-product-price">{currentPriceLabel}</span>
+          {originalPriceLabel && (
+            <span className="price-old herbavi-product-price-old">{originalPriceLabel}</span>
+          )}
+          {discountPercent != null && (
+            <span className="herbavi-product-discount">({discountPercent}% OFF)</span>
           )}
         </div>
         {layout === 'list' && (

@@ -225,6 +225,12 @@ body.herbavi-theme .tf-shop-control .col-left {
 }
 
 /* ---- Product cards ---- */
+#gridLayout.tf-grid-layout > .card-product,
+#gridLayout.tf-grid-layout > .herbavi-shop-card {
+  min-width: 0;
+  width: 100%;
+}
+
 #gridLayout .card-product {
   box-shadow: var(--herbavi-shadow);
   border-radius: 12px;
@@ -232,33 +238,90 @@ body.herbavi-theme .tf-shop-control .col-left {
   background: var(--herbavi-card);
   border: 1px solid var(--herbavi-border);
   transition: box-shadow 0.25s ease, transform 0.25s ease;
+  min-width: 0;
+  width: 100%;
+  gap: 0;
 }
 
 #gridLayout .card-product:hover {
   box-shadow: var(--herbavi-shadow-hover);
 }
 
-#gridLayout .card-product .card-product_info {
-  text-align: left;
-  place-content: start;
-  padding: 12px 14px 16px;
-  background: var(--herbavi-card);
+#gridLayout .card-product .card-product_wrapper,
+body.herbavi-theme .herbavi-shop-card .herbavi-product-media-wrap {
+  aspect-ratio: 4 / 5;
+  width: 100%;
+  max-width: 100%;
+  max-height: 260px;
+  overflow: hidden;
+  border-radius: 0;
+  flex-shrink: 0;
+  background: #faf9f7;
 }
 
-#gridLayout .card-product .card-product_info .price-wrap {
+#gridLayout .card-product .product-img,
+body.herbavi-theme .herbavi-shop-card .herbavi-product-media {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 0;
+  background: #faf9f7;
+  padding: 14px;
+}
+
+#gridLayout .card-product .img-product,
+body.herbavi-theme .herbavi-shop-card .img-product {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+  object-fit: contain;
+  object-position: center center;
+}
+
+#gridLayout .card-product:hover .img-product,
+body.herbavi-theme .herbavi-shop-card:hover .img-product {
+  transform: scale(1.02);
+}
+
+#gridLayout .card-product .card-product_info,
+body.herbavi-theme .herbavi-shop-card .herbavi-product-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  text-align: left;
+  place-content: start;
+  padding: 8px 10px 12px;
+  background: var(--herbavi-card);
+  width: 100%;
+  border-top: 1px solid rgba(44, 74, 52, 0.06);
+}
+
+#gridLayout .card-product .card-product_info .price-wrap,
+body.herbavi-theme .herbavi-shop-card .herbavi-product-pricing {
   justify-content: flex-start;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
 }
 
 #gridLayout .card-product .name-product,
 body.herbavi-theme .herbavi-shop-card .herbavi-product-title,
 body.herbavi-theme .herbavi-products-grid .herbavi-product-title {
-  margin-top: 0;
-  color: var(--herbavi-heading);
-  font-size: 17px;
-  line-height: 1.35;
-  font-weight: 600;
-  text-transform: capitalize;
-  letter-spacing: -0.01em;
+  margin: 0;
+  color: #3e4152;
+  font-size: 15px;
+  line-height: 1.3;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 #gridLayout .card-product .name-product:hover,
@@ -269,25 +332,133 @@ body.herbavi-theme .herbavi-shop-card .herbavi-product-title:hover {
 #gridLayout .card-product .product-card-desc,
 body.herbavi-theme .herbavi-shop-card .herbavi-product-desc {
   font-size: 13px;
-  line-height: 1.5;
+  line-height: 1.4;
   font-weight: 400;
   font-style: normal;
-  color: var(--herbavi-text-muted);
-  margin: 4px 0 0;
+  color: #7e818c;
+  margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  text-transform: none;
 }
 
-#gridLayout .card-product .price-wrap {
-  margin-top: 6px;
-}
-
-#gridLayout .card-product .price-new {
-  color: var(--herbavi-accent);
+#gridLayout .card-product .price-new,
+body.herbavi-theme .herbavi-shop-card .herbavi-product-price {
+  color: #3e4152;
+  font-size: 15px;
   font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+#gridLayout .card-product .price-old,
+body.herbavi-theme .herbavi-shop-card .herbavi-product-price-old {
+  font-size: 12px;
+  font-weight: 400;
+  color: #7e818c;
+  text-decoration: line-through;
+}
+
+body.herbavi-theme .herbavi-shop-card .herbavi-product-discount {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: #ff905a;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+/* Product card hover actions */
+#gridLayout .card-product .product-action_list {
+  top: 10px;
+  right: 10px;
+  gap: 8px;
+}
+
+#gridLayout .card-product .product-action_list .box-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--herbavi-card);
+  border: 1px solid var(--herbavi-border);
+  color: var(--herbavi-primary);
+  box-shadow: var(--herbavi-shadow);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+#gridLayout .card-product .product-action_list .box-icon:hover {
+  background: var(--herbavi-primary);
+  border-color: var(--herbavi-primary);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+#gridLayout .card-product .product-action_list .wishlist.addwishlist .box-icon {
+  background: var(--herbavi-accent-soft);
+  border-color: rgba(201, 162, 75, 0.4);
+  color: var(--herbavi-accent);
+}
+
+#gridLayout .card-product .product-action_list .wishlist.addwishlist .box-icon:hover {
+  background: var(--herbavi-accent);
+  border-color: var(--herbavi-accent);
+  color: #fff;
+}
+
+#gridLayout .card-product .product-action_list .icon {
+  font-size: 16px;
+}
+
+#gridLayout .card-product .hover-tooltip .tooltip {
+  background: var(--herbavi-primary);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+
+#gridLayout .card-product .hover-tooltip.tooltip-left .tooltip::before {
+  border-left-color: var(--herbavi-primary);
+}
+
+#gridLayout .card-product .product-action_bot {
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+}
+
+#gridLayout .card-product .product-action_bot .tf-btn {
+  background: var(--herbavi-primary);
+  color: #fff;
+  border: 1px solid var(--herbavi-primary);
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 10px 12px;
+  box-shadow: var(--herbavi-shadow);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+}
+
+#gridLayout .card-product .product-action_bot .tf-btn:hover {
+  background: var(--herbavi-primary-hover);
+  border-color: var(--herbavi-primary-hover);
+  color: #fff;
+}
+
+#gridLayout .card-product .product-action_bot .tf-btn .icon {
+  font-size: 14px;
 }
 
 body.herbavi-theme .product-badge_item.new {
@@ -521,13 +692,28 @@ body.herbavi-theme .herbavi-footer .ft-text-nocopy {
     padding-right: 0;
   }
 
+  #gridLayout .card-product .card-product_wrapper,
+  body.herbavi-theme .herbavi-shop-card .herbavi-product-media-wrap {
+    aspect-ratio: 4 / 5;
+    max-height: 200px;
+  }
+
+  #gridLayout .card-product .product-img,
+  body.herbavi-theme .herbavi-shop-card .herbavi-product-media {
+    padding: 10px;
+  }
+
+  #gridLayout .card-product .card-product_info,
+  body.herbavi-theme .herbavi-shop-card .herbavi-product-info {
+    padding: 7px 8px 10px;
+  }
+
   #gridLayout .card-product .name-product,
   body.herbavi-theme .herbavi-shop-card .herbavi-product-title,
   body.herbavi-theme .herbavi-products-grid .herbavi-product-title {
-    font-size: 15px;
-    line-height: 1.35;
-    font-weight: 600;
-    text-transform: capitalize;
+    font-size: 14px;
+    line-height: 1.3;
+    font-weight: 700;
   }
 
   #gridLayout .card-product .product-card-desc,
@@ -536,8 +722,15 @@ body.herbavi-theme .herbavi-footer .ft-text-nocopy {
     font-weight: 400;
   }
 
-  #gridLayout .card-product .price-new {
-    font-size: 13px;
+  #gridLayout .card-product .price-new,
+  body.herbavi-theme .herbavi-shop-card .herbavi-product-price {
+    font-size: 14px;
+  }
+
+  #gridLayout .card-product .price-old,
+  body.herbavi-theme .herbavi-shop-card .herbavi-product-price-old,
+  body.herbavi-theme .herbavi-shop-card .herbavi-product-discount {
+    font-size: 11px;
   }
 
   #gridLayout .card-product .product-action_bot .tf-btn {
@@ -777,8 +970,13 @@ body.herbavi-theme .herbavi-account-label {
   text-transform: uppercase;
 }
 
+body.herbavi-theme .herbavi-account-label--user {
+  text-transform: none;
+  letter-spacing: normal;
+}
+
 body.herbavi-theme .nav-account .dropdown-account {
-  min-width: 240px;
+  min-width: 280px;
   border: 1px solid var(--herbavi-border);
   box-shadow: var(--herbavi-shadow-hover);
   right: 0;
@@ -786,22 +984,30 @@ body.herbavi-theme .nav-account .dropdown-account {
 }
 
 body.herbavi-theme .nav-account .herbavi-account-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
   padding: 12px 24px 8px;
   border-bottom: 1px solid var(--herbavi-border);
 }
 
 body.herbavi-theme .herbavi-account-name {
   display: block;
+  width: 100%;
   font-weight: 700;
   color: var(--herbavi-heading);
+  text-transform: none;
 }
 
 body.herbavi-theme .herbavi-account-email {
   display: block;
-  margin-top: 4px;
+  width: 100%;
   font-size: 12px;
   color: var(--herbavi-text-muted);
+  overflow-wrap: anywhere;
   word-break: break-word;
+  text-transform: none;
 }
 
 body.herbavi-theme .herbavi-logout-btn {

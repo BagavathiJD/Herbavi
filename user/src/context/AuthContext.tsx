@@ -25,6 +25,8 @@ interface AuthContextValue {
   notice: AuthNotice | null;
   logout: () => void;
   dismissNotice: () => void;
+  refreshUser: () => Promise<AuthUser | null>;
+  setUserProfile: (profile: AuthUser) => void;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -72,6 +74,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     showNotice('success', 'You have signed out successfully.');
   }, [showNotice]);
 
+  const refreshUser = useCallback(async () => {
+    const currentUser = await fetchCurrentUser();
+    setUser(currentUser);
+    return currentUser;
+  }, []);
+
+  const setUserProfile = useCallback((profile: AuthUser) => {
+    setUser(profile);
+  }, []);
+
   const value = useMemo(
     () => ({
       user,
@@ -79,8 +91,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       notice,
       logout,
       dismissNotice,
+      refreshUser,
+      setUserProfile,
     }),
-    [user, loading, notice, logout, dismissNotice]
+    [user, loading, notice, logout, dismissNotice, refreshUser, setUserProfile]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

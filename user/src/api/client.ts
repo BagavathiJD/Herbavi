@@ -1,5 +1,5 @@
 import type { Product } from '../types/product.tsx';
-import { formatMoney, defaultProductDescription } from '../utils/format.tsx';
+import { formatMoney, defaultProductDescription, deriveListPrice } from '../utils/format.tsx';
 import staticProducts from '../data/products.json';
 
 const TOKEN_KEY = 'herbavi_auth_token';
@@ -74,7 +74,7 @@ export function mapApiProduct(api: ApiProduct): Product {
     name: api.name,
     price: api.price,
     priceDisplay: formatMoney(api.price),
-    oldPrice: '',
+    oldPrice: formatMoney(deriveListPrice(api.price)),
     image: resolvedImage,
     brand: 'Herbavi',
     badge: api.status === 'Active' ? 'New' : '',
@@ -85,10 +85,14 @@ export function mapApiProduct(api: ApiProduct): Product {
 }
 
 function mapStaticProduct(product: Product): Product {
+  const listPrice = product.oldPrice?.trim()
+    ? product.oldPrice
+    : formatMoney(deriveListPrice(product.price));
+
   return {
     ...product,
     priceDisplay: formatMoney(product.price, product.priceDisplay),
-    oldPrice: product.oldPrice ? product.oldPrice.replace(/^\$/, '₹') : '',
+    oldPrice: listPrice.replace(/^\$/, '₹'),
     description: defaultProductDescription(product.name, product.description),
     url: product.url?.startsWith('/') ? product.url : `/product-detail`,
   };
@@ -175,6 +179,29 @@ export async function fetchCurrentUser(): Promise<AuthUser | null> {
   } catch {
     return null;
   }
+}
+
+export async function updateUserProfile(payload: {
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+}): Promise<AuthUser> {
+  const res = await fetch('/api/auth/profile', {
+    method: 'PUT',
+    headers: {
+      ...authHeaders(),
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.error || 'Profile update failed.');
+  }
+
+  return data as AuthUser;
 }
 
 export async function resetPassword(email: string, newPassword: string): Promise<string> {

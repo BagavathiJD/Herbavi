@@ -197,6 +197,72 @@ router.get("/me", async (req: Request, res: Response, next: NextFunction) => {
   }
 });
 
+router.put("/profile", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const header = req.headers.authorization;
+    if (!header?.startsWith("Bearer ")) {
+      res.status(401).json({ error: "Not authenticated." });
+      return;
+    }
+
+    const token = header.slice(7);
+    const payload = jwt.verify(token, JWT_SECRET) as { sub: string };
+    const { name, email, phone, address } = req.body;
+
+    if (!name || !String(name).trim()) {
+      res.status(400).json({ error: "Name is required." });
+      return;
+    }
+    if (!email || !String(email).trim()) {
+      res.status(400).json({ error: "Email is required." });
+      return;
+    }
+
+    const trimmedName = String(name).trim();
+    const trimmedEmail = String(email).trim().toLowerCase();
+    const trimmedPhone = phone ? String(phone).trim().slice(0, 15) : "";
+    const trimmedAddress = address ? String(address).trim() : "";
+
+    const existingUser = await query<RowDataPacket[]>(
+      "SELECT id FROM users WHERE id = ?",
+      [payload.sub]
+    );
+    if (existingUser.length === 0) {
+      res.status(401).json({ error: "User not found." });
+      return;
+    }
+
+    const emailConflict = await query<RowDataPacket[]>(
+      "SELECT id FROM users WHERE LOWER(email) = ? AND id <> ?",
+      [trimmedEmail, payload.sub]
+    );
+    if (emailConflict.length > 0) {
+      res.status(409).json({ error: "Another account already uses this email address." });
+      return;
+    }
+
+    await query(
+      `UPDATE users
+       SET user_name = ?, email = ?, phone_number = ?, address = ?, updated_at = NOW()
+       WHERE id = ?`,
+      [trimmedName, trimmedEmail, trimmedPhone, trimmedAddress, payload.sub]
+    );
+
+    logSqlQuery(
+      `UPDATE users SET user_name = '${trimmedName.replace(/'/g, "''")}', email = '${trimmedEmail}', phone_number = '${trimmedPhone.replace(/'/g, "''")}', address = '${trimmedAddress.replace(/'/g, "''")}', updated_at = NOW() WHERE id = ${payload.sub};`
+    );
+
+    const rows = await query<RowDataPacket[]>(
+      "SELECT id, user_name, email, phone_number, address, role, created_at FROM users WHERE id = ?",
+      [payload.sub]
+    );
+
+    res.json(mapAuthUser(rows[0]));
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.post("/forgot-password", async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, newPassword } = req.body;
