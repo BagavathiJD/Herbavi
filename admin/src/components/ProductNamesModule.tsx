@@ -8,6 +8,7 @@ import {
   AlertCircle
 } from "lucide-react";
 import { ProductName } from "../types";
+import { useNotification } from "../context/NotificationContext";
 
 interface ProductNamesModuleProps {
   productNames: ProductName[];
@@ -24,6 +25,7 @@ export default function ProductNamesModule({
   onDeleteProductName,
   isProcessing
 }: ProductNamesModuleProps) {
+  const { showError } = useNotification();
   const [newName, setNewName] = useState("");
   const [newStatus, setNewStatus] = useState<"Enabled" | "Disabled">("Enabled");
   const [errorMessage, setErrorMessage] = useState("");
@@ -254,7 +256,7 @@ export default function ProductNamesModule({
                                     try {
                                       await onDeleteProductName(pn.id);
                                     } catch (err: any) {
-                                      alert(err.message || "Failed to delete product name.");
+                                      showError(err.message || "Failed to delete product name.");
                                     }
                                   }
                                 }}

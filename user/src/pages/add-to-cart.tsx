@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
-import { useCart, useCartTotalDisplay } from '../context/CartContext.tsx';
+import { useCartActions } from '../hooks/useCartActions.ts';
+import { useCartTotalDisplay } from '../context/CartContext.tsx';
 import { formatMoney } from '../utils/format.tsx';
 import { assetUrl } from '../utils/assets.ts';
 
 export default function AddToCart() {
-  const { cart, cartCount, cartTotal, removeFromCart, updateCartQty } = useCart();
+  const { cart, cartCount, cartTotal, removeCartItem, updateCartQty } = useCartActions();
   const totalDisplay = useCartTotalDisplay(cart, cartTotal);
 
   return (
@@ -34,7 +35,7 @@ export default function AddToCart() {
         </div>
       </section>
 
-      <div className="section-shopping-cart each-list-prd flat-spacing-2 pb-0">
+      <div className="section-shopping-cart each-list-prd flat-spacing-2 pb-0" data-herbavi-react="true">
         <div className="container">
           {cartCount === 0 ? (
             <div className="box-text_empty type-shop_cart text-center flat-spacing-4">
@@ -85,8 +86,12 @@ export default function AddToCart() {
                               </div>
                               <button
                                 type="button"
-                                className="cart_remove tf-btn-line fw-normal remove"
-                                onClick={() => removeFromCart(item.id)}
+                                className="cart_remove tf-btn-line fw-normal herbavi-cart-remove"
+                                onClick={(event) => {
+                                  event.preventDefault();
+                                  event.stopPropagation();
+                                  void removeCartItem(item);
+                                }}
                               >
                                 REMOVE
                               </button>

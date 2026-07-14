@@ -1,5 +1,5 @@
 import type { Product } from '../types/product.tsx';
-import { formatMoney, defaultProductDescription, deriveListPrice } from '../utils/format.tsx';
+import { formatMoney, defaultProductDescription, deriveListPrice, formatProductTitle } from '../utils/format.tsx';
 import staticProducts from '../data/products.json';
 
 const TOKEN_KEY = 'herbavi_auth_token';
@@ -69,9 +69,11 @@ export function mapApiProduct(api: ApiProduct): Product {
         ? image.replace(/^\/?assets\//, 'assets/')
         : localFallback;
 
+  const productName = formatProductTitle(api.name);
+
   return {
     id: api.id,
-    name: api.name,
+    name: productName,
     price: api.price,
     priceDisplay: formatMoney(api.price),
     oldPrice: formatMoney(deriveListPrice(api.price)),
@@ -80,20 +82,22 @@ export function mapApiProduct(api: ApiProduct): Product {
     badge: api.status === 'Active' ? 'New' : '',
     rating: 4.5,
     url: `/product-detail?id=${encodeURIComponent(api.id)}`,
-    description: defaultProductDescription(api.name, api.description),
+    description: defaultProductDescription(productName, api.description),
   };
 }
 
 function mapStaticProduct(product: Product): Product {
+  const productName = formatProductTitle(product.name);
   const listPrice = product.oldPrice?.trim()
     ? product.oldPrice
     : formatMoney(deriveListPrice(product.price));
 
   return {
     ...product,
+    name: productName,
     priceDisplay: formatMoney(product.price, product.priceDisplay),
     oldPrice: listPrice.replace(/^\$/, '₹'),
-    description: defaultProductDescription(product.name, product.description),
+    description: defaultProductDescription(productName, product.description),
     url: product.url?.startsWith('/') ? product.url : `/product-detail`,
   };
 }

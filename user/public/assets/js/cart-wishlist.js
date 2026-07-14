@@ -22,6 +22,10 @@
         });
     }
 
+    function isReactManaged($el) {
+        return $el.closest("[data-herbavi-react]").length > 0 || $el.closest(".herbavi-shop-card").length > 0;
+    }
+
     function getItemId($el) {
         return $el.attr("data-id") || $el.data("id") || "";
     }
@@ -342,6 +346,9 @@
         $(".each-list-prd .remove").off("click");
 
         $(document).on("click", ".card-product a[href='#shoppingCart']", function (e) {
+            if (isReactManaged($(this))) {
+                return;
+            }
             e.preventDefault();
             addToCart(extractProduct($(this).closest(".card-product"))).then(function (response) {
                 if (response && response.success) {
@@ -351,18 +358,27 @@
         });
 
         $(document).on("click", ".card-product .wishlist a", function (e) {
+            if (isReactManaged($(this))) {
+                return;
+            }
             e.preventDefault();
             e.stopPropagation();
             toggleWishlist(extractProduct($(this).closest(".card-product")), $(this).closest(".wishlist"));
         });
 
         $(document).on("click", ".wrapper-wishlist .product-action_remove.remove", function (e) {
+            if (isReactManaged($(this))) {
+                return;
+            }
             e.preventDefault();
             var id = $(this).data("id") || $(this).closest(".card-product").data("id");
             removeFromWishlistPage(id, $(this).closest(".card-product"));
         });
 
         $(document).on("click", ".tf-mini-cart-items .remove", function (e) {
+            if (isReactManaged($(this))) {
+                return;
+            }
             e.preventDefault();
             e.stopImmediatePropagation();
             removeFromCart(getItemId($(this).closest(".tf-mini-cart-item")));
@@ -393,15 +409,15 @@
             updateCartItemQty(getItemId($item), qty);
         });
 
-        $(document).on("click", ".each-list-prd .remove", function (e) {
+        $(document).on("click", ".each-list-prd .remove, .each-list-prd .herbavi-cart-remove", function (e) {
+            if (isReactManaged($(this))) {
+                return;
+            }
             e.preventDefault();
             e.stopImmediatePropagation();
             var $item = $(this).closest(".each-prd");
             removeFromCart(getItemId($item)).then(function () {
                 $item.remove();
-                if ($(".each-list-prd .each-prd").length === 0) {
-                    window.location.reload();
-                }
             });
         });
 

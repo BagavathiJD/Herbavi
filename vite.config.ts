@@ -29,10 +29,14 @@ export default defineConfig(() => {
       },
       // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
       watch: process.env.DISABLE_HMR === 'true' ? null : {
+        usePolling: true,
+        interval: 100,
         ignored: [
           path.join(__dirname, 'data'),
           path.join(__dirname, 'data', '**'),
           path.join(__dirname, 'src', 'db.json'),
+          path.join(__dirname, 'user', 'dist'),
+          path.join(__dirname, 'user', 'dist', '**'),
         ],
       },
     },

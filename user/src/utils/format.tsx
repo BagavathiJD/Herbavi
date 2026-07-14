@@ -43,6 +43,15 @@ export function deriveListPrice(price: number): number {
   return Math.ceil(price * 1.33);
 }
 
+export function formatProductTitle(name: string): string {
+  return name
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+    .join(' ');
+}
+
 export function defaultProductDescription(name: string, description?: string): string {
   const trimmed = description?.trim();
   if (trimmed) return trimmed;

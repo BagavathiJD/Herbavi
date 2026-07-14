@@ -1,9 +1,9 @@
 import type { MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
 import type { Product } from '../types/product.tsx';
-import { useCart } from '../context/CartContext.tsx';
+import { useCartActions } from '../hooks/useCartActions.ts';
 import { useQuickView } from '../context/QuickViewContext.tsx';
-import { assetPath, displayPrice, getDiscountPercent, parsePriceAmount } from '../utils/format.tsx';
+import { assetPath, displayPrice, formatProductTitle, getDiscountPercent, parsePriceAmount } from '../utils/format.tsx';
 
 interface ProductCardProps {
   product: Product;
@@ -39,7 +39,7 @@ function ProductRating({ rating }: { rating: number }) {
 }
 
 export default function ProductCard({ product, layout = 'grid' }: ProductCardProps) {
-  const { addToCart, toggleWishlist, isInWishlist } = useCart();
+  const { addProductToCart, toggleWishlistItem, isInWishlist } = useCartActions();
   const { openQuickView } = useQuickView();
   const wished = isInWishlist(product.id);
   const isGrid = layout === 'grid';
@@ -49,18 +49,20 @@ export default function ProductCard({ product, layout = 'grid' }: ProductCardPro
 
   const handleAddToCart = (event: MouseEvent) => {
     event.preventDefault();
-    addToCart(product);
+    event.stopPropagation();
+    addProductToCart(product);
     openCartPanel();
   };
 
   const handleWishlist = (event: MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
-    toggleWishlist(product);
+    void toggleWishlistItem(product);
   };
 
   const handleQuickView = (event: MouseEvent) => {
     event.preventDefault();
+    event.stopPropagation();
     openQuickView(product);
   };
 
@@ -70,19 +72,20 @@ export default function ProductCard({ product, layout = 'grid' }: ProductCardPro
     originalAmount != null ? displayPrice(product.oldPrice, originalAmount) : null;
   const discountPercent =
     originalAmount != null ? getDiscountPercent(product.price, originalAmount) : null;
+  const productTitle = formatProductTitle(product.name);
 
   return (
     <div className={`${cardClass} herbavi-shop-card`} data-id={product.id} data-brand={product.brand}>
       <div className="card-product_wrapper herbavi-product-media-wrap">
-        <div className="product-img herbavi-product-media">
+        <Link to={product.url} className="product-img herbavi-product-media herbavi-product-media-link" aria-label={`View ${productTitle}`}>
           <img
             className="img-product"
             loading="lazy"
             decoding="async"
             src={assetPath(product.image)}
-            alt={product.name}
+            alt={productTitle}
           />
-        </div>
+        </Link>
         {product.badge && (
           <ul className="product-badge_list">
             <li className="product-badge_item text-body-s new">{product.badge}</li>
@@ -130,7 +133,7 @@ export default function ProductCard({ product, layout = 'grid' }: ProductCardPro
       <div className={`card-product_info herbavi-product-info${isGrid ? ' start' : ''}`}>
         {!isGrid && <ProductRating rating={product.rating} />}
         <Link to={product.url} className="name-product herbavi-product-title link-underline">
-          {product.name}
+          {productTitle}
         </Link>
         <p className="product-card-desc herbavi-product-desc">{product.description}</p>
         <div className="price-wrap herbavi-product-pricing">

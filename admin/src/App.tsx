@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { 
   Terminal, 
-  Check, 
   AlertCircle
 } from "lucide-react";
 
@@ -17,10 +16,12 @@ import ProductNamesModule from "./components/ProductNamesModule";
 import UsersModule from "./components/UsersModule";
 import AuthGate from "./registration/AuthGate";
 import { authHeaders, clearToken, getToken, hasActiveSession, normalizeRole } from "./registration/auth";
+import { useNotification } from "./context/NotificationContext";
 // Types
 import { Product, Order, Measurement, ProductName, Customer, AppUser, SqlQueryLog, DbMetrics, AdminUser } from "./types";
 
 export default function App() {
+  const { showSuccess, showError } = useNotification();
   const [authUser, setAuthUser] = useState<AdminUser | null>(null);
   const [authChecking, setAuthChecking] = useState(true);
 
@@ -51,9 +52,8 @@ export default function App() {
   const [isProcessingForm, setIsProcessingForm] = useState<boolean>(false);
   const [isSimulatingOrder, setIsSimulatingOrder] = useState<boolean>(false);
 
-  // Dynamic Floating SQL Log alerts ("Toast" system)
+  // Dynamic Floating SQL Log alerts
   const [activeToast, setActiveToast] = useState<{ query: string; duration: number } | null>(null);
-  const [successToast, setSuccessToast] = useState<string | null>(null);
 
   const headers = () => ({
     ...authHeaders(),
@@ -158,11 +158,6 @@ export default function App() {
     return () => clearTimeout(timer);
   };
 
-  const showSuccessToast = (message: string) => {
-    setSuccessToast(message);
-    setTimeout(() => setSuccessToast(null), 4000);
-  };
-
   // --- 1. PRODUCT METADATA MANAGEMENT EVENT ACTIONS ---
   
   // Submit new product or commit updates
@@ -186,13 +181,13 @@ export default function App() {
 
       // Success
       await syncDatabaseState(true);
-      showSuccessToast(isEdit ? "Product updated successfully!" : "Product added successfully!");
+      showSuccess(isEdit ? "Product updated successfully!" : "Product added successfully!");
 
       // Select the correct tab to redirect
       setTab("product-list");
       setSelectedProductForEdit(null);
     } catch (err: any) {
-      alert(err.message || "An issue occurred on product submission.");
+      showError(err.message || "An issue occurred on product submission.");
     } finally {
       setIsProcessingForm(false);
     }
@@ -212,9 +207,9 @@ export default function App() {
       }
 
       await syncDatabaseState(true);
-      showSuccessToast("Product deleted successfully!");
+      showSuccess("Product deleted successfully!");
     } catch (error: any) {
-      alert(error.message);
+      showError(error.message || "Could not delete selected catalog row.");
     }
   };
 
@@ -244,8 +239,9 @@ export default function App() {
       }
 
       await syncDatabaseState(true);
+      showSuccess("Order simulated successfully!");
     } catch (err: any) {
-      alert(err.message || "Simulation error on database transactions.");
+      showError(err.message || "Simulation error on database transactions.");
     } finally {
       setIsSimulatingOrder(false);
     }
@@ -265,8 +261,9 @@ export default function App() {
       }
 
       await syncDatabaseState(true);
+      showSuccess("Order status updated successfully!");
     } catch (error: any) {
-      alert(error.message || "Could not change status row.");
+      showError(error.message || "Could not change status row.");
     }
   };
 
@@ -288,7 +285,7 @@ export default function App() {
       }
 
       await syncDatabaseState(true);
-      showSuccessToast("Measurement added successfully!");
+      showSuccess("Measurement added successfully!");
     } catch (err: any) {
       throw err; // bubble up to handle error banner inside sub-form
     } finally {
@@ -311,6 +308,7 @@ export default function App() {
       }
 
       await syncDatabaseState(true);
+      showSuccess("Measurement updated successfully!");
     } catch (error: any) {
       throw error;
     } finally {
@@ -331,7 +329,7 @@ export default function App() {
       }
 
       await syncDatabaseState(true);
-      showSuccessToast("Measurement deleted successfully!");
+      showSuccess("Measurement deleted successfully!");
     } catch (error: any) {
       throw error; // Bubble restrict failures to trigger alert modal gracefully
     }
@@ -352,6 +350,7 @@ export default function App() {
       }
 
       await syncDatabaseState(true);
+      showSuccess("Product name added successfully!");
     } catch (err: any) {
       throw err;
     } finally {
@@ -374,6 +373,7 @@ export default function App() {
       }
 
       await syncDatabaseState(true);
+      showSuccess("Product name updated successfully!");
     } catch (error: any) {
       throw error;
     } finally {
@@ -394,6 +394,7 @@ export default function App() {
       }
 
       await syncDatabaseState(true);
+      showSuccess("Product name deleted successfully!");
     } catch (error: any) {
       throw error;
     }
@@ -561,25 +562,7 @@ export default function App() {
 
       </div>
 
-      {/* --- SUCCESS NOTIFICATION TOAST --- */}
-      {successToast && (
-        <div
-          id="success-floating-toast"
-          onClick={() => setSuccessToast(null)}
-          className="fixed bottom-6 left-6 z-50 bg-emerald-950 text-emerald-100 p-4 rounded-xl shadow-2xl border border-emerald-800/60 max-w-sm flex items-start gap-3 select-none cursor-pointer hover:border-emerald-600/50 hover:bg-emerald-900/90 duration-200 transition-all animate-in slide-in-from-left-4 fade-in"
-        >
-          <div className="p-1.5 bg-emerald-900/60 text-emerald-400 border border-emerald-700/50 rounded-lg shrink-0 mt-0.5">
-            <Check className="w-4 h-4" />
-          </div>
-          <div className="text-left space-y-1">
-            <span className="text-[9px] font-black font-mono text-emerald-400 uppercase tracking-widest block">Success</span>
-            <p className="text-xs font-semibold text-emerald-50 leading-snug">{successToast}</p>
-            <span className="text-[8px] text-emerald-500/80 font-medium">Click to dismiss</span>
-          </div>
-        </div>
-      )}
-
-      {/* --- GLOBAL INTUITIVE SQL NOTIFICATION ALERTS ("Toast") --- */}
+      {/* --- GLOBAL INTUITIVE SQL NOTIFICATION ALERTS --- */}
       {activeToast && (
         <div 
           id="sql-floating-toast"

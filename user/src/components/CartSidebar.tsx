@@ -1,15 +1,16 @@
 import { Link } from 'react-router-dom';
-import { useCart, useCartTotalDisplay } from '../context/CartContext.tsx';
+import { useCartActions } from '../hooks/useCartActions.ts';
+import { useCartTotalDisplay } from '../context/CartContext.tsx';
 import { assetUrl } from '../utils/assets.ts';
 
 export default function CartSidebar() {
-  const { cart, cartCount, cartTotal, removeFromCart, updateCartQty } = useCart();
+  const { cart, cartCount, cartTotal, removeCartItem, updateCartQty } = useCartActions();
   const totalDisplay = useCartTotalDisplay(cart, cartTotal);
   const countDisplay = String(cartCount).padStart(2, '0');
   const isEmpty = cart.length === 0;
 
   return (
-    <div className="offcanvas offcanvas-end popup-shopping-cart" id="shoppingCart">
+    <div className="offcanvas offcanvas-end popup-shopping-cart" id="shoppingCart" data-herbavi-react="true">
       <div className="canvas-wrapper overflow-hidden">
         <div className="popup-header">
           <div className="d-flex justify-content-between align-items-start mb-24">
@@ -96,8 +97,12 @@ export default function CartSidebar() {
                           </div>
                           <button
                             type="button"
-                            className="tf-btn-rounded style-2 remove"
-                            onClick={() => removeFromCart(item.id)}
+                            className="tf-btn-rounded style-2 herbavi-cart-remove"
+                            onClick={(event) => {
+                              event.preventDefault();
+                              event.stopPropagation();
+                              void removeCartItem(item);
+                            }}
                           >
                             <i className="icon icon-Trash"></i>
                           </button>

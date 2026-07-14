@@ -6,60 +6,104 @@ export default function Index () {
     return (
 
         <>
-        <div className="tf-hero-banner-v3">
-  <div className="hero-image">
-    <img loading="lazy" width="1920" height="938" src={assetUrl('assets/images/herbavi-imgs/ayurvedhic-img.png')} alt="Image" />
-  </div>
-  <div className="hero-content">
-    <div className="container">
-      <div className="hero-content_inner wow fadeInUp">
-        <div className="hero__tag font-geist fw-medium text-third lh-22">
-          HIGH-PERFORMANCE SKINCARE
-        </div>
-        <p className="text-display-xl font-anton letter-space--3 text-third">
-          SERIOUS CARE
-          <br />
-          SLEEK RESULTS
-        </p>
-        <p className="hero__desc font-geist text-body-l letter-space--3 text-third">
-          Potent actives, clean formulas, clinically proven radiance.
-        </p>
-        <Link to="/products" className="tf-btn style-2 btn-light-2 py-xl-24">
-          <i className="icon icon-Sparkle" />
-          <span className="fw-bold font-geist letter-space--3">
-            Shop Best Sellers
-          </span>
-        </Link>
-      </div>
-      {/* <div class="hero-content_bottom wow fadeInUp">
-                        <div class="hero__author letter-space--3">
-                            <p class="author-title font-geist fw-medium lh-22">
-                                FORMULATED WITH
-                            </p>
-                            <p class="author-name font-anton text-28-34">
-                                PURE ACTIVES
-                            </p>
-                        </div>
-                        <div class="hero__author letter-space--3">
-                            <p class="author-title font-geist fw-medium lh-22">
-                                DAILY RITUAL
-                            </p>
-                            <p class="author-name font-anton text-28-34">
-                                MAXIMUM GLOW
-                            </p>
-                        </div>
-                        <div class="hero__author letter-space--3">
-                            <p class="author-title font-geist fw-medium lh-22">
-                                NO COMPROMISE
-                            </p>
-                            <p class="author-name font-anton text-28-34">
-                                CLEAN BEAUTY
-                            </p>
-                        </div>
-                    </div> */}
-    </div>
-  </div>
-</div>
+        <section className="herbavi-hero" aria-label="Herbavi wellness hero">
+          <div className="herbavi-hero-media" aria-hidden="true">
+            <img
+              className="herbavi-hero-bg"
+              loading="eager"
+              src={assetUrl('assets/images/section/banner-img.png')}
+              alt=""
+            />
+            <div className="herbavi-hero-overlay" />
+            <div className="herbavi-hero-glow herbavi-hero-glow--left" />
+            <div className="herbavi-hero-glow herbavi-hero-glow--right" />
+          </div>
+
+          <div className="herbavi-hero-content">
+            <div className="container">
+              <div className="herbavi-hero-grid">
+                <div className="herbavi-hero-copy">
+                  <span className="herbavi-hero-eyebrow font-geist herbavi-hero-animate herbavi-hero-animate--1">
+                    Ancient Wisdom · Modern Wellness
+                  </span>
+
+                  {/* <div className="herbavi-hero-traditions herbavi-hero-animate herbavi-hero-animate--2">
+                    <span className="herbavi-hero-tradition herbavi-hero-tradition--ayurveda font-geist">
+                      Ayurveda
+                    </span>
+                    <span className="herbavi-hero-tradition-divider" />
+                    <span className="herbavi-hero-tradition herbavi-hero-tradition--siddha font-geist">
+                      Siddha
+                    </span>
+                  </div> */}
+
+                  <h1 className="herbavi-hero-title font-anton">
+                    <span className="herbavi-hero-title-line font-instrument_serif fw-normal herbavi-hero-animate herbavi-hero-animate--3">
+                      AUTHENTIC AYURVEDA
+                    </span>
+                    <span className="herbavi-hero-title-line font-instrument_serif fw-normal herbavi-hero-title-line--accent herbavi-hero-animate herbavi-hero-animate--4">
+                      TRUSTED SIDDHA CARE
+                    </span>
+                  </h1>
+
+                  <p className="herbavi-hero-desc font-geist herbavi-hero-animate herbavi-hero-animate--5">
+                    Premium herbal formulations crafted with time-honoured ayurvedic and siddha
+                    principles — Pure botanicals for holistic healing, balance, and radiant wellness.
+                  </p>
+
+                  <div className="herbavi-hero-actions herbavi-hero-animate herbavi-hero-animate--6">
+                    <Link to="/products" className="herbavi-hero-btn herbavi-hero-btn--primary font-geist">
+                      <i className="icon icon-Sparkle" />
+                      Explore Treatments
+                    </Link>
+                    <Link to="/products" className="herbavi-hero-btn herbavi-hero-btn--ghost font-geist">
+                      Shop Products
+                    </Link>
+                  </div>
+
+                  <div className="herbavi-hero-metrics herbavi-hero-animate herbavi-hero-animate--7">
+                    <div className="herbavi-hero-metric">
+                      <span className="herbavi-hero-metric-value font-instrument_serif">5,000+</span>
+                      <span className="herbavi-hero-metric-label font-geist">Years of Heritage</span>
+                    </div>
+                    <div className="herbavi-hero-metric">
+                      <span className="herbavi-hero-metric-value font-instrument_serif">100%</span>
+                      <span className="herbavi-hero-metric-label font-geist">Natural Ingredients</span>
+                    </div>
+                    <div className="herbavi-hero-metric">
+                      <span className="herbavi-hero-metric-value font-instrument_serif">Dual</span>
+                      <span className="herbavi-hero-metric-label font-geist">Ayurveda & Siddha</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="herbavi-hero-visual herbavi-hero-animate herbavi-hero-animate--8">
+                  <div className="herbavi-hero-card">
+                    <img
+                      loading="lazy"
+                      src={assetUrl('assets/images/herbavi-imgs/ayurvedhic-img-1.webp')}
+                      alt="Ayurvedic herbs and traditional wellness ingredients"
+                    />
+                    <div className="herbavi-hero-card-shine" />
+                  </div>
+                  <div className="herbavi-hero-float-badge herbavi-hero-float-badge--top font-geist">
+                    <i className="icon icon-Leaf" />
+                    Pure Botanicals
+                  </div>
+                  <div className="herbavi-hero-float-badge herbavi-hero-float-badge--bottom font-geist">
+                    <i className="icon icon-FingerPrint" />
+                    Clinically Inspired
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="herbavi-hero-scroll font-geist" aria-hidden="true">
+            <span>Discover</span>
+            <span className="herbavi-hero-scroll-line" />
+          </div>
+        </section>
 <section className="about">
   <div className="about-grid">
     <div className="about-visual">
@@ -99,24 +143,20 @@ export default function Index () {
       </p>
       <div className="ingredient-rail">
         <div className="ingredient-pill">
-          <span className="swatch neem">
-            Neem
-          </span>
+          <span className="swatch neem" aria-hidden="true" />
+          <span>Neem</span>
         </div>
         <div className="ingredient-pill">
-          <span className="swatch turmeric">
-            Turmeric
-          </span>
+          <span className="swatch turmeric" aria-hidden="true" />
+          <span>Turmeric</span>
         </div>
         <div className="ingredient-pill">
-          <span className="swatch ashwagandha">
-            Ashwagandha
-          </span>
+          <span className="swatch ashwagandha" aria-hidden="true" />
+          <span>Ashwagandha</span>
         </div>
         <div className="ingredient-pill">
-          <span className="swatch bhringraj">
-            Bhringraj
-          </span>
+          <span className="swatch bhringraj" aria-hidden="true" />
+          <span>Bhringraj</span>
         </div>
       </div>
       <a href="#philosophy" className="about-cta">
@@ -371,6 +411,8 @@ export default function Index () {
   </div>
 </div>
 {/* /Counter */}
+{false && (
+<>
 {/* Tab Product */}
 <div className="flat-spacing-3 flat-animate-tab">
   <div className="container">
@@ -1329,6 +1371,8 @@ export default function Index () {
   </div>
 </div>
 {/* /Tab Product */}
+</>
+)}
 {/* Explore */}
 <div className="section-banner-explore">
   <div className="bn-image overflow-hidden wow fadeIn">

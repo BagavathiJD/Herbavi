@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext.tsx';
 import { useAuth } from '../context/AuthContext.tsx';
+import { useSearch } from '../context/SearchContext.tsx';
 import { assetUrl } from '../utils/assets.ts';
 
 interface HeaderProps {
@@ -19,6 +20,7 @@ function formatDisplayName(name: string): string {
 export default function Header({ variant = 'home' }: HeaderProps) {
   const { cartCount, wishlistCount } = useCart();
   const { user, logout } = useAuth();
+  const { openSearch } = useSearch();
   const headerClass =
     'tf-header header-v4' + (variant === 'home' ? ' offset-top' : ' header-inner-page');
   const displayName = user?.name ? formatDisplayName(user.name).split(/\s+/)[0] : 'Account';
@@ -68,19 +70,34 @@ export default function Header({ variant = 'home' }: HeaderProps) {
                     loading="lazy"
                     width={136}
                     height={32}
-                    src={assetUrl('assets/images/herbavi-imgs/herbavi-logo.svg')}
+                    // src={assetUrl('assets/images/herbavi-imgs/herbavi-logo.svg')}
+                    src={assetUrl('assets/images/section/t-logo.png')}
                     alt="Herbavi"
                   />
                 </Link>
               </div>
             </div>
             <div className="col-3 col-md-4 col-lg-5">
-              <div className="header-right">
-                <ul className="tf-list nav-icon-list justify-content-end gap-16">
-                  <li className="sm-d-none">
-                    <a href="#modalSearch" data-bs-toggle="modal" className="nav-icon-item fw-normal">
+              <div className="header-right d-flex align-items-center justify-content-end">
+                <button
+                  type="button"
+                  className="herbavi-header-search-btn d-none d-xl-inline-flex"
+                  onClick={openSearch}
+                  aria-label="Open search"
+                >
+                  <i className="icon icon-Search"></i>
+                  <span className="herbavi-header-search-placeholder font-geist">Search products...</span>
+                </button>
+                <ul className="tf-list nav-icon-list justify-content-end gap-16 mb-0">
+                  <li className="d-xl-none">
+                    <button
+                      type="button"
+                      className="nav-icon-item fw-normal herbavi-search-icon-btn"
+                      onClick={openSearch}
+                      aria-label="Search products"
+                    >
                       <i className="icon icon-Search"></i>
-                    </a>
+                    </button>
                   </li>
                   <li className="nav-account">
                     {user ? (

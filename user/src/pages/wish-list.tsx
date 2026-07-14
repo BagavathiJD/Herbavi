@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useCart } from '../context/CartContext.tsx';
+import { useCartActions } from '../hooks/useCartActions.ts';
 import { assetUrl } from '../utils/assets.ts';
 
 function openCartPanel() {
@@ -11,7 +11,7 @@ function openCartPanel() {
 }
 
 export default function WishList() {
-  const { wishlist, wishlistCount, removeFromWishlist, addToCart } = useCart();
+  const { wishlist, wishlistCount, removeWishlistItem, addProductToCart } = useCartActions();
 
   return (
     <>
@@ -34,7 +34,7 @@ export default function WishList() {
       </section>
 
       {wishlistCount > 0 && (
-        <div className="section-wishlist flat-spacing-mix-1">
+        <div className="section-wishlist flat-spacing-mix-1" data-herbavi-react="true">
           <div className="container">
             <div className="tf-grid-layout tf-col-2 md-col-3 xl-col-4 wrapper-wishlist">
               {wishlist.map((item) => (
@@ -52,9 +52,13 @@ export default function WishList() {
                     </div>
                     <button
                       type="button"
-                      className="product-action_remove remove box-icon hover-tooltip tooltip-left"
+                      className="product-action_remove herbavi-wishlist-remove box-icon hover-tooltip tooltip-left"
                       data-id={item.id}
-                      onClick={() => removeFromWishlist(item.id)}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        void removeWishlistItem(item);
+                      }}
                     >
                       <i className="icon icon-HearthFill"></i>
                       <span className="tooltip">Remove Wishlist</span>
@@ -65,7 +69,7 @@ export default function WishList() {
                         className="tf-btn hv-black btn-white type-2 w-100"
                         onClick={(event) => {
                           event.preventDefault();
-                          addToCart(item);
+                          addProductToCart(item);
                           openCartPanel();
                         }}
                       >

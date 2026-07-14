@@ -4,11 +4,13 @@ interface FooterProps {
   showFeatures?: boolean;
 }
 
+const FOOTER_QUOTE = 'Smart skincare, powered by science & nature.';
+
 export default function Footer({ showFeatures = false }: FooterProps) {
   return (
     <footer className="tf-footer footer-v4 herbavi-footer font-geist">
       {showFeatures && (
-        <div className="flat-spacing-3">
+        <div className="flat-spacing-3 herbavi-home-features">
           <div className="container">
             <div
               dir="ltr"
@@ -25,15 +27,15 @@ export default function Footer({ showFeatures = false }: FooterProps) {
               data-pagination-md="3"
               data-pagination-lg="4"
             >
-              <div className="swiper-wrapper text-white">
+              <div className="swiper-wrapper">
                 <div className="swiper-slide">
                   <div className="box-icon_V01 style-3 wow fadeInUp" data-wow-delay="0s">
                     <span className="icon cl-text-12">
                       <i className="icon-FingerPrint"></i>
                     </span>
                     <div className="content">
-                      <p className="title font-anton text-28-34 text-white letter-space--3">SECURE CHECKOUT</p>
-                      <p className="desc font-geist lh-22 text-white letter-space--3">
+                      <p className="title font-anton text-28-34 herbavi-features-text letter-space--3">SECURE CHECKOUT</p>
+                      <p className="desc font-geist lh-22 herbavi-features-text letter-space--3">
                         Your data is always protected.
                       </p>
                     </div>
@@ -45,8 +47,8 @@ export default function Footer({ showFeatures = false }: FooterProps) {
                       <i className="icon-Box"></i>
                     </span>
                     <div className="content">
-                      <p className="title font-anton text-28-34 text-white letter-space--3">FREE RETURNS</p>
-                      <p className="desc font-geist lh-22 text-white letter-space--3">
+                      <p className="title font-anton text-28-34 herbavi-features-text letter-space--3">FREE RETURNS</p>
+                      <p className="desc font-geist lh-22 herbavi-features-text letter-space--3">
                         30-day money-back guarantee.
                       </p>
                     </div>
@@ -58,8 +60,8 @@ export default function Footer({ showFeatures = false }: FooterProps) {
                       <i className="icon-Leaf"></i>
                     </span>
                     <div className="content">
-                      <p className="title font-anton text-28-34 text-white letter-space--3">ECO PACKAGING</p>
-                      <p className="desc font-geist lh-22 text-white letter-space--3">
+                      <p className="title font-anton text-28-34 herbavi-features-text letter-space--3">ECO PACKAGING</p>
+                      <p className="desc font-geist lh-22 herbavi-features-text letter-space--3">
                         Sustainably designed bottles.
                       </p>
                     </div>
@@ -71,8 +73,8 @@ export default function Footer({ showFeatures = false }: FooterProps) {
                       <i className="icon-StarSroke"></i>
                     </span>
                     <div className="content">
-                      <p className="title font-anton text-28-34 text-white letter-space--3">10,000+ REVIEWS</p>
-                      <p className="desc font-geist lh-22 text-white letter-space--3">
+                      <p className="title font-anton text-28-34 herbavi-features-text letter-space--3">10,000+ REVIEWS</p>
+                      <p className="desc font-geist lh-22 herbavi-features-text letter-space--3">
                         Trusted by glow-seekers worldwide.
                       </p>
                     </div>
@@ -85,11 +87,22 @@ export default function Footer({ showFeatures = false }: FooterProps) {
         </div>
       )}
 
-      <div className="footer_wrap flat-spacing-4 pb-0">
-        <div className="infiniteSlide-footer-text">
-          <p className="text-display-xl font-anton text-uppercase text-center mb-0 px-3">
-            Smart skincare, powered by science & nature.
-          </p>
+      <div className="footer_wrap herbavi-footer-compact pb-0">
+        <div className="infiniteSlide-footer-text infiniteSlide-footer-text-2 herbavi-footer-marquee">
+          <div
+            className="infiniteSlide infiniteSlide-wrapper"
+            data-clone="2"
+            data-speed="35"
+            data-style="left"
+          >
+            {Array.from({ length: 3 }, (_, index) => (
+              <div key={index} className="infiniteSlide-item">
+                <p className="herbavi-footer-marquee-text font-anton text-uppercase mb-0">
+                  {FOOTER_QUOTE}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
         <div className="footer-inner">
           <div className="container-2">
@@ -97,9 +110,9 @@ export default function Footer({ showFeatures = false }: FooterProps) {
               <div className="footer-col-block footer-wrap-1">
                 <p className="footer-heading footer-heading-mobile h6 font-anton letter-space--3">CALL US</p>
                 <div className="tf-collapse-content">
-                  <ul className="footer-menu-list letter-space--3">
+                  <ul className="footer-menu-list letter-space--3 text-white">
                     <li>
-                      <a href="tel:+18005552390" className="cl-text-main link">
+                      <a href="tel:+18005552390" className="text-white link">
                         +1 (800) 555-2390
                       </a>
                     </li>
@@ -109,9 +122,9 @@ export default function Footer({ showFeatures = false }: FooterProps) {
               <div className="footer-col-block footer-wrap-2">
                 <p className="footer-heading footer-heading-mobile h6 font-anton letter-space--3">EMAIL</p>
                 <div className="tf-collapse-content">
-                  <ul className="footer-menu-list letter-space--3">
+                  <ul className="footer-menu-list letter-space--3 text-white">
                     <li>
-                      <a href="mailto:support@glowlyskin.com" className="cl-text-main link">
+                      <a href="mailto:support@glowlyskin.com" className="text-white link">
                         Support@glowlyskin.com
                       </a>
                     </li>
@@ -121,24 +134,24 @@ export default function Footer({ showFeatures = false }: FooterProps) {
               <div className="footer-col-block footer-wrap-3">
                 <p className="footer-heading footer-heading-mobile h6 font-anton letter-space--3">SHOP</p>
                 <div className="tf-collapse-content">
-                  <ul className="footer-menu-list letter-space--3">
+                  <ul className="footer-menu-list letter-space--3 text-white">
                     <li>
-                      <Link to="/products" className="cl-text-main link">
+                      <Link to="/products" className="text-white link">
                         Shop All
                       </Link>
                     </li>
                     <li>
-                      <Link to="/products" className="cl-text-main link">
+                      <Link to="/products" className="text-white link">
                         Best Sellers
                       </Link>
                     </li>
                     <li>
-                      <Link to="/products" className="cl-text-main link">
+                      <Link to="/products" className="text-white link">
                         New Arrivals
                       </Link>
                     </li>
                     <li>
-                      <Link to="/products" className="cl-text-main link">
+                      <Link to="/products" className="text-white link">
                         Bundles & Savings
                       </Link>
                     </li>
@@ -148,29 +161,29 @@ export default function Footer({ showFeatures = false }: FooterProps) {
               <div className="footer-col-block footer-wrap-4">
                 <p className="footer-heading footer-heading-mobile h6 font-anton letter-space--3">HELP</p>
                 <div className="tf-collapse-content">
-                  <ul className="footer-menu-list letter-space--3">
+                  <ul className="footer-menu-list letter-space--3 text-white">
                     <li>
-                      <a href="#" className="cl-text-main link">
+                      <a href="#" className="text-white link">
                         Contact Us
                       </a>
                     </li>
                     <li>
-                      <a href="#" className="cl-text-main link">
+                      <a href="#" className="text-white link">
                         Shipping & Returns
                       </a>
                     </li>
                     <li>
-                      <Link to="/faq" className="cl-text-main link">
+                      <Link to="/faq" className="text-white link">
                         FAQ
                       </Link>
                     </li>
                     <li>
-                      <a href="#" className="cl-text-main link">
+                      <a href="#" className="text-white link">
                         Privacy Policy
                       </a>
                     </li>
                     <li>
-                      <a href="#" className="cl-text-main link">
+                      <a href="#" className="text-white link">
                         Terms & Conditions
                       </a>
                     </li>

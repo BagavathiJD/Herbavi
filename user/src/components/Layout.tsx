@@ -4,7 +4,10 @@ import Header from '../pages/header.tsx';
 import Footer from '../pages/footer.tsx';
 import CartSidebar from './CartSidebar.tsx';
 import QuickViewModal from './QuickViewModal.tsx';
+import SearchModal from './SearchModal.tsx';
 import AuthToast from './AuthToast.tsx';
+import AppToast from './AppToast.tsx';
+import { SearchProvider } from '../context/SearchContext.tsx';
 import { useLegacyScripts } from '../hooks/useLegacyScripts.tsx';
 
 interface LayoutProps {
@@ -33,7 +36,7 @@ export default function Layout({ headerVariant = 'inner', showFooterFeatures = f
   }, []);
 
   return (
-    <>
+    <SearchProvider>
       <button id="goTop" type="button">
         <span className="border-progress"></span>
         <span className="ic-wrap">
@@ -50,7 +53,9 @@ export default function Layout({ headerVariant = 'inner', showFooterFeatures = f
 
       <CartSidebar />
       <QuickViewModal />
+      <SearchModal />
       <AuthToast />
-    </>
+      <AppToast />
+    </SearchProvider>
   );
 }

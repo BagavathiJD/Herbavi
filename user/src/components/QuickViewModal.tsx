@@ -1,4 +1,4 @@
-import { useCart } from '../context/CartContext.tsx';
+import { useCartActions } from '../hooks/useCartActions.ts';
 import { useQuickView } from '../context/QuickViewContext.tsx';
 import { assetUrl } from '../utils/assets.ts';
 
@@ -25,7 +25,7 @@ function openCartPanel() {
 
 export default function QuickViewModal() {
   const { product } = useQuickView();
-  const { addToCart } = useCart();
+  const { addProductToCart } = useCartActions();
 
   if (!product) {
     return (
@@ -40,7 +40,7 @@ export default function QuickViewModal() {
   const imageSrc = assetUrl(product.image);
 
   const handleAddToCart = () => {
-    addToCart(product);
+    addProductToCart(product);
     openCartPanel();
   };
 

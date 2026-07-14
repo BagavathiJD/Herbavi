@@ -14,6 +14,7 @@ import {
   AlertCircle
 } from "lucide-react";
 import { Measurement } from "../types";
+import { useNotification } from "../context/NotificationContext";
 
 interface ProductSettingsModuleProps {
   measurements: Measurement[];
@@ -30,6 +31,7 @@ export default function ProductSettingsModule({
   onDeleteMeasurement,
   isProcessing
 }: ProductSettingsModuleProps) {
+  const { showError } = useNotification();
   // Local active states
   const [newUnitName, setNewUnitName] = useState("");
   const [newUnitStatus, setNewUnitStatus] = useState<"Enabled" | "Disabled">("Enabled");
@@ -266,7 +268,7 @@ export default function ProductSettingsModule({
                                   try {
                                     await onDeleteMeasurement(m.id);
                                   } catch (err: any) {
-                                    alert(err.message || "Failed to delete measurement unit.");
+                                    showError(err.message || "Failed to delete measurement unit.");
                                   }
                                 }
                               }}

@@ -264,3 +264,14 @@ body {
 .admin-app #success-floating-toast span {
   color: inherit !important;
 }
+
+.admin-app #error-floating-toast {
+  background-color: #fff1f2 !important;
+  border-color: #fecdd3 !important;
+  color: #9f1239 !important;
+}
+
+.admin-app #error-floating-toast p,
+.admin-app #error-floating-toast span {
+  color: inherit !important;
+}
