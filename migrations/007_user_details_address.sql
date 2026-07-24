@@ -1,0 +1,1 @@
+-- address column is added idempotently by ensureUserDetailsAddressColumn() in backend/db/migrate.ts

@@ -129,6 +129,122 @@ async function ensureUserAddressColumn(connection: mysql.Connection): Promise<vo
   }
 }
 
+async function ensureUsersDobColumn(connection: mysql.Connection): Promise<void> {
+  const [cols] = await connection.query<mysql.RowDataPacket[]>(
+    `SELECT COLUMN_NAME FROM information_schema.COLUMNS
+     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'users' AND COLUMN_NAME = 'dob'`,
+    [dbConfig.database]
+  );
+  if (cols.length === 0) {
+    await connection.query("ALTER TABLE users ADD COLUMN dob DATE NULL AFTER phone_number");
+    console.log("Added dob column to users.");
+  }
+}
+
+async function ensureUserDetailsAddressColumn(connection: mysql.Connection): Promise<void> {
+  const [cols] = await connection.query<mysql.RowDataPacket[]>(
+    `SELECT COLUMN_NAME FROM information_schema.COLUMNS
+     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'user_details' AND COLUMN_NAME = 'address'`,
+    [dbConfig.database]
+  );
+  if (cols.length === 0) {
+    await connection.query(
+      "ALTER TABLE user_details ADD COLUMN address TEXT NULL AFTER phone_number"
+    );
+    console.log("Added address column to user_details.");
+  }
+}
+
+async function ensureUserDetailsTable(connection: mysql.Connection): Promise<void> {
+  const [tables] = await connection.query<mysql.RowDataPacket[]>(
+    `SELECT TABLE_NAME FROM information_schema.TABLES
+     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'user_details'`,
+    [dbConfig.database]
+  );
+  if (tables.length === 0) {
+    return;
+  }
+
+  const [cols] = await connection.query<mysql.RowDataPacket[]>(
+    `SELECT COLUMN_NAME FROM information_schema.COLUMNS
+     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'user_details' AND COLUMN_NAME = 'full_name'`,
+    [dbConfig.database]
+  );
+  if (cols.length > 0) {
+    return;
+  }
+
+  await connection.query("DROP TABLE IF EXISTS user_details");
+  await connection.query(`
+    CREATE TABLE user_details (
+      id              INT AUTO_INCREMENT PRIMARY KEY,
+      user_id         INT NULL,
+      full_name       VARCHAR(150) NOT NULL,
+      email           VARCHAR(150) NOT NULL,
+      phone_number    VARCHAR(20) NOT NULL,
+      address         TEXT NULL,
+      country         VARCHAR(100) NOT NULL,
+      city            VARCHAR(100) NOT NULL,
+      state           VARCHAR(100) NOT NULL,
+      zip_code        VARCHAR(20) NOT NULL,
+      delivery_method ENUM('Delivery', 'Pickup') NOT NULL DEFAULT 'Delivery',
+      discount_code   VARCHAR(50) NULL,
+      discount_amount DECIMAL(10,2) NOT NULL DEFAULT 0,
+      subtotal        DECIMAL(10,2) NOT NULL DEFAULT 0,
+      shipping_amount DECIMAL(10,2) NOT NULL DEFAULT 0,
+      total_amount    DECIMAL(10,2) NOT NULL DEFAULT 0,
+      cart_items      JSON NULL,
+      terms_accepted  TINYINT(1) NOT NULL DEFAULT 0,
+      created_at      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      CONSTRAINT fk_user_details_user
+        FOREIGN KEY (user_id) REFERENCES users(id)
+        ON DELETE SET NULL
+    )
+  `);
+  console.log("Rebuilt user_details table for checkout schema.");
+}
+
+async function ensureProductCategoryColumn(connection: mysql.Connection): Promise<void> {
+  const [cols] = await connection.query<mysql.RowDataPacket[]>(
+    `SELECT COLUMN_NAME FROM information_schema.COLUMNS
+     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'products' AND COLUMN_NAME = 'category'`,
+    [dbConfig.database]
+  );
+  if (cols.length === 0) {
+    await connection.query(
+      "ALTER TABLE products ADD COLUMN category ENUM('Siddha', 'Ayurveda', 'Unani') NOT NULL DEFAULT 'Ayurveda' AFTER status"
+    );
+    console.log("Added category column to products.");
+    return;
+  }
+
+  await connection.query(
+    "ALTER TABLE products MODIFY COLUMN category ENUM('Siddha', 'Ayurveda', 'Unani') NOT NULL DEFAULT 'Ayurveda'"
+  );
+}
+
+async function ensureProductGalleryImagesColumn(connection: mysql.Connection): Promise<void> {
+  const [cols] = await connection.query<mysql.RowDataPacket[]>(
+    `SELECT COLUMN_NAME FROM information_schema.COLUMNS
+     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'products' AND COLUMN_NAME = 'gallery_images'`,
+    [dbConfig.database]
+  );
+  if (cols.length === 0) {
+    await connection.query(
+      "ALTER TABLE products ADD COLUMN gallery_images JSON NULL AFTER image_url"
+    );
+    console.log("Added gallery_images column to products.");
+  }
+
+  await connection.query(
+    `UPDATE products
+     SET gallery_images = JSON_ARRAY(image_url)
+     WHERE gallery_images IS NULL
+       AND image_url IS NOT NULL
+       AND TRIM(image_url) <> ''`
+  );
+}
+
 async function migrateEcommerceAdminUsers(connection: mysql.Connection): Promise<void> {
   // The cross-database migration from `herbavi` is disabled.
   // All data should be created and stored in the configured database (see DB_DATABASE).
@@ -175,6 +291,34 @@ async function rebuildSchema(connection: mysql.Connection): Promise<void> {
   await connection.query("SET FOREIGN_KEY_CHECKS = 1");
 }
 
+async function ensureProductOriginalPriceColumn(connection: mysql.Connection): Promise<void> {
+  const [cols] = await connection.query<mysql.RowDataPacket[]>(
+    `SELECT COLUMN_NAME FROM information_schema.COLUMNS
+     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'products' AND COLUMN_NAME = 'original_price'`,
+    [dbConfig.database]
+  );
+  if (cols.length === 0) {
+    await connection.query(
+      "ALTER TABLE products ADD COLUMN original_price DECIMAL(10,2) NULL AFTER price"
+    );
+    console.log("Added original_price column to products.");
+  }
+}
+
+async function ensureProductStockColumn(connection: mysql.Connection): Promise<void> {
+  const [cols] = await connection.query<mysql.RowDataPacket[]>(
+    `SELECT COLUMN_NAME FROM information_schema.COLUMNS
+     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'products' AND COLUMN_NAME = 'stock'`,
+    [dbConfig.database]
+  );
+  if (cols.length === 0) {
+    await connection.query(
+      "ALTER TABLE products ADD COLUMN stock INT NOT NULL DEFAULT 100 AFTER original_price"
+    );
+    console.log("Added stock column to products.");
+  }
+}
+
 export async function runMigrations(): Promise<void> {
   const connection = await mysql.createConnection({
     host: dbConfig.host,
@@ -201,9 +345,25 @@ export async function runMigrations(): Promise<void> {
       .sort();
 
     for (const file of files) {
-      const sql = fs.readFileSync(path.join(MIGRATIONS_DIR, file), "utf8");
-      await connection.query(sql);
-      console.log(`Migration applied: ${file}`);
+      const sql = fs.readFileSync(path.join(MIGRATIONS_DIR, file), "utf8").trim();
+      if (!sql || sql.startsWith("--")) {
+        continue;
+      }
+
+      try {
+        await connection.query(sql);
+        console.log(`Migration applied: ${file}`);
+      } catch (err: unknown) {
+        const code =
+          err && typeof err === "object" && "code" in err
+            ? String((err as { code?: string }).code)
+            : "";
+        if (code === "ER_DUP_FIELDNAME" || code === "ER_TABLE_EXISTS_ERROR") {
+          console.log(`Migration skipped (already applied): ${file}`);
+          continue;
+        }
+        throw err;
+      }
     }
 
     // await ensureCustomerPasswordHash(connection);
@@ -214,7 +374,13 @@ export async function runMigrations(): Promise<void> {
     await migrateCustomerCredentialsToUsers(connection);
     await ensureDefaultUsers(connection);
     await ensureImageColumns(connection);
-    await ensureUserAddressColumn(connection);
+    await ensureUsersDobColumn(connection);
+    await ensureUserDetailsTable(connection);
+    await ensureUserDetailsAddressColumn(connection);
+    await ensureProductCategoryColumn(connection);
+    await ensureProductGalleryImagesColumn(connection);
+    await ensureProductOriginalPriceColumn(connection);
+    await ensureProductStockColumn(connection);
   } finally {
     await connection.end();
   }

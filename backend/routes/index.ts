@@ -8,6 +8,7 @@ import customersRoutes from "./customers.routes.js";
 import usersRoutes from "./users.routes.js";
 import dbRoutes from "./db.routes.js";
 import pincodeRoutes from "./pincode.routes.js";
+import checkoutRoutes from "./checkout.routes.js";
 
 const router = Router();
 
@@ -19,6 +20,7 @@ router.use("/orders", ordersRoutes);
 router.use("/customers", customersRoutes);
 router.use("/users", usersRoutes);
 router.use("/pincode", pincodeRoutes);
+router.use("/checkout", checkoutRoutes);
 router.use("/", dbRoutes);
 
 export default router;

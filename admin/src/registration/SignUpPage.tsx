@@ -1,11 +1,87 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { UserPlus, AlertCircle, Boxes, Check } from "lucide-react";
 import { AdminUser } from "../types";
-import { setToken } from "./auth";
 
 interface SignUpPageProps {
   onSignUpSuccess: () => void;
   onSwitchToLogin: () => void;
+}
+
+function formatIsoDate(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function getDobInputBounds() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const minDate = new Date(today);
+  minDate.setFullYear(minDate.getFullYear() - 120);
+
+  const maxDate = new Date(today);
+  maxDate.setFullYear(maxDate.getFullYear() - 13);
+
+  return {
+    min: formatIsoDate(minDate),
+    max: formatIsoDate(maxDate),
+  };
+}
+
+function validateDateOfBirth(value: string): string | null {
+  if (!value.trim()) {
+    return "Date of birth is required.";
+  }
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return "Please select a valid date of birth.";
+  }
+
+  const [year, month, day] = value.split("-").map(Number);
+  const dobDate = new Date(year, month - 1, day);
+  if (
+    Number.isNaN(dobDate.getTime()) ||
+    dobDate.getFullYear() !== year ||
+    dobDate.getMonth() !== month - 1 ||
+    dobDate.getDate() !== day
+  ) {
+    return "Please select a valid date of birth.";
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  dobDate.setHours(0, 0, 0, 0);
+
+  if (dobDate > today) {
+    return "Date of birth cannot be in the future.";
+  }
+
+  const minAgeCutoff = new Date(today);
+  minAgeCutoff.setFullYear(minAgeCutoff.getFullYear() - 13);
+  if (dobDate > minAgeCutoff) {
+    return "You must be at least 13 years old to register.";
+  }
+
+  const maxAgeCutoff = new Date(today);
+  maxAgeCutoff.setFullYear(maxAgeCutoff.getFullYear() - 120);
+  if (dobDate < maxAgeCutoff) {
+    return "Please enter a valid date of birth.";
+  }
+
+  return null;
+}
+
+function validatePhoneNumber(value: string): string | null {
+  const digits = value.replace(/\D/g, "");
+  if (!digits) {
+    return "Phone number is required.";
+  }
+  if (digits.length < 10 || digits.length > 15) {
+    return "Phone number must be 10 to 15 digits.";
+  }
+  return null;
 }
 
 export default function SignUpPage({ onSignUpSuccess, onSwitchToLogin }: SignUpPageProps) {
@@ -13,13 +89,43 @@ export default function SignUpPage({ onSignUpSuccess, onSwitchToLogin }: SignUpP
   const [password, setPassword] = useState("");
   const [mail, setMail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const dobBounds = useMemo(() => getDobInputBounds(), []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    const trimmedName = userName.trim();
+    const trimmedMail = mail.trim();
+    const dobError = validateDateOfBirth(dateOfBirth);
+    const phoneError = validatePhoneNumber(phoneNumber);
+
+    if (!trimmedName) {
+      setError("User name is required.");
+      return;
+    }
+    if (!trimmedMail) {
+      setError("Mail is required.");
+      return;
+    }
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters.");
+      return;
+    }
+    if (phoneError) {
+      setError(phoneError);
+      return;
+    }
+    if (dobError) {
+      setError(dobError);
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -27,10 +133,11 @@ export default function SignUpPage({ onSignUpSuccess, onSwitchToLogin }: SignUpP
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: userName,
-          email: mail,
+          name: trimmedName,
+          email: trimmedMail,
           password,
-          phone: phoneNumber,
+          phone: phoneNumber.replace(/\D/g, "").slice(0, 15),
+          dob: dateOfBirth,
         }),
       });
 
@@ -60,6 +167,7 @@ export default function SignUpPage({ onSignUpSuccess, onSwitchToLogin }: SignUpP
       setPassword("");
       setMail("");
       setPhoneNumber("");
+      setDateOfBirth("");
 
       setTimeout(() => {
         onSignUpSuccess();
@@ -100,8 +208,11 @@ export default function SignUpPage({ onSignUpSuccess, onSwitchToLogin }: SignUpP
         )}
 
         <div className="space-y-1.5 text-left">
-          <label className="text-xs font-bold text-gray-600 uppercase tracking-wider">User Name</label>
+          <label className="text-xs font-bold text-gray-600 uppercase tracking-wider" htmlFor="signup-user-name">
+            User Name
+          </label>
           <input
+            id="signup-user-name"
             type="text"
             required
             disabled={isSubmitting}
@@ -113,8 +224,11 @@ export default function SignUpPage({ onSignUpSuccess, onSwitchToLogin }: SignUpP
         </div>
 
         <div className="space-y-1.5 text-left">
-          <label className="text-xs font-bold text-gray-600 uppercase tracking-wider">Password</label>
+          <label className="text-xs font-bold text-gray-600 uppercase tracking-wider" htmlFor="signup-password">
+            Password
+          </label>
           <input
+            id="signup-password"
             type="password"
             required
             minLength={6}
@@ -127,8 +241,11 @@ export default function SignUpPage({ onSignUpSuccess, onSwitchToLogin }: SignUpP
         </div>
 
         <div className="space-y-1.5 text-left">
-          <label className="text-xs font-bold text-gray-600 uppercase tracking-wider">Mail</label>
+          <label className="text-xs font-bold text-gray-600 uppercase tracking-wider" htmlFor="signup-mail">
+            Mail
+          </label>
           <input
+            id="signup-mail"
             type="email"
             required
             disabled={isSubmitting}
@@ -140,14 +257,35 @@ export default function SignUpPage({ onSignUpSuccess, onSwitchToLogin }: SignUpP
         </div>
 
         <div className="space-y-1.5 text-left">
-          <label className="text-xs font-bold text-gray-600 uppercase tracking-wider">Phone Number</label>
+          <label className="text-xs font-bold text-gray-600 uppercase tracking-wider" htmlFor="signup-phone">
+            Phone Number
+          </label>
           <input
+            id="signup-phone"
             type="tel"
             required
+            inputMode="numeric"
             disabled={isSubmitting}
             value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-            placeholder="+1-555-0100"
+            onChange={(e) => setPhoneNumber(e.target.value.replace(/[^\d+\-\s()]/g, ""))}
+            placeholder="10-digit mobile number"
+            className={fieldClass}
+          />
+        </div>
+
+        <div className="space-y-1.5 text-left">
+          <label className="text-xs font-bold text-gray-600 uppercase tracking-wider" htmlFor="signup-dob">
+            Date Of Birth
+          </label>
+          <input
+            id="signup-dob"
+            type="date"
+            required
+            disabled={isSubmitting}
+            value={dateOfBirth}
+            min={dobBounds.min}
+            max={dobBounds.max}
+            onChange={(e) => setDateOfBirth(e.target.value)}
             className={fieldClass}
           />
         </div>

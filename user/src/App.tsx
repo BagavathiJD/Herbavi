@@ -13,7 +13,7 @@ export default function App() {
         <CartProvider>
           <QuickViewProvider>
             <AuthProvider>
-              <BrowserRouter basename="/user">
+              <BrowserRouter>
                 <UserRoutes />
               </BrowserRouter>
             </AuthProvider>

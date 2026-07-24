@@ -1,0 +1,1 @@
+-- dob column is added idempotently by ensureUsersDobColumn() in backend/db/migrate.ts

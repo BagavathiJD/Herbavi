@@ -5,7 +5,7 @@ import { formatMoney } from '../utils/format.tsx';
 import { assetUrl } from '../utils/assets.ts';
 
 export default function AddToCart() {
-  const { cart, cartCount, cartTotal, removeCartItem, updateCartQty } = useCartActions();
+  const { cart, cartCount, cartTotal, removeCartItem, changeCartQty } = useCartActions();
   const totalDisplay = useCartTotalDisplay(cart, cartTotal);
 
   return (
@@ -62,7 +62,7 @@ export default function AddToCart() {
                 <div className="overflow-auto">
                   <div className="tf-table-page-cart list-file-delete">
                     {cart.map((item) => {
-                      const qty = item.qty || 1;
+                      const qty = Number(item.qty) || 1;
                       const lineTotal = item.price * qty;
                       return (
                         <div key={item.id} className="tf-cart_item each-prd file-delete" data-id={item.id}>
@@ -102,7 +102,11 @@ export default function AddToCart() {
                               <button
                                 type="button"
                                 className="btn-quantity minus-quantity"
-                                onClick={() => updateCartQty(item.id, qty - 1)}
+                                onClick={(event) => {
+                                  event.preventDefault();
+                                  event.stopPropagation();
+                                  changeCartQty(item, qty - 1);
+                                }}
                               >
                                 <i className="icon icon-Minus"></i>
                               </button>
@@ -110,7 +114,11 @@ export default function AddToCart() {
                               <button
                                 type="button"
                                 className="btn-quantity plus-quantity"
-                                onClick={() => updateCartQty(item.id, qty + 1)}
+                                onClick={(event) => {
+                                  event.preventDefault();
+                                  event.stopPropagation();
+                                  changeCartQty(item, qty + 1);
+                                }}
                               >
                                 <i className="icon icon-Plus"></i>
                               </button>
@@ -133,9 +141,9 @@ export default function AddToCart() {
                       <span className="text-body-l fw-normal">Subtotal</span>
                       <span className="each-total-price fw-normal">{totalDisplay}</span>
                     </div>
-                    <a href="#" className="tf-btn style-2 type-2 w-100 mb-16">
+                    <Link to="/checkout" className="tf-btn style-2 type-2 w-100 mb-16">
                       Check out
-                    </a>
+                    </Link>
                     <Link to="/products" className="tf-btn-line fw-normal w-100 text-center">
                       Continue Shopping
                     </Link>

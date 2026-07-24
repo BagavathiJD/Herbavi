@@ -74,6 +74,9 @@
     -------------------------------------------------------------------------*/
     var btnQuantity = function () {
         $(".minus-btn").on("click", function (e) {
+            if ($(this).closest("[data-herbavi-react]").length) {
+                return;
+            }
             e.preventDefault();
             var $this = $(this);
             var $input = $this.closest("div").find("input");
@@ -86,6 +89,9 @@
         });
 
         $(".plus-btn").on("click", function (e) {
+            if ($(this).closest("[data-herbavi-react]").length) {
+                return;
+            }
             e.preventDefault();
             var $this = $(this);
             var $input = $this.closest("div").find("input");
@@ -107,17 +113,30 @@
         }
 
         function updateTotalPrice() {
+            if ($(".popup-shopping-cart[data-herbavi-react]").length) {
+                return;
+            }
+
             var total = 0;
 
             $(".list-file-delete .tf-mini-cart-item").each(function () {
-                var priceText = $(this).find(".tf-mini-card-price").text().replace("$", "").replace(",", "").trim();
+                var priceText = $(this).find(".tf-mini-card-price").text().replace(/[^\d.]/g, "").trim();
                 var price = parseFloat(priceText);
+                var qty = parseInt($(this).find(".quantity-product").val(), 10) || 1;
                 if (!isNaN(price)) {
-                    total += price;
+                    total += price * qty;
                 }
             });
 
-            var formatted = total.toLocaleString("en-US", { style: "currency", currency: "USD" });
+            var sampleDisplay = $(".list-file-delete .tf-mini-card-price").first().text();
+            var formatted;
+            if (sampleDisplay && /₹/.test(sampleDisplay)) {
+                formatted = "₹" + total.toFixed(2);
+            } else if (sampleDisplay && /[₹$€£]/.test(sampleDisplay)) {
+                formatted = sampleDisplay.match(/[₹$€£]/)[0] + total.toFixed(2);
+            } else {
+                formatted = total.toLocaleString("en-US", { style: "currency", currency: "USD" });
+            }
             $(".tf-totals-total-value").text(formatted);
         }
 
@@ -209,6 +228,9 @@
         });
 
         $(".list-file-delete,.each-prd").on("click", ".minus-quantity, .plus-quantity", function () {
+            if ($(this).closest("[data-herbavi-react]").length) {
+                return;
+            }
             var $quantityInput = $(this).siblings(".quantity-product");
             var currentQuantity = parseInt($quantityInput.val(), 10);
 

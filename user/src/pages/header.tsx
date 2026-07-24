@@ -30,10 +30,15 @@ export default function Header({ variant = 'home' }: HeaderProps) {
       <div className="header-inner">
         <div className="container-full">
           <div className="row align-items-center">
-            <div className="col-3 col-md-4 col-lg-5">
+            <div className="col-3 col-md-4 col-lg-5 herbavi-header-col herbavi-header-col--left">
               <div className="header-left">
                 <div className="box-btn-open-menu d-flex">
-                  <a href="#mobileMenu" data-bs-toggle="offcanvas" className="d-xl-none">
+                  <a
+                    href="#mobileMenu"
+                    data-bs-toggle="offcanvas"
+                    className="herbavi-mobile-menu-btn d-xl-none"
+                    aria-label="Open menu"
+                  >
                     <i className="icon icon-OpenMenu fs-24"></i>
                   </a>
                 </div>
@@ -63,21 +68,20 @@ export default function Header({ variant = 'home' }: HeaderProps) {
                 </nav>
               </div>
             </div>
-            <div className="col-6 col-md-4 col-lg-2">
+            <div className="col-6 col-md-4 col-lg-2 herbavi-header-col herbavi-header-col--center">
               <div className="header-center d-flex justify-content-center">
                 <Link to="/" className="logo-site">
                   <img
                     loading="lazy"
                     width={136}
                     height={32}
-                    // src={assetUrl('assets/images/herbavi-imgs/herbavi-logo.svg')}
                     src={assetUrl('assets/images/section/t-logo.png')}
                     alt="Herbavi"
                   />
                 </Link>
               </div>
             </div>
-            <div className="col-3 col-md-4 col-lg-5">
+            <div className="col-3 col-md-4 col-lg-5 herbavi-header-col herbavi-header-col--right">
               <div className="header-right d-flex align-items-center justify-content-end">
                 <button
                   type="button"
@@ -88,8 +92,8 @@ export default function Header({ variant = 'home' }: HeaderProps) {
                   <i className="icon icon-Search"></i>
                   <span className="herbavi-header-search-placeholder font-geist">Search products...</span>
                 </button>
-                <ul className="tf-list nav-icon-list justify-content-end gap-16 mb-0">
-                  <li className="d-xl-none">
+                <ul className="tf-list nav-icon-list justify-content-end gap-16 mb-0 herbavi-header-icons">
+                  <li className="d-none d-md-block d-xl-none">
                     <button
                       type="button"
                       className="nav-icon-item fw-normal herbavi-search-icon-btn"
@@ -99,7 +103,7 @@ export default function Header({ variant = 'home' }: HeaderProps) {
                       <i className="icon icon-Search"></i>
                     </button>
                   </li>
-                  <li className="nav-account">
+                  <li className="nav-account d-none d-md-block">
                     {user ? (
                       <>
                         <a href="#;" className="nav-icon-item fw-normal herbavi-account-trigger">
@@ -127,7 +131,7 @@ export default function Header({ variant = 'home' }: HeaderProps) {
                       </>
                     ) : (
                       <a
-                        href="/"
+                        href="/admin"
                         className="nav-icon-item fw-normal herbavi-account-trigger"
                         aria-label="Sign in"
                       >
@@ -137,7 +141,7 @@ export default function Header({ variant = 'home' }: HeaderProps) {
                     )}
                   </li>
                   <li>
-                    <Link to="/wish-list" className="nav-icon-item shop-wishlist fw-normal">
+                    <Link to="/wish-list" className="nav-icon-item shop-wishlist fw-normal" aria-label="Wish list">
                       <i className="icon icon-Hearth"></i>
                       {wishlistCount > 0 && (
                         <span className="number-order nav-wishlist-count text-body-xs">
@@ -151,6 +155,7 @@ export default function Header({ variant = 'home' }: HeaderProps) {
                       href="#shoppingCart"
                       data-bs-toggle="offcanvas"
                       className="nav-icon-item shop-cart fw-medium"
+                      aria-label="Add to cart"
                     >
                       <i className="icon icon-ShoppingCart"></i>
                       <span className="number-order text-body-xs">{cartCount > 0 ? cartCount : '0'}</span>

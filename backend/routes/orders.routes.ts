@@ -3,6 +3,8 @@ import { RowDataPacket } from "mysql2";
 import { query } from "../db/pool.js";
 import { mapOrder } from "../db/rowMappers.js";
 import { logSqlQuery } from "../services/sqlLogger.js";
+import { notifyLowStockIfNeeded } from "../services/lowStockNotifier.js";
+import { isLowStock, LOW_STOCK_THRESHOLD, validateAndDecrementStock } from "../services/productStock.js";
 
 const router = Router();
 
@@ -115,6 +117,12 @@ router.post(
         customers[Math.floor(Math.random() * customers.length)];
       const qty = Math.floor(Math.random() * 4) + 1;
 
+      const stockResult = await validateAndDecrementStock(
+        String(randomProduct.id),
+        qty,
+        String(randomProduct.name)
+      );
+
       const measureRows = await query<RowDataPacket[]>(
         "SELECT name FROM measurements WHERE id = ?",
         [randomProduct.measurement_id]
@@ -150,6 +158,19 @@ router.post(
       logSqlQuery(
         `INSERT INTO orders (\n  id, user_id, user_name, product_id, product_name, \n  product_image_url, quantity, measurement_name, price, \n  total_amount, order_status, order_date\n) VALUES (\n  '${id}', '${randomCustomer.id}', '${String(randomCustomer.name).replace(/'/g, "''")}', \n  '${randomProduct.id}', '${String(randomProduct.name).replace(/'/g, "''")}', '${randomProduct.image_url}', \n  ${qty}, '${measureName}', ${randomProduct.price}, \n  ${total}, 'Pending', NOW()\n);`
       );
+
+      if (isLowStock(stockResult.stock)) {
+        logSqlQuery(
+          `LOW STOCK: ${stockResult.name} now has ${stockResult.stock} unit(s) (threshold ${LOW_STOCK_THRESHOLD}).`
+        );
+      }
+
+      await notifyLowStockIfNeeded({
+        productId: stockResult.productId,
+        productName: stockResult.name,
+        previousStock: stockResult.previousStock,
+        newStock: stockResult.stock,
+      });
 
       const rows = await query<RowDataPacket[]>(
         "SELECT * FROM orders WHERE id = ?",

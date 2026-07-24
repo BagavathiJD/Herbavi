@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { 
   Terminal, 
   AlertCircle
@@ -10,18 +10,19 @@ import Header from "./components/Header";
 import DashboardModule from "./components/DashboardModule";
 import ProductForm from "./components/ProductForm";
 import ProductVisitsModule from "./components/ProductVisitsModule";
+import StockModule from "./components/StockModule";
 import OrdersManagementModule from "./components/OrdersManagementModule";
 import ProductSettingsModule from "./components/ProductSettingsModule";
 import ProductNamesModule from "./components/ProductNamesModule";
 import UsersModule from "./components/UsersModule";
 import AuthGate from "./registration/AuthGate";
-import { authHeaders, clearToken, getToken, hasActiveSession, normalizeRole } from "./registration/auth";
+import { authHeaders, clearToken, getToken, hasActiveSession, markSessionActive, normalizeRole } from "./registration/auth";
 import { useNotification } from "./context/NotificationContext";
 // Types
-import { Product, Order, Measurement, ProductName, Customer, AppUser, SqlQueryLog, DbMetrics, AdminUser } from "./types";
+import { Product, Order, Measurement, ProductName, Customer, AppUser, SqlQueryLog, DbMetrics, AdminUser, isLowStock, LOW_STOCK_THRESHOLD } from "./types";
 
 export default function App() {
-  const { showSuccess, showError } = useNotification();
+  const { showSuccess, showError, showWarning } = useNotification();
   const [authUser, setAuthUser] = useState<AdminUser | null>(null);
   const [authChecking, setAuthChecking] = useState(true);
 
@@ -54,11 +55,85 @@ export default function App() {
 
   // Dynamic Floating SQL Log alerts
   const [activeToast, setActiveToast] = useState<{ query: string; duration: number } | null>(null);
+  const lowStockNotifiedRef = useRef("");
+  const prevProductsRef = useRef<Product[]>([]);
+  const initialStockAlertRef = useRef(false);
+
+  const lowStockProducts = useMemo(
+    () => products.filter((product) => isLowStock(product.stock ?? 0)),
+    [products]
+  );
+
+  const showLowStockWarning = (items: Product[], prefix?: string) => {
+    if (items.length === 0) return;
+
+    const signature = items
+      .map((product) => `${product.id}:${product.stock}`)
+      .sort()
+      .join("|");
+    if (lowStockNotifiedRef.current === signature) {
+      return;
+    }
+
+    lowStockNotifiedRef.current = signature;
+    const previewNames = items
+      .slice(0, 3)
+      .map((product) => `${product.name} (${product.stock} left)`)
+      .join(", ");
+    const suffix = items.length > 3 ? ` and ${items.length - 3} more` : "";
+    const lead = prefix ? `${prefix} ` : "";
+    showWarning(
+      `${lead}${items.length} product(s) below ${LOW_STOCK_THRESHOLD} units: ${previewNames}${suffix}.`
+    );
+  };
+
+  const notifyLowStockIfNeeded = (items: Product[]) => {
+    const prevById = new Map(prevProductsRef.current.map((product) => [product.id, product.stock ?? 0]));
+    const crossedBelow = items.filter((product) => {
+      const current = product.stock ?? 0;
+      if (!isLowStock(current)) return false;
+      const previous = prevById.get(product.id);
+      if (previous === undefined) return false;
+      return previous >= LOW_STOCK_THRESHOLD && current < LOW_STOCK_THRESHOLD;
+    });
+
+    prevProductsRef.current = items;
+
+    if (crossedBelow.length > 0) {
+      showLowStockWarning(crossedBelow, "Stock dropped after a purchase:");
+      return;
+    }
+
+    const currentlyLow = items.filter((product) => isLowStock(product.stock ?? 0));
+    if (!initialStockAlertRef.current && currentlyLow.length > 0) {
+      initialStockAlertRef.current = true;
+      showLowStockWarning(currentlyLow);
+      return;
+    }
+
+    if (currentlyLow.length === 0) {
+      lowStockNotifiedRef.current = "";
+    }
+  };
 
   const headers = () => ({
     ...authHeaders(),
     "Content-Type": "application/json",
   });
+
+  const readApiError = async (res: Response, fallback: string): Promise<string> => {
+    const text = await res.text();
+    if (!text) return fallback;
+    try {
+      const data = JSON.parse(text) as { error?: string };
+      return data.error || fallback;
+    } catch {
+      if (text.trimStart().startsWith("<!DOCTYPE") || text.trimStart().startsWith("<html")) {
+        return "Stock API is unavailable. Restart the dev server (npm run dev) and try again.";
+      }
+      return fallback;
+    }
+  };
 
   // Primary Fetcher
   const syncDatabaseState = async (silently = false) => {
@@ -95,6 +170,7 @@ export default function App() {
       setProductNames(names);
       setSqlLogs(logs);
       setDbMetrics(metrics);
+      notifyLowStockIfNeeded(Array.isArray(prods) ? prods : []);
 
       // Trigger a quick toast alert if a new query has written to the database!
       if (logs.length > 0 && logs[0].query && !silently) {
@@ -118,7 +194,10 @@ export default function App() {
         const res = await fetch("/api/auth/me", { headers: authHeaders() });
         if (res.ok) {
           const user = await res.json();
-          if (normalizeRole(user.role) === "admin" && hasActiveSession()) {
+          if (normalizeRole(user.role) === "admin") {
+            if (!hasActiveSession()) {
+              markSessionActive();
+            }
             setAuthUser(user);
           }
         } else {
@@ -137,6 +216,18 @@ export default function App() {
     if (authUser && authUser.role !== "User") {
       syncDatabaseState();
     }
+  }, [authUser]);
+
+  useEffect(() => {
+    if (!authUser || String(authUser.role).trim().toLowerCase() !== "admin") {
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      syncDatabaseState(true);
+    }, 30000);
+
+    return () => window.clearInterval(intervalId);
   }, [authUser]);
 
   const handleLogout = () => {
@@ -215,7 +306,8 @@ export default function App() {
 
   // Trigger form entry to edit a product
   const handleEditProductTrigger = (product: Product) => {
-    setSelectedProductForEdit(product);
+    const latestProduct = products.find((item) => item.id === product.id) ?? product;
+    setSelectedProductForEdit(latestProduct);
     setTab("edit-product");
   };
 
@@ -223,6 +315,28 @@ export default function App() {
   const handleCancelForm = () => {
     setSelectedProductForEdit(null);
     setTab("product-list");
+  };
+
+  const handleSaveStock = async (updates: Array<{ id: string; stock: number }>) => {
+    setIsProcessingForm(true);
+    try {
+      const res = await fetch("/api/products/stock/bulk", {
+        method: "PUT",
+        headers: headers(),
+        body: JSON.stringify({ updates }),
+      });
+
+      if (!res.ok) {
+        throw new Error(await readApiError(res, "Failed to update stock."));
+      }
+
+      await syncDatabaseState(true);
+      showSuccess("Stock updated successfully!");
+    } catch (error: any) {
+      showError(error.message || "Failed to update stock.");
+    } finally {
+      setIsProcessingForm(false);
+    }
   };
 
 
@@ -445,6 +559,17 @@ export default function App() {
             measurements={measurements}
             onEditTrigger={handleEditProductTrigger}
             onDeleteProduct={handleDeleteProduct}
+            onAddProduct={() => setTab("add-product")}
+          />
+        );
+
+      case "stock-management":
+        return (
+          <StockModule
+            products={products}
+            measurements={measurements}
+            onSaveStock={handleSaveStock}
+            isProcessing={isProcessingForm}
           />
         );
 
@@ -540,8 +665,10 @@ export default function App() {
       <div className="flex-1 flex flex-col h-screen overflow-hidden bg-white">
         
         {/* Dynamic Header desk */}
-        <Header 
-          currentTab={currentTab} 
+        <Header
+          currentTab={currentTab}
+          lowStockProducts={lowStockProducts}
+          onOpenStock={() => setTab("stock-management")}
         />
 
         {/* Global Loading screen or core Content layout */}

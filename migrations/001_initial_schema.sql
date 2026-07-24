@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS products (
   measurement_id  VARCHAR(50) NOT NULL,
   price           DECIMAL(10,2) NOT NULL,
   status          ENUM('Active', 'Inactive') NOT NULL DEFAULT 'Active',
+  category        ENUM('Siddha', 'Ayurveda', 'Unani') NOT NULL DEFAULT 'Ayurveda',
   created_at      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_products_measurement
     FOREIGN KEY (measurement_id) REFERENCES measurements(id)

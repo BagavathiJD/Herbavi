@@ -15,14 +15,70 @@ function normalizeRole(role: unknown) {
   return "User"; // default to 'User' for new registrations unless explicitly 'admin'
 }
 
+function formatDobValue(value: unknown): string | null {
+  if (value == null || value === "") return null;
+  if (value instanceof Date && !Number.isNaN(value.getTime())) {
+    const y = value.getFullYear();
+    const m = String(value.getMonth() + 1).padStart(2, "0");
+    const d = String(value.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  }
+  return String(value).trim().slice(0, 10);
+}
+
+function validateDob(value: unknown): { ok: true; dob: string } | { ok: false; error: string } {
+  const dobStr = formatDobValue(value);
+  if (!dobStr) {
+    return { ok: false, error: "Date of birth is required." };
+  }
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dobStr)) {
+    return { ok: false, error: "Date of birth must be a valid date (YYYY-MM-DD)." };
+  }
+
+  const [year, month, day] = dobStr.split("-").map(Number);
+  const dobDate = new Date(year, month - 1, day);
+  if (
+    Number.isNaN(dobDate.getTime()) ||
+    dobDate.getFullYear() !== year ||
+    dobDate.getMonth() !== month - 1 ||
+    dobDate.getDate() !== day
+  ) {
+    return { ok: false, error: "Date of birth is invalid." };
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  dobDate.setHours(0, 0, 0, 0);
+
+  if (dobDate > today) {
+    return { ok: false, error: "Date of birth cannot be in the future." };
+  }
+
+  const minAgeCutoff = new Date(today);
+  minAgeCutoff.setFullYear(minAgeCutoff.getFullYear() - 13);
+  if (dobDate > minAgeCutoff) {
+    return { ok: false, error: "You must be at least 13 years old to register." };
+  }
+
+  const maxAgeCutoff = new Date(today);
+  maxAgeCutoff.setFullYear(maxAgeCutoff.getFullYear() - 120);
+  if (dobDate < maxAgeCutoff) {
+    return { ok: false, error: "Please enter a valid date of birth." };
+  }
+
+  return { ok: true, dob: dobStr };
+}
+
 function mapAuthUser(row: RowDataPacket) {
   const role = normalizeRole(row.role);
+  const dob = formatDobValue(row.dob);
   return {
     id: String(row.id),
     name: row.user_name,
     email: row.email,
     phone: row.phone_number ?? "",
-    address: row.address ?? "",
+    dob: dob ?? "",
     role,
     createdAt:
       row.created_at instanceof Date
@@ -41,7 +97,7 @@ function signToken(user: { id: string; email: string; role: string }) {
 
 router.post("/register", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { name, email, password, phone, address } = req.body;
+    const { name, email, password, phone, dob } = req.body;
 
     if (!name || !String(name).trim()) {
       res.status(400).json({ error: "User name is required." });
@@ -55,15 +111,26 @@ router.post("/register", async (req: Request, res: Response, next: NextFunction)
       res.status(400).json({ error: "Password must be at least 6 characters." });
       return;
     }
-    if (!address || !String(address).trim()) {
-      res.status(400).json({ error: "Address is required." });
+    if (!phone || !String(phone).trim()) {
+      res.status(400).json({ error: "Phone number is required." });
+      return;
+    }
+
+    const phoneDigits = String(phone).replace(/\D/g, "");
+    if (phoneDigits.length < 10 || phoneDigits.length > 15) {
+      res.status(400).json({ error: "Phone number must be 10 to 15 digits." });
+      return;
+    }
+
+    const dobResult = validateDob(dob);
+    if (!dobResult.ok) {
+      res.status(400).json({ error: dobResult.error });
       return;
     }
 
     const trimmedEmail = String(email).trim().toLowerCase();
     const trimmedName = String(name).trim();
-    const trimmedPhone = phone ? String(phone).trim().slice(0, 15) : "";
-    const trimmedAddress = String(address).trim();
+    const trimmedPhone = phoneDigits.slice(0, 15);
     const resolvedRole = "User";
 
     const existing = await query<RowDataPacket[]>(
@@ -78,9 +145,9 @@ router.post("/register", async (req: Request, res: Response, next: NextFunction)
     const passwordHash = await bcrypt.hash(String(password), 10);
 
     await query(
-      `INSERT INTO users (user_name, password, email, phone_number, address, role, created_at, updated_at)
+      `INSERT INTO users (user_name, password, email, phone_number, dob, role, created_at, updated_at)
        VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())`,
-      [trimmedName, passwordHash, trimmedEmail, trimmedPhone, trimmedAddress, resolvedRole]
+      [trimmedName, passwordHash, trimmedEmail, trimmedPhone, dobResult.dob, resolvedRole]
     );
 
     const inserted = await query<RowDataPacket[]>(
@@ -98,7 +165,7 @@ router.post("/register", async (req: Request, res: Response, next: NextFunction)
       name: trimmedName,
       email: trimmedEmail,
       phone: trimmedPhone,
-      address: trimmedAddress,
+      dob: dobResult.dob,
       role: resolvedRole as "Admin" | "User",
       createdAt:
         inserted[0]?.created_at instanceof Date
@@ -126,7 +193,7 @@ router.post("/login", async (req: Request, res: Response, next: NextFunction) =>
     console.log("Login request received");
 
     const rows = await query<RowDataPacket[]>(
-      "SELECT id, user_name, email, phone_number, address, password, role, created_at FROM users WHERE LOWER(email) = ?",
+      "SELECT id, user_name, email, phone_number, password, role, dob, created_at FROM users WHERE LOWER(email) = ?",
       [trimmedEmail]
     );
     console.log("User rows:", rows);  
@@ -182,7 +249,7 @@ router.get("/me", async (req: Request, res: Response, next: NextFunction) => {
     const payload = jwt.verify(token, JWT_SECRET) as { sub: string };
 
     const rows = await query<RowDataPacket[]>(
-      "SELECT id, user_name, email, phone_number, address, role, created_at FROM users WHERE id = ?",
+      "SELECT id, user_name, email, phone_number, role, dob, created_at FROM users WHERE id = ?",
       [payload.sub]
     );
 
@@ -207,7 +274,7 @@ router.put("/profile", async (req: Request, res: Response, next: NextFunction) =
 
     const token = header.slice(7);
     const payload = jwt.verify(token, JWT_SECRET) as { sub: string };
-    const { name, email, phone, address } = req.body;
+    const { name, email, phone } = req.body;
 
     if (!name || !String(name).trim()) {
       res.status(400).json({ error: "Name is required." });
@@ -220,8 +287,7 @@ router.put("/profile", async (req: Request, res: Response, next: NextFunction) =
 
     const trimmedName = String(name).trim();
     const trimmedEmail = String(email).trim().toLowerCase();
-    const trimmedPhone = phone ? String(phone).trim().slice(0, 15) : "";
-    const trimmedAddress = address ? String(address).trim() : "";
+    const trimmedPhone = phone ? String(phone).replace(/\D/g, "").slice(0, 15) : "";
 
     const existingUser = await query<RowDataPacket[]>(
       "SELECT id FROM users WHERE id = ?",
@@ -243,17 +309,17 @@ router.put("/profile", async (req: Request, res: Response, next: NextFunction) =
 
     await query(
       `UPDATE users
-       SET user_name = ?, email = ?, phone_number = ?, address = ?, updated_at = NOW()
+       SET user_name = ?, email = ?, phone_number = ?, updated_at = NOW()
        WHERE id = ?`,
-      [trimmedName, trimmedEmail, trimmedPhone, trimmedAddress, payload.sub]
+      [trimmedName, trimmedEmail, trimmedPhone, payload.sub]
     );
 
     logSqlQuery(
-      `UPDATE users SET user_name = '${trimmedName.replace(/'/g, "''")}', email = '${trimmedEmail}', phone_number = '${trimmedPhone.replace(/'/g, "''")}', address = '${trimmedAddress.replace(/'/g, "''")}', updated_at = NOW() WHERE id = ${payload.sub};`
+      `UPDATE users SET user_name = '${trimmedName.replace(/'/g, "''")}', email = '${trimmedEmail}', phone_number = '${trimmedPhone.replace(/'/g, "''")}', updated_at = NOW() WHERE id = ${payload.sub};`
     );
 
     const rows = await query<RowDataPacket[]>(
-      "SELECT id, user_name, email, phone_number, address, role, created_at FROM users WHERE id = ?",
+      "SELECT id, user_name, email, phone_number, role, dob, created_at FROM users WHERE id = ?",
       [payload.sub]
     );
 

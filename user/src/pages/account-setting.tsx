@@ -9,7 +9,6 @@ function populateFormFromUser(
     setLastName: (value: string) => void;
     setEmail: (value: string) => void;
     setPhone: (value: string) => void;
-    setAddress: (value: string) => void;
   }
 ) {
   const parts = user.name.trim().split(/\s+/);
@@ -17,7 +16,6 @@ function populateFormFromUser(
   setters.setLastName(parts.slice(1).join(' '));
   setters.setEmail(user.email);
   setters.setPhone(user.phone);
-  setters.setAddress(user.address ?? '');
 }
 
 export default function AccountSetting() {
@@ -26,7 +24,6 @@ export default function AccountSetting() {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState('');
@@ -43,7 +40,6 @@ export default function AccountSetting() {
       setLastName,
       setEmail,
       setPhone,
-      setAddress,
     });
     setLoading(false);
   }, [user]);
@@ -69,7 +65,6 @@ export default function AccountSetting() {
         name: fullName,
         email: email.trim(),
         phone: phone.trim(),
-        address: address.trim(),
       });
 
       setUserProfile(updatedUser);
@@ -78,7 +73,6 @@ export default function AccountSetting() {
         setLastName,
         setEmail,
         setPhone,
-        setAddress,
       });
 
       setNotice('Profile updated successfully. Refreshing page...');
@@ -156,19 +150,6 @@ export default function AccountSetting() {
               value={phone}
               disabled={saving}
               onChange={(event) => setPhone(event.target.value)}
-            />
-          </div>
-          <div className="col-12">
-            <label className="form-label" htmlFor="address">
-              Address
-            </label>
-            <textarea
-              id="address"
-              className="form-control style-2"
-              rows={3}
-              value={address}
-              disabled={saving}
-              onChange={(event) => setAddress(event.target.value)}
             />
           </div>
           <div className="col-12">

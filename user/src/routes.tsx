@@ -6,6 +6,7 @@ import Home from './pages/Home.tsx';
 import HomeBoldModern from './pages/HomeBoldModern.tsx';
 import Products from './pages/products.tsx';
 import AddToCart from './pages/add-to-cart.tsx';
+import Checkout from './pages/checkout.tsx';
 import WishList from './pages/wish-list.tsx';
 import Faq from './pages/faq.tsx';
 import AccountSetting from './pages/account-setting.tsx';
@@ -24,6 +25,7 @@ export default function UserRoutes() {
       <Route path="/index.php" element={<LegacyRedirect to="/" />} />
       <Route path="/products.php" element={<LegacyRedirect to="/products" />} />
       <Route path="/add-to-cart.php" element={<LegacyRedirect to="/add-to-cart" />} />
+      <Route path="/checkout.php" element={<LegacyRedirect to="/checkout" />} />
       <Route path="/wish-list.php" element={<LegacyRedirect to="/wish-list" />} />
       <Route path="/faq.html" element={<LegacyRedirect to="/faq" />} />
       <Route path="/account-setting.html" element={<LegacyRedirect to="/account-setting" />} />
@@ -41,6 +43,7 @@ export default function UserRoutes() {
       <Route element={<Layout headerVariant="inner" />}>
         <Route path="/products" element={<Products />} />
         <Route path="/add-to-cart" element={<AddToCart />} />
+        <Route path="/checkout" element={<Checkout />} />
         <Route path="/wish-list" element={<WishList />} />
         <Route path="/faq" element={<Faq />} />
         <Route path="/account-setting" element={<ProtectedRoute><AccountSetting /></ProtectedRoute>} />

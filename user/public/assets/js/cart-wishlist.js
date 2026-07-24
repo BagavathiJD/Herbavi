@@ -155,6 +155,10 @@
     }
 
     function updateCartTotalFromCart(cart) {
+        if ($(".popup-shopping-cart[data-herbavi-react]").length) {
+            return;
+        }
+
         var total = cart.reduce(function (sum, item) {
             return sum + item.price * (item.qty || 1);
         }, 0);
@@ -385,6 +389,9 @@
         });
 
         $(document).on("click", ".tf-mini-cart-items .plus-btn", function (e) {
+            if (isReactManaged($(this))) {
+                return;
+            }
             e.preventDefault();
             var $item = $(this).closest(".tf-mini-cart-item");
             var qty = parseInt($item.find(".quantity-product").val(), 10) + 1;
@@ -393,6 +400,9 @@
         });
 
         $(document).on("click", ".tf-mini-cart-items .minus-btn", function (e) {
+            if (isReactManaged($(this))) {
+                return;
+            }
             e.preventDefault();
             var $item = $(this).closest(".tf-mini-cart-item");
             var qty = parseInt($item.find(".quantity-product").val(), 10);
@@ -404,6 +414,9 @@
         });
 
         $(document).on("input", ".tf-mini-cart-items .quantity-product", function () {
+            if (isReactManaged($(this))) {
+                return;
+            }
             var $item = $(this).closest(".tf-mini-cart-item");
             var qty = parseInt($(this).val(), 10) || 1;
             updateCartItemQty(getItemId($item), qty);
@@ -422,6 +435,9 @@
         });
 
         $(document).on("click", ".each-list-prd .plus-quantity", function (e) {
+            if (isReactManaged($(this))) {
+                return;
+            }
             e.preventDefault();
             var $item = $(this).closest(".each-prd");
             var qty = parseInt($item.find(".quantity-product").val(), 10) + 1;
@@ -432,6 +448,9 @@
         });
 
         $(document).on("click", ".each-list-prd .minus-quantity", function (e) {
+            if (isReactManaged($(this))) {
+                return;
+            }
             e.preventDefault();
             var $item = $(this).closest(".each-prd");
             var qty = parseInt($item.find(".quantity-product").val(), 10);

@@ -1,13 +1,15 @@
 import type { MouseEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import type { Product } from '../types/product.tsx';
 import { useCartActions } from '../hooks/useCartActions.ts';
 import { useQuickView } from '../context/QuickViewContext.tsx';
 import { assetPath, displayPrice, formatProductTitle, getDiscountPercent, parsePriceAmount } from '../utils/format.tsx';
+import { getStockClassName, getStockDisplay } from '../utils/stock.ts';
 
 interface ProductCardProps {
   product: Product;
   layout?: 'grid' | 'list';
+  showBuyNow?: boolean;
 }
 
 function openCartPanel() {
@@ -38,7 +40,8 @@ function ProductRating({ rating }: { rating: number }) {
   );
 }
 
-export default function ProductCard({ product, layout = 'grid' }: ProductCardProps) {
+export default function ProductCard({ product, layout = 'grid', showBuyNow = true }: ProductCardProps) {
+  const navigate = useNavigate();
   const { addProductToCart, toggleWishlistItem, isInWishlist } = useCartActions();
   const { openQuickView } = useQuickView();
   const wished = isInWishlist(product.id);
@@ -52,6 +55,13 @@ export default function ProductCard({ product, layout = 'grid' }: ProductCardPro
     event.stopPropagation();
     addProductToCart(product);
     openCartPanel();
+  };
+
+  const handleBuyNow = (event: MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    addProductToCart(product);
+    navigate('/checkout');
   };
 
   const handleWishlist = (event: MouseEvent) => {
@@ -73,6 +83,7 @@ export default function ProductCard({ product, layout = 'grid' }: ProductCardPro
   const discountPercent =
     originalAmount != null ? getDiscountPercent(product.price, originalAmount) : null;
   const productTitle = formatProductTitle(product.name);
+  const stockDisplay = getStockDisplay(product.stock);
 
   return (
     <div className={`${cardClass} herbavi-shop-card`} data-id={product.id} data-brand={product.brand}>
@@ -104,6 +115,17 @@ export default function ProductCard({ product, layout = 'grid' }: ProductCardPro
                 <span className="tooltip">Quick view</span>
               </a>
             </li>
+            <li>
+              <a
+                href="#shoppingCart"
+                className={`${actionIconClass} herbavi-action-icon`}
+                onClick={handleAddToCart}
+                aria-label="Add to cart"
+              >
+                <span className="icon icon-ShoppingCart"></span>
+                <span className="tooltip">Add to Cart</span>
+              </a>
+            </li>
             <li className={`wishlist${wished ? ' addwishlist' : ''}`}>
               <a
                 href="#;"
@@ -116,18 +138,6 @@ export default function ProductCard({ product, layout = 'grid' }: ProductCardPro
               </a>
             </li>
           </ul>
-        )}
-        {isGrid && (
-          <div className="product-action_bot herbavi-product-action-bot">
-            <a
-              href="#shoppingCart"
-              className="tf-btn hv-black btn-white type-2 w-100 herbavi-add-cart-btn"
-              onClick={handleAddToCart}
-            >
-              Add to cart
-              <i className="icon icon-ShoppingCart"></i>
-            </a>
-          </div>
         )}
       </div>
       <div className={`card-product_info herbavi-product-info${isGrid ? ' start' : ''}`}>
@@ -145,6 +155,23 @@ export default function ProductCard({ product, layout = 'grid' }: ProductCardPro
             <span className="herbavi-product-discount">({discountPercent}% OFF)</span>
           )}
         </div>
+        {stockDisplay && (
+          <p className={getStockClassName('herbavi-product-stock-left font-geist', stockDisplay.variant)}>
+            {stockDisplay.text}
+          </p>
+        )}
+        {isGrid && showBuyNow && (
+          <div className="herbavi-product-card-actions">
+            <a
+              href="/add-to-cart"
+              className="tf-btn hv-black btn-white type-2 w-100 herbavi-buy-now-btn"
+              onClick={handleBuyNow}
+            >
+              Buy now
+              <i className="icon icon-ShoppingCart"></i>
+            </a>
+          </div>
+        )}
         {layout === 'list' && (
           <ul className="product-action_list style-2">
             <li>

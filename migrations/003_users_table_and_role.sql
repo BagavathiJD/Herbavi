@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS users (
   password      VARCHAR(255) NOT NULL,
   email         VARCHAR(150) NOT NULL UNIQUE,
   phone_number  VARCHAR(15)  NULL DEFAULT NULL,
-  address       TEXT         NULL,
+  dob           DATE         NULL,
   role          ENUM('Admin','User') NOT NULL DEFAULT 'User',
   created_at    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

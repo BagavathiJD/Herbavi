@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import {
   Upload,
   Image as ImageIcon,
@@ -7,7 +7,7 @@ import {
   AlertCircle,
   X
 } from "lucide-react";
-import { Product, Measurement, ProductName, formatProductMeasurement, formatCurrency } from "../types";
+import { Product, Measurement, ProductName, PRODUCT_CATEGORIES, normalizeProductCategory, formatProductMeasurement, formatCurrency, getProductDiscountPercent, calculateDiscountPrice, type ProductCategory } from "../types";
 
 interface ProductFormProps {
   initialProduct?: Product | null;
@@ -18,6 +18,8 @@ interface ProductFormProps {
   isSubmitting: boolean;
 }
 
+const GALLERY_SLOT_COUNT = 4;
+
 export default function ProductForm({
   initialProduct,
   measurements,
@@ -26,43 +28,94 @@ export default function ProductForm({
   onCancel,
   isSubmitting
 }: ProductFormProps) {
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
-  const [imageFileName, setImageFileName] = useState("");
+  const [galleryImages, setGalleryImages] = useState<string[]>(Array(GALLERY_SLOT_COUNT).fill(""));
+  const [galleryFileNames, setGalleryFileNames] = useState<string[]>(Array(GALLERY_SLOT_COUNT).fill(""));
+  const [previewIndex, setPreviewIndex] = useState(0);
   const [measurementId, setMeasurementId] = useState("");
   const [measurementValue, setMeasurementValue] = useState("");
-  const [price, setPrice] = useState("");
+  const [actualPrice, setActualPrice] = useState("");
+  const [discountPercent, setDiscountPercent] = useState("");
+  const [stock, setStock] = useState("100");
   const [status, setStatus] = useState<"Active" | "Inactive">("Active");
+  const [category, setCategory] = useState<ProductCategory | "">("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  const initialFormKey = initialProduct
+    ? [
+        initialProduct.id,
+        initialProduct.category,
+        initialProduct.name,
+        initialProduct.description,
+        initialProduct.imageUrl,
+        ...(initialProduct.galleryImages ?? []),
+        initialProduct.measurementId,
+        initialProduct.measurementValue,
+        initialProduct.price,
+        initialProduct.originalPrice ?? "",
+        initialProduct.stock ?? 100,
+        initialProduct.status,
+      ].join("|")
+    : "new";
 
   useEffect(() => {
     if (initialProduct) {
+      const existing =
+        initialProduct.galleryImages && initialProduct.galleryImages.length > 0
+          ? initialProduct.galleryImages
+          : initialProduct.imageUrl
+            ? [initialProduct.imageUrl]
+            : [];
+      const slots = Array(GALLERY_SLOT_COUNT)
+        .fill("")
+        .map((_, index) => existing[index] ?? "");
       setName(initialProduct.name);
       setDescription(initialProduct.description || "");
-      setImageUrl(initialProduct.imageUrl || "");
-      setImageFileName(initialProduct.imageUrl ? "Current product image" : "");
+      setGalleryImages(slots);
+      setGalleryFileNames(
+        slots.map((item, index) => (item ? `Image ${index + 1}` : ""))
+      );
+      setPreviewIndex(0);
       setMeasurementId(initialProduct.measurementId);
       setMeasurementValue(initialProduct.measurementValue || "1");
-      setPrice(initialProduct.price.toString());
+      const resolvedActual =
+        initialProduct.originalPrice != null && initialProduct.originalPrice > initialProduct.price
+          ? initialProduct.originalPrice
+          : Math.ceil(initialProduct.price * 1.33);
+      setActualPrice(resolvedActual.toString());
+      setDiscountPercent(
+        getProductDiscountPercent(resolvedActual, initialProduct.price)?.toString() ?? ""
+      );
+      setStock(String(initialProduct.stock ?? 100));
       setStatus(initialProduct.status);
+      setCategory(normalizeProductCategory(initialProduct.category));
     } else {
       setName("");
       setDescription("");
-      setImageUrl("");
-      setImageFileName("");
+      setGalleryImages(Array(GALLERY_SLOT_COUNT).fill(""));
+      setGalleryFileNames(Array(GALLERY_SLOT_COUNT).fill(""));
+      setPreviewIndex(0);
       setMeasurementId("");
       setMeasurementValue("");
-      setPrice("");
+      setActualPrice("");
+      setDiscountPercent("");
+      setStock("100");
       setStatus("Active");
+      setCategory("");
     }
-  }, [initialProduct, measurements, productNames]);
+  }, [initialFormKey]);
 
   const validateForm = () => {
     const tempErrors: { [key: string]: string } = {};
     if (!name.trim()) {
-      tempErrors.name = "Please select a product name from the master list.";
+      tempErrors.name = initialProduct
+        ? "Product name is required."
+        : "Please enter a product name.";
+    }
+    if (!category) {
+      tempErrors.category = "Please select a category.";
     }
     if (!measurementId) {
       tempErrors.measurementId = "Please select a measurement unit.";
@@ -75,19 +128,47 @@ export default function ProductForm({
         tempErrors.measurementValue = "Volume must be a valid number greater than 0.";
       }
     }
-    if (!price) {
-      tempErrors.price = "Price is required.";
+    if (!actualPrice) {
+      tempErrors.actualPrice = "Actual price is required.";
     } else {
-      const numPrice = Number(price);
-      if (isNaN(numPrice) || numPrice <= 0) {
-        tempErrors.price = "Price must be a valid number greater than 0.";
+      const numActual = Number(actualPrice);
+      if (isNaN(numActual) || numActual <= 0) {
+        tempErrors.actualPrice = "Actual price must be a valid number greater than 0.";
       }
     }
-    if (!imageUrl.trim()) {
-      tempErrors.imageUrl = "Please upload a product image.";
+    if (!discountPercent) {
+      tempErrors.discountPercent = "Discount percentage is required.";
+    } else {
+      const numPercent = Number(discountPercent);
+      if (isNaN(numPercent) || numPercent <= 0 || numPercent >= 100) {
+        tempErrors.discountPercent = "Discount must be between 1 and 99 percent.";
+      }
+    }
+    if (!stock.trim()) {
+      tempErrors.stock = "Stock quantity is required.";
+    } else {
+      const numStock = Math.floor(Number(stock));
+      if (isNaN(numStock) || numStock < 0) {
+        tempErrors.stock = "Stock must be a valid number of 0 or greater.";
+      }
+    }
+    if (galleryImages.every((item) => !item.trim())) {
+      tempErrors.imageUrl = "Please upload at least one product image.";
     }
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
+  };
+
+  const imageHasTransparency = (
+    ctx: CanvasRenderingContext2D,
+    width: number,
+    height: number
+  ): boolean => {
+    const { data } = ctx.getImageData(0, 0, width, height);
+    for (let i = 3; i < data.length; i += 4) {
+      if (data[i] < 255) return true;
+    }
+    return false;
   };
 
   const compressImage = (file: File): Promise<string> =>
@@ -107,7 +188,16 @@ export default function ProductForm({
           return;
         }
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        resolve(canvas.toDataURL("image/jpeg", 0.82));
+
+        const preserveAlpha =
+          file.type === "image/png" ||
+          imageHasTransparency(ctx, canvas.width, canvas.height);
+
+        resolve(
+          preserveAlpha
+            ? canvas.toDataURL("image/png")
+            : canvas.toDataURL("image/jpeg", 0.82)
+        );
       };
       img.onerror = () => {
         URL.revokeObjectURL(objectUrl);
@@ -116,7 +206,7 @@ export default function ProductForm({
       img.src = objectUrl;
     });
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (slotIndex: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -131,8 +221,17 @@ export default function ProductForm({
 
     try {
       const dataUrl = await compressImage(file);
-      setImageUrl(dataUrl);
-      setImageFileName(file.name);
+      setGalleryImages((prev) => {
+        const next = [...prev];
+        next[slotIndex] = dataUrl;
+        return next;
+      });
+      setGalleryFileNames((prev) => {
+        const next = [...prev];
+        next[slotIndex] = file.name;
+        return next;
+      });
+      setPreviewIndex(slotIndex);
       setErrors((prev) => {
         const next = { ...prev };
         delete next.imageUrl;
@@ -143,13 +242,28 @@ export default function ProductForm({
     }
   };
 
-  const clearImage = () => {
-    setImageUrl("");
-    setImageFileName("");
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+  const clearImage = (slotIndex: number) => {
+    setGalleryImages((prev) => {
+      const next = [...prev];
+      next[slotIndex] = "";
+      return next;
+    });
+    setGalleryFileNames((prev) => {
+      const next = [...prev];
+      next[slotIndex] = "";
+      return next;
+    });
+    if (fileInputRefs.current[slotIndex]) {
+      fileInputRefs.current[slotIndex]!.value = "";
     }
+    setPreviewIndex((current) => {
+      const firstFilled = galleryImages.findIndex((item, index) => index !== slotIndex && item);
+      return firstFilled >= 0 ? firstFilled : 0;
+    });
   };
+
+  const uploadedImages = galleryImages.filter((item) => item.trim());
+  const previewImage = galleryImages[previewIndex] || uploadedImages[0] || "";
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -158,17 +272,39 @@ export default function ProductForm({
     onSubmit({
       name: name.trim(),
       description: description.trim(),
-      imageUrl: imageUrl.trim(),
+      imageUrl: uploadedImages[0],
+      galleryImages: uploadedImages,
       measurementId,
       measurementValue: measurementValue.trim(),
-      price: Number(price),
-      status
+      price: calculateDiscountPrice(Number(actualPrice), Number(discountPercent)),
+      originalPrice: Number(actualPrice),
+      stock: Math.floor(Number(stock)),
+      status,
+      category
     });
   };
 
   const activeMeasurements = measurements.filter((m) => m.status === "Enabled");
-  const activeProductNames = productNames.filter((pn) => pn.status === "Enabled");
   const selectedMeasurement = measurements.find((m) => m.id === measurementId);
+  const computedDiscountPrice = useMemo(() => {
+    const numActual = Number(actualPrice);
+    const numPercent = Number(discountPercent);
+    if (
+      !actualPrice ||
+      !discountPercent ||
+      isNaN(numActual) ||
+      isNaN(numPercent) ||
+      numActual <= 0 ||
+      numPercent <= 0 ||
+      numPercent >= 100
+    ) {
+      return null;
+    }
+    return calculateDiscountPrice(numActual, numPercent);
+  }, [actualPrice, discountPercent]);
+
+  const previewDiscountPercent = Number(discountPercent);
+  const isEditing = !!initialProduct;
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
@@ -207,74 +343,33 @@ export default function ProductForm({
                 <span>Product Name</span>
                 <span className="text-rose-500">*</span>
               </label>
-              <select
-                id="form-product-name"
-                disabled={isSubmitting}
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className={`w-full text-xs p-3 bg-[#020617] text-white border rounded-xl focus:outline-none focus:ring-2 cursor-pointer ${
-                  errors.name
-                    ? "border-rose-800 focus:ring-rose-950/30"
-                    : "border-slate-800 focus:border-indigo-500 focus:ring-indigo-950/25"
-                }`}
-              >
-                {activeProductNames.length === 0 ? (
-                  <option value="" disabled className="bg-[#020617]">
-                    No enabled product names (Add names in Product Name master first!)
-                  </option>
-                ) : (
-                  <>
-                    <option value="" disabled className="bg-[#020617] text-slate-500">
-                      Select product
-                    </option>
-                    {!activeProductNames.some((pn) => pn.name === name) && name && (
-                      <option value={name} className="bg-[#020617] text-white">
-                        {name}
-                      </option>
-                    )}
-                    {activeProductNames.map((pn) => (
-                      <option key={pn.id} value={pn.name} className="bg-[#020617] text-white">
-                        {pn.name}
-                      </option>
-                    ))}
-                  </>
-                )}
-              </select>
-              {errors.name && (
-                <p className="text-rose-400 text-[11px] flex items-center gap-1 font-medium mt-1">
-                  <AlertCircle className="w-3.5 h-3.5" />
-                  <span>{errors.name}</span>
-                </p>
-              )}
-            </div>
-
-            <div className="space-y-1.5 text-left">
-              <label className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1">
-                <span>Price (INR ₹)</span>
-                <span className="text-rose-500">*</span>
-              </label>
-              <div className="relative">
-                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 font-bold">₹</span>
+              {isEditing ? (
                 <input
-                  id="form-product-price"
+                  id="form-product-name"
+                  type="text"
+                  disabled
+                  value={name}
+                  className="w-full text-xs p-3 bg-[#020617] text-slate-400 border border-slate-800 rounded-xl cursor-not-allowed opacity-80"
+                />
+              ) : (
+                <input
+                  id="form-product-name"
                   disabled={isSubmitting}
-                  type="number"
-                  step="0.01"
-                  min="0.01"
-                  placeholder="499.00"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                  className={`w-full text-xs p-3 pl-8 bg-[#020617] text-white border rounded-xl focus:outline-none focus:ring-2 ${
-                    errors.price
+                  type="text"
+                  placeholder="Enter product name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className={`w-full text-xs p-3 bg-[#020617] text-white border rounded-xl focus:outline-none focus:ring-2 ${
+                    errors.name
                       ? "border-rose-800 focus:ring-rose-950/30"
                       : "border-slate-800 focus:border-indigo-500 focus:ring-indigo-950/25"
                   }`}
                 />
-              </div>
-              {errors.price && (
+              )}
+              {errors.name && (
                 <p className="text-rose-400 text-[11px] flex items-center gap-1 font-medium mt-1">
                   <AlertCircle className="w-3.5 h-3.5" />
-                  <span>{errors.price}</span>
+                  <span>{errors.name}</span>
                 </p>
               )}
             </div>
@@ -295,7 +390,7 @@ export default function ProductForm({
                     type="number"
                     step="any"
                     min="0.01"
-                    placeholder="Select measurement"
+                    placeholder="Enter volume or quantity"
                     value={measurementValue}
                     onChange={(e) => setMeasurementValue(e.target.value)}
                     className={`w-full text-xs p-3 bg-[#020617] text-white border rounded-xl focus:outline-none focus:ring-2 ${
@@ -333,7 +428,7 @@ export default function ProductForm({
                     ) : (
                       <>
                         <option value="" disabled className="bg-[#020617] text-slate-500">
-                          Select unit
+                          Select item
                         </option>
                         {activeMeasurements.map((m) => (
                           <option key={m.id} value={m.id} className="bg-[#020617] text-white">
@@ -356,6 +451,38 @@ export default function ProductForm({
                 <span className="text-slate-400">Kilogram (Kg)</span> →{" "}
                 <span className="text-slate-400">1 Kilogram (Kg)</span>
               </p>
+            </div>
+
+            <div className="space-y-1.5 text-left">
+              <label htmlFor="form-product-category" className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                Category
+              </label>
+              <select
+                id="form-product-category"
+                disabled={isSubmitting}
+                value={category}
+                onChange={(e) => setCategory(e.target.value as ProductCategory)}
+                className={`w-full text-xs p-3 bg-[#020617] text-white border rounded-xl focus:outline-none focus:ring-2 cursor-pointer ${
+                  errors.category
+                    ? "border-rose-800 focus:ring-rose-950/30"
+                    : "border-slate-800 focus:border-indigo-550 focus:ring-indigo-950/30"
+                }`}
+              >
+                <option value="" disabled className="bg-[#020617] text-slate-500">
+                  Select item
+                </option>
+                {PRODUCT_CATEGORIES.map((option) => (
+                  <option key={option} value={option} className="bg-[#020617] text-white">
+                    {option}
+                  </option>
+                ))}
+              </select>
+              {errors.category && (
+                <p className="text-rose-400 text-[11px] flex items-center gap-1 font-medium mt-1">
+                  <AlertCircle className="w-3.5 h-3.5" />
+                  <span>{errors.category}</span>
+                </p>
+              )}
             </div>
 
             <div className="space-y-1.5 text-left">
@@ -399,45 +526,177 @@ export default function ProductForm({
               />
             </div>
 
+            <div className="pt-2 border-t border-slate-850 space-y-4">
+              <h5 className="text-[10px] font-black uppercase tracking-widest text-orange-400">
+                Pricing &amp; Discount
+              </h5>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1.5 text-left">
+                  <label className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1">
+                    <span>Actual Price (INR ₹)</span>
+                    <span className="text-rose-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 font-bold">₹</span>
+                    <input
+                      id="form-product-actual-price"
+                      disabled={isSubmitting}
+                      type="number"
+                      step="0.01"
+                      min="0.01"
+                      placeholder="399.00"
+                      value={actualPrice}
+                      onChange={(e) => setActualPrice(e.target.value)}
+                      className={`w-full text-xs p-3 pl-8 bg-[#020617] text-white border rounded-xl focus:outline-none focus:ring-2 ${
+                        errors.actualPrice
+                          ? "border-rose-800 focus:ring-rose-950/30"
+                          : "border-slate-800 focus:border-indigo-500 focus:ring-indigo-950/25"
+                      }`}
+                    />
+                  </div>
+                  {errors.actualPrice && (
+                    <p className="text-rose-400 text-[11px] flex items-center gap-1 font-medium mt-1">
+                      <AlertCircle className="w-3.5 h-3.5" />
+                      <span>{errors.actualPrice}</span>
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-1.5 text-left">
+                  <label className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1">
+                    <span>Discount (%)</span>
+                    <span className="text-rose-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="form-product-discount-percent"
+                      disabled={isSubmitting}
+                      type="number"
+                      step="0.01"
+                      min="1"
+                      max="99"
+                      placeholder="25"
+                      value={discountPercent}
+                      onChange={(e) => setDiscountPercent(e.target.value)}
+                      className={`w-full text-xs p-3 pr-10 bg-[#020617] text-white border rounded-xl focus:outline-none focus:ring-2 ${
+                        errors.discountPercent
+                          ? "border-rose-800 focus:ring-rose-950/30"
+                          : "border-slate-800 focus:border-indigo-500 focus:ring-indigo-950/25"
+                      }`}
+                    />
+                    <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 font-bold">%</span>
+                  </div>
+                  {errors.discountPercent && (
+                    <p className="text-rose-400 text-[11px] flex items-center gap-1 font-medium mt-1">
+                      <AlertCircle className="w-3.5 h-3.5" />
+                      <span>{errors.discountPercent}</span>
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {computedDiscountPrice != null && previewDiscountPercent > 0 && (
+                <p className="text-[11px] text-emerald-400 font-semibold">
+                  Customer will see ({Math.round(previewDiscountPercent)}% OFF) — Rs. {computedDiscountPrice.toFixed(0)} from Rs. {Number(actualPrice).toFixed(0)}
+                </p>
+              )}
+
+              <div className="space-y-1.5 text-left">
+                <label className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1">
+                  <span>Stock Quantity</span>
+                  <span className="text-rose-500">*</span>
+                </label>
+                <input
+                  id="form-product-stock"
+                  disabled={isSubmitting}
+                  type="number"
+                  min="0"
+                  step="1"
+                  placeholder="100"
+                  value={stock}
+                  onChange={(e) => setStock(e.target.value)}
+                  className={`w-full text-xs p-3 bg-[#020617] text-white border rounded-xl focus:outline-none focus:ring-2 ${
+                    errors.stock
+                      ? "border-rose-800 focus:ring-rose-950/30"
+                      : "border-slate-800 focus:border-indigo-500 focus:ring-indigo-950/25"
+                  }`}
+                />
+                {errors.stock && (
+                  <p className="text-rose-400 text-[11px] flex items-center gap-1 font-medium mt-1">
+                    <AlertCircle className="w-3.5 h-3.5" />
+                    <span>{errors.stock}</span>
+                  </p>
+                )}
+              </div>
+            </div>
+
             <div className="space-y-1.5 text-left">
               <label className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1">
-                <span>Product Image</span>
+                <span>Product Images</span>
                 <span className="text-rose-500">*</span>
               </label>
-              <input
-                ref={fileInputRef}
-                id="form-product-image"
-                type="file"
-                accept="image/*"
-                disabled={isSubmitting}
-                onChange={handleImageUpload}
-                className="hidden"
-              />
-              <div
-                onClick={() => !isSubmitting && fileInputRef.current?.click()}
-                className={`w-full p-6 bg-[#020617] border-2 border-dashed rounded-xl cursor-pointer transition-colors flex flex-col items-center justify-center gap-2 ${
-                  errors.imageUrl
-                    ? "border-rose-800 hover:border-rose-700"
-                    : "border-slate-700 hover:border-indigo-600 hover:bg-slate-900/40"
-                }`}
-              >
-                <Upload className="w-8 h-8 text-slate-500" />
-                <p className="text-xs font-semibold text-slate-300">Click to upload product image</p>
-                <p className="text-[10px] text-slate-500">PNG, JPG or WEBP — max 3 MB</p>
+              <p className="text-[10px] text-slate-500">
+                Upload up to 4 images. The first image is used as the main product photo.
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                {Array.from({ length: GALLERY_SLOT_COUNT }).map((_, slotIndex) => (
+                  <div key={slotIndex} className="space-y-2">
+                    <input
+                      ref={(el) => {
+                        fileInputRefs.current[slotIndex] = el;
+                      }}
+                      id={`form-product-image-${slotIndex}`}
+                      type="file"
+                      accept="image/*"
+                      disabled={isSubmitting}
+                      onChange={(event) => handleImageUpload(slotIndex, event)}
+                      className="hidden"
+                    />
+                    <div
+                      onClick={() => !isSubmitting && fileInputRefs.current[slotIndex]?.click()}
+                      className={`relative aspect-square w-full bg-[#020617] border-2 border-dashed rounded-xl cursor-pointer transition-colors flex flex-col items-center justify-center gap-2 overflow-hidden ${
+                        errors.imageUrl && slotIndex === 0
+                          ? "border-rose-800 hover:border-rose-700"
+                          : "border-slate-700 hover:border-indigo-600 hover:bg-slate-900/40"
+                      }`}
+                    >
+                      {galleryImages[slotIndex] ? (
+                        <>
+                          <img
+                            src={galleryImages[slotIndex]}
+                            alt={`Product image ${slotIndex + 1}`}
+                            className="absolute inset-0 w-full h-full object-cover"
+                          />
+                          <div className="absolute top-2 left-2 bg-slate-950/80 text-[10px] font-bold text-indigo-300 px-2 py-0.5 rounded">
+                            {slotIndex === 0 ? "Main" : `Image ${slotIndex + 1}`}
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="w-6 h-6 text-slate-500" />
+                          <p className="text-[10px] font-semibold text-slate-400">
+                            {slotIndex === 0 ? "Main image" : `Image ${slotIndex + 1}`}
+                          </p>
+                        </>
+                      )}
+                    </div>
+                    {galleryFileNames[slotIndex] && (
+                      <div className="flex items-center justify-between p-2 px-3 bg-slate-900/50 border border-slate-800 rounded-lg">
+                        <span className="text-[10px] text-slate-300 truncate">{galleryFileNames[slotIndex]}</span>
+                        <button
+                          type="button"
+                          onClick={() => clearImage(slotIndex)}
+                          className="p-1 text-slate-400 hover:text-rose-400 cursor-pointer"
+                          title="Remove image"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
-              {imageFileName && (
-                <div className="flex items-center justify-between p-2 px-3 bg-slate-900/50 border border-slate-800 rounded-lg">
-                  <span className="text-[11px] text-slate-300 truncate">{imageFileName}</span>
-                  <button
-                    type="button"
-                    onClick={clearImage}
-                    className="p-1 text-slate-400 hover:text-rose-400 cursor-pointer"
-                    title="Remove image"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              )}
               {errors.imageUrl && (
                 <p className="text-rose-400 text-[11px] flex items-center gap-1 font-medium mt-1">
                   <AlertCircle className="w-3.5 h-3.5" />
@@ -455,10 +714,10 @@ export default function ProductForm({
             </h4>
 
             <div className="relative aspect-square w-full bg-[#020617] border border-slate-800 rounded-2xl overflow-hidden mb-4">
-              {imageUrl ? (
+              {previewImage ? (
                 <>
                   <img
-                    src={imageUrl}
+                    src={previewImage}
                     alt={name || "Product preview"}
                     className="absolute inset-0 w-full h-full object-cover"
                     referrerPolicy="no-referrer"
@@ -476,6 +735,25 @@ export default function ProductForm({
               )}
             </div>
 
+            {uploadedImages.length > 1 && (
+              <div className="grid grid-cols-4 gap-2 mb-4">
+                {galleryImages.map((item, index) =>
+                  item ? (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => setPreviewIndex(index)}
+                      className={`aspect-square rounded-lg overflow-hidden border ${
+                        previewIndex === index ? "border-indigo-400" : "border-slate-800"
+                      }`}
+                    >
+                      <img src={item} alt={`Preview ${index + 1}`} className="w-full h-full object-cover" />
+                    </button>
+                  ) : null
+                )}
+              </div>
+            )}
+
             <div className="space-y-3 text-left">
               <div>
                 <p className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Product Name</p>
@@ -485,17 +763,30 @@ export default function ProductForm({
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <p className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Price</p>
+                  <p className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Selling Price</p>
                   <p className="text-sm font-bold text-emerald-400 mt-0.5">
-                    {price ? formatCurrency(Number(price)) : "—"}
+                    {computedDiscountPrice != null ? formatCurrency(computedDiscountPrice) : "—"}
                   </p>
                 </div>
                 <div>
-                  <p className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Measurement</p>
-                  <p className="text-sm font-semibold text-slate-200 mt-0.5">
-                    {formatProductMeasurement(measurementValue, selectedMeasurement?.name)}
+                  <p className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Actual Price</p>
+                  <p className="text-sm font-semibold text-slate-400 mt-0.5 line-through">
+                    {actualPrice ? formatCurrency(Number(actualPrice)) : "—"}
                   </p>
                 </div>
+              </div>
+              {previewDiscountPercent > 0 && (
+                <p className="text-xs font-bold text-orange-400">({Math.round(previewDiscountPercent)}% OFF)</p>
+              )}
+              <div>
+                <p className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Measurement</p>
+                <p className="text-sm font-semibold text-slate-200 mt-0.5">
+                  {formatProductMeasurement(measurementValue, selectedMeasurement?.name)}
+                </p>
+              </div>
+              <div>
+                <p className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Category</p>
+                <p className="text-sm font-semibold text-slate-200 mt-0.5">{category || "—"}</p>
               </div>
               <div>
                 <p className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Status</p>

@@ -1,14 +1,14 @@
 import { useEffect, type ReactNode } from 'react';
 import { useAuth } from '../context/AuthContext.tsx';
 
-const MAIN_LOGIN_URL = '/';
+const ADMIN_LOGIN_URL = '/admin';
 
 export default function ProtectedRoute({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
 
   useEffect(() => {
     if (!loading && !user) {
-      window.location.assign(MAIN_LOGIN_URL);
+      window.location.assign(ADMIN_LOGIN_URL);
     }
   }, [loading, user]);
 

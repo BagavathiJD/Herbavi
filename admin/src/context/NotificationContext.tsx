@@ -9,7 +9,7 @@ import {
   type ReactNode,
 } from 'react';
 
-export type AdminToastType = 'success' | 'error';
+export type AdminToastType = 'success' | 'error' | 'warning';
 
 export interface AdminToastNotice {
   id: number;
@@ -21,6 +21,7 @@ interface NotificationContextValue {
   toast: AdminToastNotice | null;
   showSuccess: (message: string) => void;
   showError: (message: string) => void;
+  showWarning: (message: string) => void;
   dismissToast: () => void;
 }
 
@@ -56,6 +57,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
 
   const showSuccess = useCallback((message: string) => showToast(message, 'success'), [showToast]);
   const showError = useCallback((message: string) => showToast(message, 'error'), [showToast]);
+  const showWarning = useCallback((message: string) => showToast(message, 'warning'), [showToast]);
 
   useEffect(() => {
     return () => {
@@ -70,9 +72,10 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       toast,
       showSuccess,
       showError,
+      showWarning,
       dismissToast,
     }),
-    [toast, showSuccess, showError, dismissToast],
+    [toast, showSuccess, showError, showWarning, dismissToast],
   );
 
   return <NotificationContext.Provider value={value}>{children}</NotificationContext.Provider>;

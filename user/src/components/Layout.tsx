@@ -1,14 +1,16 @@
 import { useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import Header from '../pages/header.tsx';
 import Footer from '../pages/footer.tsx';
 import CartSidebar from './CartSidebar.tsx';
+import MobileMenu from './MobileMenu.tsx';
 import QuickViewModal from './QuickViewModal.tsx';
 import SearchModal from './SearchModal.tsx';
 import AuthToast from './AuthToast.tsx';
 import AppToast from './AppToast.tsx';
 import { SearchProvider } from '../context/SearchContext.tsx';
 import { useLegacyScripts } from '../hooks/useLegacyScripts.tsx';
+import { closeCartPanel, closeMobileMenu } from '../utils/cartPanel.ts';
 
 interface LayoutProps {
   headerVariant?: 'home' | 'inner';
@@ -24,6 +26,7 @@ function hidePreloadOverlay() {
 
 export default function Layout({ headerVariant = 'inner', showFooterFeatures = false }: LayoutProps) {
   useLegacyScripts();
+  const location = useLocation();
 
   useEffect(() => {
     document.body.classList.add('herbavi-theme');
@@ -34,6 +37,11 @@ export default function Layout({ headerVariant = 'inner', showFooterFeatures = f
       window.clearTimeout(timeout);
     };
   }, []);
+
+  useEffect(() => {
+    closeCartPanel();
+    closeMobileMenu();
+  }, [location.pathname]);
 
   return (
     <SearchProvider>
@@ -52,6 +60,7 @@ export default function Layout({ headerVariant = 'inner', showFooterFeatures = f
       </main>
 
       <CartSidebar />
+      <MobileMenu />
       <QuickViewModal />
       <SearchModal />
       <AuthToast />

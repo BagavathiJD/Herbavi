@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { fetchProducts } from '../api/client.ts';
-import type { Product } from '../types/product.tsx';
+import type { Product, ProductCategory } from '../types/product.tsx';
 import ProductCard from '../components/ProductCard.tsx';
 import { assetUrl } from '../utils/assets.ts';
 
-type TraditionFilter = 'all' | 'siddha' | 'ayurveda';
+type TraditionFilter = 'all' | ProductCategory;
+
+const PAGE_SIZE = 20;
 
 const SHOP_BANNERS = [
   {
@@ -26,12 +28,8 @@ const TRADITION_FILTERS: { id: TraditionFilter; label: string }[] = [
   { id: 'all', label: 'All' },
   { id: 'siddha', label: 'Siddha' },
   { id: 'ayurveda', label: 'Ayurveda' },
+  { id: 'unani', label: 'Unani' },
 ];
-
-function productTradition(product: Product): 'siddha' | 'ayurveda' {
-  const hash = product.id.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
-  return hash % 2 === 0 ? 'siddha' : 'ayurveda';
-}
 
 function matchesSearchQuery(product: Product, query: string): boolean {
   const normalized = query.trim().toLowerCase();
@@ -44,17 +42,23 @@ function matchesSearchQuery(product: Product, query: string): boolean {
 }
 
 export default function Products() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const searchQuery = searchParams.get('q') ?? '';
+  const categoryParam = (searchParams.get('category') ?? 'all') as TraditionFilter;
+
   const [productList, setProductList] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTradition, setActiveTradition] = useState<TraditionFilter>('all');
+
+  const activeTradition: TraditionFilter = TRADITION_FILTERS.some((option) => option.id === categoryParam)
+    ? categoryParam
+    : 'all';
 
   useEffect(() => {
     let cancelled = false;
 
     (async () => {
-      const products = await fetchProducts();
+      setLoading(true);
+      const products = await fetchProducts(activeTradition);
       if (!cancelled) {
         setProductList(products);
         setLoading(false);
@@ -64,26 +68,49 @@ export default function Products() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [activeTradition]);
 
   const filteredProducts = useMemo(() => {
     let results = productList;
-
-    if (activeTradition !== 'all') {
-      results = results.filter((product) => productTradition(product) === activeTradition);
-    }
 
     if (searchQuery.trim()) {
       results = results.filter((product) => matchesSearchQuery(product, searchQuery));
     }
 
     return results;
-  }, [activeTradition, productList, searchQuery]);
+  }, [productList, searchQuery]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE));
+  const requestedPage = Math.max(1, Number(searchParams.get('page') ?? '1') || 1);
+  const currentPage = Math.min(requestedPage, totalPages);
+
+  const paginatedProducts = useMemo(() => {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    return filteredProducts.slice(start, start + PAGE_SIZE);
+  }, [currentPage, filteredProducts]);
 
   const activeTraditionIndex = Math.max(
     0,
     TRADITION_FILTERS.findIndex((option) => option.id === activeTradition)
   );
+
+  const updateCategory = (nextCategory: TraditionFilter) => {
+    const next = new URLSearchParams(searchParams);
+    if (nextCategory === 'all') {
+      next.delete('category');
+    } else {
+      next.set('category', nextCategory);
+    }
+    next.set('page', '1');
+    setSearchParams(next);
+  };
+
+  const goToPage = (page: number) => {
+    const next = new URLSearchParams(searchParams);
+    next.set('page', String(page));
+    setSearchParams(next);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <>
@@ -154,7 +181,12 @@ export default function Products() {
               <div
                 className="herbavi-tradition-filter"
                 role="tablist"
-                style={{ '--active-index': activeTraditionIndex } as React.CSSProperties}
+                style={
+                  {
+                    '--active-index': activeTraditionIndex,
+                    '--tab-count': TRADITION_FILTERS.length,
+                  } as React.CSSProperties
+                }
               >
                 <span className="herbavi-tradition-indicator" aria-hidden="true" />
                 {TRADITION_FILTERS.map((option) => (
@@ -164,7 +196,7 @@ export default function Products() {
                     role="tab"
                     aria-selected={activeTradition === option.id}
                     className={activeTradition === option.id ? 'is-active' : undefined}
-                    onClick={() => setActiveTradition(option.id)}
+                    onClick={() => updateCategory(option.id)}
                   >
                     {option.label}
                   </button>
@@ -175,23 +207,60 @@ export default function Products() {
         </div>
         <div className="container-full">
           <div
-            key={activeTradition}
+            key={`${activeTradition}-${currentPage}`}
             className="wrapper-control-shop gridLayout-wrapper herbavi-products-grid herbavi-products-grid--animate"
           >
             <div className="tf-grid-layout tf-col-2 md-col-3 xl-col-4 wrapper-shop" id="gridLayout">
               {loading ? (
                 <div className="col-12 text-center py-5">Loading products...</div>
-              ) : filteredProducts.length === 0 ? (
+              ) : paginatedProducts.length === 0 ? (
                 <div className="col-12 text-center py-5">
                   {searchQuery.trim()
                     ? `No products found for "${searchQuery.trim()}".`
                     : 'No products found for this category.'}
                 </div>
               ) : (
-                filteredProducts.map((product) => <ProductCard key={product.id} product={product} layout="grid" />)
+                paginatedProducts.map((product) => <ProductCard key={product.id} product={product} layout="grid" />)
               )}
             </div>
           </div>
+
+          {!loading && filteredProducts.length > PAGE_SIZE && (
+            <nav className="herbavi-products-pagination" aria-label="Product pages">
+              <button
+                type="button"
+                className="herbavi-page-btn"
+                disabled={currentPage <= 1}
+                onClick={() => goToPage(currentPage - 1)}
+              >
+                Previous
+              </button>
+              <div className="herbavi-page-list">
+                {Array.from({ length: totalPages }, (_, index) => {
+                  const pageNumber = index + 1;
+                  return (
+                    <button
+                      key={pageNumber}
+                      type="button"
+                      className={`herbavi-page-btn${currentPage === pageNumber ? ' is-active' : ''}`}
+                      onClick={() => goToPage(pageNumber)}
+                      aria-current={currentPage === pageNumber ? 'page' : undefined}
+                    >
+                      {pageNumber}
+                    </button>
+                  );
+                })}
+              </div>
+              <button
+                type="button"
+                className="herbavi-page-btn"
+                disabled={currentPage >= totalPages}
+                onClick={() => goToPage(currentPage + 1)}
+              >
+                Next
+              </button>
+            </nav>
+          )}
         </div>
       </div>
 

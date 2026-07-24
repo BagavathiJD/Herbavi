@@ -11,7 +11,8 @@ import {
   X,
   ChevronRight,
   Boxes,
-  LogOut
+  LogOut,
+  Warehouse,
 } from "lucide-react";
 import { AdminUser } from "../types";
 
@@ -36,12 +37,8 @@ export default function Sidebar({ currentTab, setTab, user, onLogout }: SidebarP
       group: "Product Management",
       items: [
         { id: "add-product", label: "Add Product", icon: PackagePlus },
-      ]
-    },
-    {
-      group: "Product Visits",
-      items: [
-        { id: "product-list", label: "Product List", icon: Eye },
+        { id: "product-list", label: "Products", icon: Eye },
+        { id: "stock-management", label: "Stock", icon: Warehouse },
       ]
     },
     {

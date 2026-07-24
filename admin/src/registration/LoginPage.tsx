@@ -65,7 +65,7 @@ export default function LoginPage({ onLoginSuccess, onSwitchToSignUp, onSwitchTo
     <div className="w-full max-w-md">
       <div className="text-center mb-8">
         <div className="inline-flex p-3 bg-[#1f3a28] rounded-xl text-white shadow-md mb-4">
-          <img src="admin/src/assets/images/herbavi-logo.jpeg" alt="Herbavi" className="w-8 h-8" />
+          <img src="/admin/src/assets/images/herbavi-logo.jpeg" alt="Herbavi" className="w-8 h-8" />
         </div>
         <h1 className="text-xl font-extrabold text-black tracking-wide uppercase">Herbavi</h1>
         <p className="text-xs text-gray-600 mt-1">Sign in to your account</p>

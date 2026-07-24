@@ -2,9 +2,10 @@ import { Link } from 'react-router-dom';
 import { useCartActions } from '../hooks/useCartActions.ts';
 import { useCartTotalDisplay } from '../context/CartContext.tsx';
 import { assetUrl } from '../utils/assets.ts';
+import { closeCartPanel } from '../utils/cartPanel.ts';
 
 export default function CartSidebar() {
-  const { cart, cartCount, cartTotal, removeCartItem, updateCartQty } = useCartActions();
+  const { cart, cartCount, cartTotal, removeCartItem, changeCartQty } = useCartActions();
   const totalDisplay = useCartTotalDisplay(cart, cartTotal);
   const countDisplay = String(cartCount).padStart(2, '0');
   const isEmpty = cart.length === 0;
@@ -13,7 +14,7 @@ export default function CartSidebar() {
     <div className="offcanvas offcanvas-end popup-shopping-cart" id="shoppingCart" data-herbavi-react="true">
       <div className="canvas-wrapper overflow-hidden">
         <div className="popup-header">
-          <div className="d-flex justify-content-between align-items-start mb-24">
+          <div className="d-flex justify-content-between align-items-start mb-8">
             <h6 className="font-instrument_serif">
               Your Cart (<span className="prd__count">{countDisplay}</span>)
             </h6>
@@ -46,7 +47,10 @@ export default function CartSidebar() {
                       </div>
                     </div>
                   )}
-                  {cart.map((item) => (
+                  {cart.map((item) => {
+                    const qty = Number(item.qty || 1);
+
+                    return (
                     <div key={item.id} className="tf-mini-cart-item file-delete" data-id={item.id}>
                       <a href={item.url} className="tf-mini-cart-image">
                         <img
@@ -76,7 +80,11 @@ export default function CartSidebar() {
                             <button
                               type="button"
                               className="btn-quantity minus-btn"
-                              onClick={() => updateCartQty(item.id, (item.qty || 1) - 1)}
+                              onClick={(event) => {
+                                event.preventDefault();
+                                event.stopPropagation();
+                                changeCartQty(item, qty - 1);
+                              }}
                             >
                               <i className="icon icon-Minus"></i>
                             </button>
@@ -84,13 +92,17 @@ export default function CartSidebar() {
                               className="quantity-product"
                               type="text"
                               name="number"
-                              value={item.qty || 1}
+                              value={qty}
                               readOnly
                             />
                             <button
                               type="button"
                               className="btn-quantity plus-btn"
-                              onClick={() => updateCartQty(item.id, (item.qty || 1) + 1)}
+                              onClick={(event) => {
+                                event.preventDefault();
+                                event.stopPropagation();
+                                changeCartQty(item, qty + 1);
+                              }}
                             >
                               <i className="icon icon-Plus"></i>
                             </button>
@@ -109,7 +121,8 @@ export default function CartSidebar() {
                         </div>
                       </div>
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -118,16 +131,16 @@ export default function CartSidebar() {
                 <div className="tf-mini-cart-total text-body-l fw-normal">
                   <span>Estimated total</span>
                   <div className="price-wrap gap-6">
-                    <span className="price-new tf-totals-total-value fw-normal">{totalDisplay}</span>
+                    <span className="price-new herbavi-cart-total-value fw-normal">{totalDisplay}</span>
                   </div>
                 </div>
                 <div className="tf-mini-cart-view-checkout">
-                  <Link to="/add-to-cart" className="tf-btn style-2 type-2 btn-light">
+                  <Link to="/add-to-cart" className="tf-btn style-2 type-2 btn-light" onClick={closeCartPanel}>
                     View cart
                   </Link>
-                  <a href="#" className="tf-btn style-2 type-2">
+                  <Link to="/checkout" className="tf-btn style-2 type-2" onClick={closeCartPanel}>
                     Check out
-                  </a>
+                  </Link>
                 </div>
                 <p className="text-body-s text-center cl-text-5">
                   Tax and shipping calculated at checkout

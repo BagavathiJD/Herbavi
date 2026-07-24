@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import RecentProductsSection from '../components/RecentProductsSection.tsx';
 import { assetUrl } from '../utils/assets.ts';
 
 export default function Index () {
@@ -191,6 +192,7 @@ export default function Index () {
     </div>
   </div>
 </section>
+<RecentProductsSection />
 <div className="section-split section-ingredient-2">
   <div className="col-content bg-main_100 justify-content-start">
     <div className="sect-heading-v2 start sticky-top m-0 wow fadeInUp herbavi-ingredients-heading">

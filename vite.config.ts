@@ -4,7 +4,15 @@ import path from 'path';
 import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
+  const adminRoot = path.join(__dirname, 'admin');
+
   return {
+    root: adminRoot,
+    base: '/admin/',
+    build: {
+      outDir: path.join(__dirname, 'dist'),
+      emptyOutDir: true,
+    },
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {

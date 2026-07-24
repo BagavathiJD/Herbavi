@@ -17,7 +17,7 @@ export default function AuthGuard({ children }: { children: ReactNode }) {
         if (getToken()) clearToken();
         if (cancelled) return;
         setStatus('redirecting');
-        window.location.replace('/');
+        window.location.replace('/admin');
         return;
       }
 
@@ -28,13 +28,13 @@ export default function AuthGuard({ children }: { children: ReactNode }) {
       if (!user) {
         clearToken();
         setStatus('redirecting');
-        window.location.replace('/');
+        window.location.replace('/admin');
         return;
       }
 
       if (normalizeRole(user.role) === 'admin') {
         setStatus('redirecting');
-        window.location.replace('/');
+        window.location.replace('/admin');
         return;
       }
 
@@ -44,7 +44,7 @@ export default function AuthGuard({ children }: { children: ReactNode }) {
       }
 
       setStatus('redirecting');
-      window.location.replace('/');
+      window.location.replace('/admin');
     })();
 
     return () => {

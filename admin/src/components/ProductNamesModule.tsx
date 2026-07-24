@@ -188,8 +188,8 @@ export default function ProductNamesModule({
                               id={`pn-edit-name-${pn.id}`}
                               type="text"
                               value={editingName}
-                              onChange={(e) => setEditingName(e.target.value)}
-                              className="p-1 px-2.5 text-xs border border-slate-800 bg-[#020617] text-white rounded focus:outline-none focus:border-indigo-550"
+                              disabled
+                              className="p-1 px-2.5 text-xs border border-slate-800 bg-[#020617] text-slate-400 rounded cursor-not-allowed opacity-80"
                             />
                           ) : (
                             <span className="font-semibold text-white">{pn.name}</span>

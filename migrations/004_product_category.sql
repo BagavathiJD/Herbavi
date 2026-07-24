@@ -1,0 +1,1 @@
+-- Product category column is ensured at runtime by backend/db/migrate.ts (ensureProductCategoryColumn).

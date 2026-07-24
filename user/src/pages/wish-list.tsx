@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCartActions } from '../hooks/useCartActions.ts';
 import { assetUrl } from '../utils/assets.ts';
 
@@ -11,6 +11,7 @@ function openCartPanel() {
 }
 
 export default function WishList() {
+  const navigate = useNavigate();
   const { wishlist, wishlistCount, removeWishlistItem, addProductToCart } = useCartActions();
 
   return (
@@ -63,28 +64,47 @@ export default function WishList() {
                       <i className="icon icon-HearthFill"></i>
                       <span className="tooltip">Remove Wishlist</span>
                     </button>
-                    <div className="product-action_bot">
-                      <a
-                        href="#shoppingCart"
-                        className="tf-btn hv-black btn-white type-2 w-100"
-                        onClick={(event) => {
-                          event.preventDefault();
-                          addProductToCart(item);
-                          openCartPanel();
-                        }}
-                      >
-                        Add to cart
-                        <i className="icon icon-ShoppingCart"></i>
-                      </a>
-                    </div>
+                    <ul className="product-action_list herbavi-wishlist-actions">
+                      <li>
+                        <a
+                          href="#shoppingCart"
+                          className="hover-tooltip tooltip-left box-icon herbavi-action-icon"
+                          onClick={(event) => {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            addProductToCart(item);
+                            openCartPanel();
+                          }}
+                          aria-label="Add to cart"
+                        >
+                          <span className="icon icon-ShoppingCart"></span>
+                          <span className="tooltip">Add to Cart</span>
+                        </a>
+                      </li>
+                    </ul>
                   </div>
-                  <div className="card-product_info">
+                  <div className="card-product_info herbavi-wishlist-info">
                     <a href={item.url} className="name-product fw-normal link-underline">
                       {item.name}
                     </a>
                     <div className="price-wrap">
                       <span className="price-new fw-normal">{item.priceDisplay}</span>
                       {item.oldPrice && <span className="price-old fw-normal cl-text-6">{item.oldPrice}</span>}
+                    </div>
+                    <div className="herbavi-product-card-actions">
+                      <a
+                        href="/checkout"
+                        className="tf-btn hv-black btn-white type-2 w-100 herbavi-buy-now-btn"
+                        onClick={(event) => {
+                          event.preventDefault();
+                          event.stopPropagation();
+                          addProductToCart(item);
+                          navigate('/checkout');
+                        }}
+                      >
+                        Buy now
+                        <i className="icon icon-ShoppingCart"></i>
+                      </a>
                     </div>
                   </div>
                 </div>

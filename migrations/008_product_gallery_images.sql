@@ -1,0 +1,1 @@
+-- gallery_images column is added idempotently by ensureProductGalleryImagesColumn() in backend/db/migrate.ts

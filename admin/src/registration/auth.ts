@@ -33,7 +33,7 @@ export function normalizeRole(role: unknown): string {
 
 export function redirectByRole(role: unknown): boolean {
   if (normalizeRole(role) === "user") {
-    window.location.replace("/user/");
+    window.location.replace("/");
     return true;
   }
   return false;
